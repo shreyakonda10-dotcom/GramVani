@@ -1,170 +1,172 @@
-# GramVani – Smart Rural Community Platform
+# GramVani – Voice-First Rural Grievance Redressal & Community Support Platform
 > *"Your Village, Your Voice, Your Community."*
 
-GramVani is a responsive, mobile-first web application designed for rural community development and civic empowerment.
+GramVani is a voice-first, mobile-responsive civic web application designed for rural community development and transparent grievance redressal in Indian villages.
+
+---
 
 ### 🌟 Core Design Principle: Voice-First & Zero Literacy Barrier
-> **"A villager who cannot read or write should still be able to register a complaint with minimal assistance, using their voice."**
+> **"A villager who cannot read or write should still be able to register a civic complaint with minimal assistance, using their natural voice."**
 
-The platform combines two major community systems:
-1. **Voice-First Rural Grievance Redressal System** — Allowing villagers to report civic issues (water, electricity, roads, sanitation, drainage) using their spoken voice in **Telugu** or **English**, with spoken audio instructions, automatic keyword-based department classification, urgency prioritization, and spoken audio confirmations.
-2. **Village Education and Skills Directory** — A voluntary community registry where educated villagers and local craftsmen connect with students and neighbors for mentorship, career guidance, and practical trade services.
+Rural citizens often face severe friction when reporting drinking water leakage, broken street lights, dangerous potholes, or clogged drainage due to literacy barriers, complex English forms, or lack of direct administrative access. 
+
+**GramVani transforms rural grievance redressal into a voice-first experience**:
+- **Multilingual Spoken Input**: Villagers speak naturally in **Telugu (`te-IN` - తెలుగు)**, **Hindi (`hi-IN` - हिन्दी)**, or **English (`en-IN`)**.
+- **Zero Typing Required**: Name is optional (defaults to Anonymous Villager), village is defaulted, mobile number is optional.
+- **Automated Intelligence**: Smart keyword heuristics automatically categorize civic departments and urgency priority without requiring confusing dropdowns.
+- **Audio Feedback & Readout**: Web Speech Synthesis reads instructions aloud, verifies spoken input, reads confirmation and Complaint IDs aloud, and provides spoken status updates.
+- **Photo Evidence Attachment**: Citizens and volunteers can attach photos (compressed client-side via HTML5 canvas to prevent LocalStorage bloat).
+- **Village Volunteer Assistance**: Educated youth, ASHA workers, and Panchayat volunteers can file verified complaints on behalf of illiterate neighbors or elders.
+- **Duplicate Complaint Detection**: Transparent heuristic algorithms alert administrators when duplicate complaints are filed for the same locality and issue.
+- **Village Issues Map**: An interactive geographic breakdown of Rampur's 6 localities showcasing active issues and category distribution.
+- **4-Stage Progress Stepper & Resolution Ratings**: Track status (*Submitted* &rarr; *Under Review* &rarr; *In Progress* &rarr; *Resolved*) with 1–5 star citizen satisfaction ratings.
 
 ---
 
-## 🌾 Project Architecture & Technology Stack
+## 🌾 Technology Stack & Architecture
 
-| Layer | Technology | Purpose |
+| Layer | Technology | Key Details |
 |---|---|---|
-| **Structure** | Semantic HTML5 | High-contrast accessible layouts, responsive navigation, screen reader support |
-| **Styling** | Modern CSS3 | Rural green and clean white palette (`#1b5e20`, `#2e7d32`, `#4caf50`), giant touch-friendly buttons, animated waveform visualizers |
-| **Logic** | Vanilla JavaScript (ES6) | Client-side Single Page Application (SPA) controller, weighted keyword classification heuristic, LocalStorage state management |
-| **Voice Input** | Web Speech API (`SpeechRecognition`) | Browser-native speech recognition supporting **Telugu (`te-IN`)** and **English (`en-IN`)** |
-| **Voice Output** | Web Speech Synthesis (`SpeechSynthesis`) | Spoken audio instructions, spoken complaint confirmation, and status read-aloud |
+| **Structure** | Semantic HTML5 | Accessible, high-contrast, screen-reader friendly markup |
+| **Styling** | Modern CSS3 | Rural green and clean white palette (`#1b5e20`, `#2e7d32`, `#4caf50`), touch-friendly 48px+ targets, animated audio waveform bars |
+| **Logic** | Vanilla JavaScript (ES6) | Client-side Single Page Application (SPA), zero external paid APIs, 100% offline-ready |
+| **Speech Recognition** | Browser Web Speech API (`SpeechRecognition`) | Native voice transcription supporting **Telugu (`te-IN`)**, **Hindi (`hi-IN`)**, and **English (`en-IN`)** |
+| **Speech Synthesis** | Web Speech API (`SpeechSynthesis`) | Measured spoken voice guidance, ID read-aloud, and status updates |
 | **Audio Feedback** | Web Audio API (`AudioContext`) | Offline harmonic chimes on recording start and stop |
-| **Charts** | Chart.js (CDN) | Interactive departmental breakdown, redressal status distribution, qualification & trade analytics |
-| **Storage** | Browser LocalStorage | Local persistence of complaints, education profiles, and skills records |
+| **Photo Compression** | HTML5 Canvas API | In-memory downscaling (max 500px, 0.7 JPEG) to store images in ~25–35KB without exceeding browser quotas |
+| **Analytics Visuals** | Chart.js (CDN) | Real-time charts for departmental breakdown, 4-stage statuses, and locality heatmaps |
+| **Storage** | Browser LocalStorage | Local persistence of complaints, photos, volunteer records, and resolution ratings |
 
 ---
 
-## 🎙️ Voice-First Grievance Redressal (Module 1 Redesign)
+## 🧭 Site Navigation & Modules
 
-### 1. Villager Voice Mode (Primary & Default)
-- **Zero Typing Required**: Villagers do not have to type their name, village, or description.
-- **Giant Microphone Button**: A prominent 135px pulsing button with live concentric ripple waves and animated audio visualizer bars.
-- **Spoken Voice Guidance**: Click *"🔊 వినండి / Spoken Instructions"* to hear natural audio instructions in Telugu or English.
-- **Bilingual Support**: Instant toggle between **Telugu (`te-IN` - తెలుగు)** and **English (`en-IN`)**.
-- **Automatic Classification & Priority**: Speech is analyzed in real time using weighted keyword heuristics to identify civic departments (*Water Supply*, *Electricity*, *Roads*, *Sanitation*, *Drainage*, *Other*) and safety urgency (*High*, *Medium*, *Low*).
-- **Anonymous Complaints Allowed**: Citizen name defaults to `Anonymous Villager (గ్రామస్థుడు)` if left blank. An optional field allows giving a name if desired.
-- **Default Village with 1-Tap Chips**: Defaults to `Rampur`. Includes 1-tap chips (`[Rampur]`, `[Kalyanpur]`, `[Shivpur]`).
-- **Optional Mobile Number**: Only asked if the villager desires SMS or callback updates.
-- **Automatic Timestamps**: Date and time are assigned automatically from the system clock.
-- **Giant One-Tap Submit**: A large, full-width button `✅ ఫిర్యాదు నమోదు చేయండి / Confirm & Register Grievance`.
-- **Spoken Confirmation (Text-to-Speech)**: Once submitted, the system **reads the confirmation and Complaint ID aloud**:
-  - *Telugu*: `"మీ ఫిర్యాదు విజయవంతంగా నమోదైంది. మీ ఫిర్యాదు సంఖ్య: GV-2026-006. పంచాయతీ సిబ్బంది దీనిని త్వరలోనే పరిశీలిస్తారు."`
-  - *English*: `"Your grievance has been submitted successfully. Your complaint ID is: GV-2026-006. Our local panchayat team will inspect this shortly."`
-  - Includes a *"🔊 మళ్లీ వినండి / Listen Again"* button.
+GramVani features 7 streamlined, grievance-dedicated navigation views:
 
-### 2. Assisted / Volunteer Mode (For Helpers & Family)
-- Designed for family members (sons/daughters), village youth, ASHA workers, or Panchayat volunteers assisting an illiterate elder or neighbor.
-- Captures: Volunteer Name, Role/Relationship, Citizen Name (or Anonymous), Village, Contact (optional), Voice or Text complaint description.
-- Tags complaints transparently: `Assisted by Volunteer: [Name] ([Role])`.
-
-### 3. Text Entry Fallback Mode
-- Accessible keyboard form if a microphone is not connected or speech permissions are blocked.
+1. **Home (`#home`)**: Hero section with giant microphone button, spoken voice guide, live grievance statistics, and 5 citizen accessibility shortcut cards.
+2. **Submit Complaint (`#complaint`)**: Voice-first submission center with giant 135px microphone, language selector (Telugu, Hindi, English), photo attachment, and manual fallback mode.
+3. **Volunteer Help (`#volunteer`)**: Dedicated assisted-submission mode for village youth and ASHA workers to file complaints for elders.
+4. **Track Complaint (`#track`)**: Live tracking with 4-stage stepper (*Submitted* &rarr; *Under Review* &rarr; *In Progress* &rarr; *Resolved*), voice search of Complaint ID, spoken audio updates, photo evidence display, and citizen satisfaction ratings (1–5 stars).
+5. **Village Issues Map (`#map`)**: Interactive map cards for Rampur's 6 localities with active issue counts, category chips, and click-to-filter locality tables.
+6. **Admin Dashboard (`#admin`)**: Panchayat administrative monitoring with 7 live KPI stat cards, 3 Chart.js graphs, duplicate comparison modal, photo inspection modal, and status update workflows.
+7. **About (`#about`)**: Transparent technical architecture, privacy disclosures, and prototype reset controls.
 
 ---
 
-## 🔍 Additional Preserved Modules
+## 🗺️ Village Rampur Localities
 
-### Module 2: Complaint Tracking System
-- Search by Complaint ID (e.g., `GV-2026-001`).
-- Quick sample buttons (`GV-2026-001` to `GV-2026-005`).
-- 4-stage visual progress stepper (*Registered* → *Reviewed* → *In Progress* → *Resolved*).
-- **🔊 Spoken Status Read-Aloud**: Click *"🔊 వినండి / Read Aloud"* to have the complaint status and official panchayat note read aloud via Text-to-Speech!
-
-### Module 3: Village Education Directory
-- Voluntary registry of educated villagers (10th, Intermediate, Diploma, Degree, B.Tech/Engineering, Postgraduate).
-- Mentorship availability indicator for school student guidance.
-- **Privacy by Default**: Phone numbers remain hidden unless explicitly authorized.
-- 1-click *"Request Guidance"* mentorship workflow with add, edit, and delete controls.
-
-### Module 4: Village Skills Directory
-- Directory for local tradesmen (Electricians, Plumbers, Carpenters, Tailors, Mechanics, Farmers, Computer Operators, Teachers, Healthcare Workers).
-- Lists practical experience, trade specifics, and working availability.
-- *"Request Work"* modal for villagers to send service inquiries.
-
-### Module 5: Panchayat Admin Dashboard
-- Real-time KPI stat cards.
-- **4 Chart.js Visualizations**: Complaints by Department, Complaints by Status, Education by Qualification, and Skilled Workers by Category.
-- **Live Status Updates**: Admins can update a complaint's status (*Pending* → *In Progress* → *Resolved*) and add official notes, immediately updating the public tracking page in real-time.
-- 1-click **Reset Default Sample Data** button to restore initial Rampur records anytime.
+The prototype is pre-configured with 6 realistic localities in model village **Rampur**:
+1. **Ram Mandir Street** (రామాలయం వీధి) — High-density central village area.
+2. **Zilla Parishad School Area** (పాఠశాల ప్రాంతం) — Educational zone with high foot traffic.
+3. **North Colony** (ఉత్తర కాలనీ) — Residential community with open drainage channels.
+4. **Weekly Market / Rythu Bazaar** (సంత ప్రాంతం) — Commercial trading hub with high waste generation.
+5. **South Bypass & Bus Stand** (బస్ స్టాండ్) — Connecting highway junction with heavy vehicle traffic.
+6. **Gram Panchayat & Water Tank Center** (పంచాయతీ కేంద్రం) — Administrative core and municipal water overhead tank.
 
 ---
 
-## 📋 Sample Dataset (Village Rampur)
+## 📋 Pre-Populated Demonstration Dataset
 
-### Sample Complaints
-1. **GV-2026-001** — Water Supply — *High Priority* — **In Progress** (Voice submission)
-   - *"Main drinking water pipeline near Ram temple has severe leakage for 3 days..."*
-2. **GV-2026-002** — Electricity — *High Priority* — **Pending** (Text submission)
-   - *"Street light pole #14 near Zilla Parishad school is flickering and sparking in evening rain..."*
-3. **GV-2026-003** — Roads — *Medium Priority* — **In Progress** (Voice submission)
-   - *"Large potholes on Rampur-Kalyanpur connecting road after heavy rains..."*
-4. **GV-2026-004** — Sanitation — *Medium Priority* — **Resolved** (Text submission)
-   - *"Garbage collection bin near weekly market has been overflowing for past week..."*
-5. **GV-2026-005** — Drainage — *Medium Priority* — **Pending** (Voice submission)
-   - *"Clogged open drainage canal near North colony causing wastewater stagnation..."*
+GramVani includes pre-configured sample complaints to showcase every feature during evaluations:
 
-### Sample Education Profiles
-1. **Ramesh Kumar Varma** — B.Tech / Computer Science — Software Engineer (Private contact)
-2. **Ananya Reddy** — Postgraduate / Agriculture — Agri Extension Officer (Public contact)
-3. **Suresh Babu** — Degree / Science — High School Maths Teacher (Private contact)
-4. **Priya Devi** — Intermediate / Arts — Student & Welfare Guide (Public contact)
-5. **Dr. K. Venkat** — Postgraduate / Healthcare — Primary Health Doctor (Private contact)
-
-### Sample Skills Profiles
-1. **M. Satyanarayana** — Electrician (12 yrs exp, pump motors & house wiring, Public)
-2. **G. Krishna Murthy** — Plumber (8 yrs exp, PVC pipes & tanks, Private)
-3. **Lakshmi Bai** — Tailor (10 yrs exp, school uniforms & blouses, Public)
-4. **Ravi Teja** — Mechanic (6 yrs exp, motorcycles & tractors, Private)
-5. **B. Venkatesh** — Computer Operator (4 yrs exp, MeeSeva & certificates, Public)
+| ID | Locality | Department | Priority | Status | Method / Submitter | Special Highlight |
+|---|---|---|---|---|---|---|
+| **GV-2026-001** | Ram Mandir Street | Water Supply | High | In Progress | Voice (Ramu Yadav) | Includes attached photo evidence of pipe leak |
+| **GV-2026-002** | School Area | Electricity | High | Under Review | Voice (Venkatamma G.) | Sparking streetlight pole hazard |
+| **GV-2026-003** | South Bypass | Roads | Medium | In Progress | Volunteer (Kalyan Kumar) | Assisted on behalf of elderly resident Lachamma |
+| **GV-2026-004** | Weekly Market | Sanitation | Medium | **Resolved** | Text Fallback (Babu Lal) | **5-Star Citizen Rating** & feedback comment |
+| **GV-2026-005** | North Colony | Drainage | Medium | Submitted | Volunteer (ASHA Worker Ananya) | Clogged drainage report |
+| **GV-2026-006** | Ram Mandir Street | Water Supply | High | Under Review | Voice (Suresh Kumar) | **⚠️ Flagged as Potential Duplicate of GV-2026-001** |
 
 ---
 
-## 🎤 Internship Demonstration Script (Step-by-Step)
+## 🎤 Internship Evaluation Walkthrough Script
 
-Follow these steps when demonstrating GramVani to examiners or evaluators:
+Follow these steps to demonstrate the prototype to evaluators or professors:
 
-1. **Homepage Overview**:
-   - Point out the **giant microphone button on the homepage** and click *"🔊 వినండి / Listen (Voice Guide)"* to demonstrate the spoken Telugu introduction.
-2. **Voice-First Complaint Submission (Zero Typing)**:
-   - Click the giant mic or go to **Submit Complaint**.
-   - Show the 3-step visual instruction banner in Telugu & English.
-   - Click the 135px microphone button and speak:
-     > *"తాగునీటి పైపులైన్ పగిలిపోయింది నీరు వృధాగా పోతోంది"* (Drinking water pipeline burst and water is wasting)
-     > or in English: *"Street light pole near school is sparking and dangerous"*
-   - Watch the words transcribe live on screen.
-   - Point out that the department (*Water Supply* or *Electricity*) and priority (*High Priority*) were **automatically detected** without the user having to configure anything!
-   - Show that **Name, Village, and Mobile are optional/defaulted** (`Anonymous Villager`, `Rampur`).
-   - Click the giant green button: **"✅ ఫిర్యాదు నమోదు చేయండి / Confirm & Register"**.
-   - **Listen to the browser read the confirmation and Complaint ID aloud**:
-     `"మీ ఫిర్యాదు విజయవంతంగా నమోదైంది. మీ ఫిర్యాదు సంఖ్య GV-2026-006..."`
-   - Click *"🔊 మళ్లీ వినండి"* to replay the audio.
-3. **Track Complaint with Audio Readout**:
-   - Click *"Track This Complaint Now"*.
-   - View the 4-stage visual progress stepper.
-   - Click the **"🔊 వినండి / Read Aloud"** button to hear the status and official update read out loud.
-4. **Assisted / Volunteer Mode**:
-   - Switch to **Assisted / Volunteer Mode** tab.
-   - Show how a family member or Panchayat volunteer can log an issue on behalf of an elder.
-5. **Admin Dashboard Synchronization**:
-   - Navigate to **Admin Dashboard**.
-   - Show the live stat counters and the 4 interactive Chart.js charts.
-   - Update the newly logged complaint from *Pending* to *Resolved*, write an official note, and save.
-   - Go back to **Track Complaint** and confirm the change is live immediately!
-6. **Education & Skills Directories**:
-   - Filter by *Willing to Guide Students* or trade category (*Electrician*).
-   - Demonstrate the default contact privacy protection and the *"Request Work"* inquiry modal.
+### Step 1: Voice-First Homepage Experience
+1. Open the homepage.
+2. Click **"🔊 వినండి / Spoken Voice Guide"** to hear the measured audio greeting in Telugu.
+3. Show the **Hero Stats Bar** (Complaints Logged, Issues Resolved, Volunteer Assisted, Localities Covered).
+4. Tap the **Giant Central Microphone Button** (`నొక్కండి - మాట్లాడండి`) on the homepage; notice how it navigates directly to the complaint page and activates the microphone.
+
+### Step 2: One-Tap Voice Submission
+1. Select language: **Telugu (`తెలుగు`)**, **Hindi (`हिन्दी`)**, or **English**.
+2. Tap the giant pulsing microphone button.
+3. Speak naturally:
+   - *In Telugu*: `"తాగునీటి పైపులైన్ పగిలిపోయింది రోడ్డుపై నీరు కారుతోంది"`
+   - *Or in English*: `"Street light pole is sparking and dangerous near school"`
+4. Watch the words transcribe live on screen.
+5. Highlight the **Automatic Classification Banner**:
+   - The department is automatically tagged as **Water Supply** (or **Electricity**).
+   - Priority is automatically tagged as **High** based on safety keywords.
+6. Point out that **Name and Phone are optional** (`Anonymous Villager`, `Rampur`).
+7. (Optional) Click **Select / Capture Photo** to demonstrate client-side canvas compression.
+8. Click **"✅ ఫిర్యాదు నమోదు చేయండి / Confirm & Register Grievance"**.
+9. **Hear the browser read the confirmation and new Complaint ID aloud** in your chosen language!
+10. Click **"🔊 మళ్లీ వినండి"** to demonstrate accessibility for non-readers.
+
+### Step 3: 4-Stage Complaint Tracking & Audio Updates
+1. Click **"Track This Complaint Now"** from the confirmation modal (or navigate to *Track Complaint*).
+2. Enter or click any sample ID:
+   - Click `GV-2026-001`: Inspect the 4-stage stepper (*Submitted* &rarr; *Under Review* &rarr; *In Progress* &rarr; *Resolved*) showing 75% progress.
+   - Inspect the **Attached Photo Evidence** showing the pipeline leak.
+   - Click the photo to view it enlarged in the modal viewer.
+   - Click **"🔊 వినండి / Read Aloud"** to have the current status and official panchayat inspection note read aloud via Text-to-Speech!
+3. Demonstrate **Voice Search**:
+   - Click **"🎤 Voice Search"** next to the search input.
+   - Speak `"004"` or `"GV 2026 004"`.
+   - The system automatically formats the ID and triggers tracking!
+
+### Step 4: Citizen Resolution Feedback System
+1. Track complaint `GV-2026-004` (Sanitation - Resolved).
+2. Point out that because the issue is **Resolved (100%)**, the **Citizen Resolution Feedback** section is active.
+3. Show the submitted 5-star rating: `★★★★★` and the citizen's review comment.
+4. Mention that unresolved complaints do not show feedback until work is completed, preventing fake reviews.
+
+### Step 5: Village Issues Map (Locality Heatmap)
+1. Navigate to **Village Issues Map**.
+2. Show the visual grid of Rampur's 6 localities with active issue counts, category chips, and priority alerts.
+3. Click on **"Ram Mandir Street"**:
+   - The card highlights in green with a selected border.
+   - The table below instantly filters to show grievances specifically logged in Ram Mandir Street.
+4. Click **"View All Localities"** to reset the filter.
+
+### Step 6: Dedicated Village Volunteer Assistance Mode
+1. Navigate to **Volunteer Help**.
+2. Show how an educated youth volunteer, ASHA worker, or family member can log a grievance on behalf of an illiterate neighbor.
+3. Note how the complaint records the volunteer's name and role while keeping citizen details private or anonymous.
+
+### Step 7: Panchayat Admin Dashboard & Duplicate Detection
+1. Navigate to **Admin Dashboard**.
+2. Show the **7 Live KPI Summary Cards** including:
+   - Total Complaints
+   - Pending / Under Review
+   - In Progress
+   - Resolved Issues
+   - Volunteer-Assisted Reports
+   - **Duplicate Alerts**
+   - **Average Citizen Satisfaction Rating (`★ 5.0`)**
+3. Review the **3 Chart.js Visualizations**:
+   - Complaints by Department (Doughnut)
+   - Complaints by 4-Stage Status (Pie)
+   - Complaints by Locality (Horizontal Bar)
+4. Show the **Duplicate Warning**:
+   - Point to `GV-2026-006` with the red badge: `⚠️ Duplicate of GV-2026-001`.
+   - Click the badge to open the **Duplicate Grievance Comparison Modal**, displaying both complaints side-by-side (showing matching locality, category, and pipeline leakage keywords).
+5. Demonstrate **Status Update**:
+   - Click **Update** on any complaint.
+   - Change status to *Resolved*, write an official remark: `"Repairs completed by lineman."`, and click Save.
+   - Return to the public tracking page and show that the status, stepper, and spoken audio update immediately!
 
 ---
 
-## 💻 How to Run Locally
+## 🔒 Offline & Privacy Integrity
 
-You can run GramVani directly in two ways:
-
-### Option A: Direct Browser Launch
-Simply double-click `index.html` to open it in **Google Chrome**, **Microsoft Edge**, or an Android browser.
-
-### Option B: Local Web Server (Recommended for Persistent Mic Access)
-Double-click `start-server.bat` or run:
-```bash
-# Using Node.js:
-npx serve .
-# Or using Python:
-python -m http.server 8000
-```
-Then visit: `http://localhost:8000`
+- **Zero External Paid API Keys**: Uses standard W3C browser APIs (`webkitSpeechRecognition`, `speechSynthesis`, `AudioContext`, `HTMLCanvasElement`).
+- **Privacy First**: Villagers can remain completely anonymous. Contact numbers are optional.
+- **LocalStorage Data Safety**: Photos are compressed client-side to ~25–35KB before storage, ensuring the entire prototype operates smoothly without hitting browser storage quotas.
 
 ---
-*Developed for Rural Internship Project Demonstration &bull; GramVani Prototype 2026*
+
+&copy; 2026 GramVani Prototype. Built for Rural Civic Empowerment & Internship Demonstration.

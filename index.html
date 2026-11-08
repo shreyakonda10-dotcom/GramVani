@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>GramVani – Smart Rural Community Platform</title>
-  <meta name="description" content="GramVani is a smart rural community platform combining voice-based grievance redressal with a village education and skills directory.">
+  <title>GramVani – Voice-First Rural Grievance Redressal Platform</title>
+  <meta name="description" content="GramVani is a voice-first rural grievance redressal and community support platform empowering villagers to report civic issues in Telugu, Hindi, and English without literacy barriers.">
   
   <!-- Google Fonts: Inter & Poppins for high readability -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -28,10 +28,10 @@
     <div class="container banner-flex">
       <div class="banner-text">
         <i class="fa-solid fa-circle-info" aria-hidden="true"></i>
-        <span><strong>Internship Demonstration Prototype:</strong> Fictional village Rampur data stored securely in your browser's LocalStorage. Voice recognition powered by Web Speech API.</span>
+        <span><strong>Voice-First Rural Platform Prototype:</strong> Village Rampur grievance records stored offline in browser LocalStorage. Voice recognition powered by Web Speech API in Telugu, Hindi & English.</span>
       </div>
       <div class="banner-actions">
-        <span class="badge badge-pulse"><i class="fa-solid fa-shield-halved"></i> Privacy First</span>
+        <span class="badge badge-pulse"><i class="fa-solid fa-shield-halved"></i> Voice-First Redressal</span>
         <button id="banner-close" aria-label="Close announcement banner" class="icon-btn-sm">&times;</button>
       </div>
     </div>
@@ -56,20 +56,20 @@
         </a>
       </div>
 
-      <!-- Navigation Links -->
+      <!-- Navigation Links (Completely restructured: Grievance-Focused) -->
       <nav class="primary-nav" id="primary-nav" aria-label="Primary navigation">
         <ul class="nav-list">
           <li><a href="#home" class="nav-link active" data-view="home"><i class="fa-solid fa-house"></i> Home</a></li>
-          <li><a href="#complaint" class="nav-link" data-view="complaint"><i class="fa-solid fa-bullhorn"></i> Submit Complaint</a></li>
+          <li><a href="#complaint" class="nav-link" data-view="complaint"><i class="fa-solid fa-microphone"></i> Submit Complaint</a></li>
+          <li><a href="#volunteer" class="nav-link" data-view="volunteer"><i class="fa-solid fa-hand-holding-hand"></i> Volunteer Help</a></li>
           <li><a href="#track" class="nav-link" data-view="track"><i class="fa-solid fa-magnifying-glass-location"></i> Track Complaint</a></li>
-          <li><a href="#education" class="nav-link" data-view="education"><i class="fa-solid fa-graduation-cap"></i> Education Directory</a></li>
-          <li><a href="#skills" class="nav-link" data-view="skills"><i class="fa-solid fa-screwdriver-wrench"></i> Skills Directory</a></li>
+          <li><a href="#map" class="nav-link" data-view="map"><i class="fa-solid fa-map-location-dot"></i> Village Issues Map</a></li>
           <li><a href="#admin" class="nav-link nav-link-admin" data-view="admin"><i class="fa-solid fa-chart-line"></i> Admin Dashboard</a></li>
           <li><a href="#about" class="nav-link" data-view="about"><i class="fa-solid fa-circle-question"></i> About</a></li>
         </ul>
       </nav>
 
-      <!-- Quick Village Badge -->
+      <!-- Quick Village & Language Badge -->
       <div class="header-tools">
         <div class="village-badge" title="Demo Village: Rampur">
           <i class="fa-solid fa-location-dot"></i>
@@ -86,7 +86,7 @@
   <main id="main-content" class="main-content">
 
     <!-- ========================================================
-         VIEW 1: HOME PAGE
+         VIEW 1: HOME PAGE (VOICE-FIRST & RURAL EMPOWERMENT)
          ======================================================== -->
     <section id="view-home" class="view-panel active-view">
       <!-- Hero Section -->
@@ -95,45 +95,88 @@
           <div class="hero-content">
             <div class="hero-pill">
               <span class="pill-dot"></span>
-              <span>Empowering Rural Voices & Local Talents</span>
+              <span>Voice-First Rural Grievance Redressal</span>
             </div>
             <h2 class="hero-title">Your Village, Your Voice, Your Community.</h2>
             <p class="hero-desc">
-              GramVani is a smart, accessible rural platform bridging villagers and local administration. Speak or type your village complaints in <strong>Telugu</strong> or <strong>English</strong>, track redressal progress, and discover educated youth and skilled tradesmen right in your neighborhood.
+              GramVani is a voice-powered community platform bridging villagers and local administration. Report drinking water leaks, broken street lights, potholes, and drainage issues using your voice in <strong>Telugu</strong>, <strong>Hindi</strong>, or <strong>English</strong>. No reading or typing needed.
             </p>
             <div class="hero-actions">
               <a href="#complaint" class="btn btn-primary btn-lg" onclick="switchView('complaint'); switchSubmissionMode('voice');">
                 <i class="fa-solid fa-microphone"></i> 🎤 Speak Your Complaint (వాయిస్ నమోదు)
               </a>
               <button type="button" class="btn btn-speak-guide btn-lg" id="btn-home-listen-guide" onclick="speakHomeGuide()">
-                <i class="fa-solid fa-volume-high"></i> 🔊 వినండి / Listen (Voice Guide)
+                <i class="fa-solid fa-volume-high"></i> 🔊 వినండి / Spoken Voice Guide
               </button>
-              <a href="#education" class="btn btn-secondary btn-lg" onclick="switchView('education')">
-                <i class="fa-solid fa-people-roof"></i> Explore Village Directory
+              <a href="#volunteer" class="btn btn-secondary btn-lg" onclick="switchView('volunteer')">
+                <i class="fa-solid fa-hand-holding-hand"></i> Volunteer Help (సహాయం)
               </a>
             </div>
 
             <!-- Quick stats bar -->
             <div class="hero-stats-row">
               <div class="hero-stat-item">
-                <span class="hero-stat-number" id="hero-stat-complaints">5</span>
+                <span class="hero-stat-number" id="hero-stat-complaints">6</span>
                 <span class="hero-stat-label">Complaints Logged</span>
               </div>
               <div class="hero-stat-divider"></div>
               <div class="hero-stat-item">
-                <span class="hero-stat-number" id="hero-stat-resolved">1</span>
+                <span class="hero-stat-number text-green" id="hero-stat-resolved">1</span>
                 <span class="hero-stat-label">Issues Resolved</span>
               </div>
               <div class="hero-stat-divider"></div>
               <div class="hero-stat-item">
-                <span class="hero-stat-number" id="hero-stat-mentors">5</span>
-                <span class="hero-stat-label">Educated Mentors</span>
+                <span class="hero-stat-number text-teal" id="hero-stat-volunteer">2</span>
+                <span class="hero-stat-label">Volunteer Assisted</span>
               </div>
               <div class="hero-stat-divider"></div>
               <div class="hero-stat-item">
-                <span class="hero-stat-number" id="hero-stat-skills">5</span>
-                <span class="hero-stat-label">Skilled Craftsmen</span>
+                <span class="hero-stat-number text-amber" id="hero-stat-localities">6</span>
+                <span class="hero-stat-label">Rampur Localities</span>
               </div>
+            </div>
+
+            <!-- Citizen Accessibility 5-Action Grid -->
+            <div class="citizen-accessibility-grid mt-4">
+              <button type="button" class="access-action-btn btn-report" onclick="switchView('complaint'); switchSubmissionMode('voice');">
+                <div class="access-btn-icon bg-green-light text-green"><i class="fa-solid fa-microphone"></i></div>
+                <div class="access-btn-text">
+                  <strong>1. Speak Complaint</strong>
+                  <span>సమస్య చెప్పండి (Voice Redressal)</span>
+                </div>
+              </button>
+
+              <button type="button" class="access-action-btn btn-volunteer" onclick="switchView('volunteer');">
+                <div class="access-btn-icon bg-teal-light text-teal"><i class="fa-solid fa-hand-holding-hand"></i></div>
+                <div class="access-btn-text">
+                  <strong>2. Volunteer Help</strong>
+                  <span>వాలంటీర్ సహాయం (Assisted Mode)</span>
+                </div>
+              </button>
+
+              <button type="button" class="access-action-btn btn-track" onclick="switchView('track');">
+                <div class="access-btn-icon bg-blue-light text-blue"><i class="fa-solid fa-magnifying-glass-location"></i></div>
+                <div class="access-btn-text">
+                  <strong>3. Track Complaint</strong>
+                  <span>స్థితి చూడండి (Live 4-Stage Status)</span>
+                </div>
+              </button>
+
+              <button type="button" class="access-action-btn btn-map" onclick="switchView('map');">
+                <div class="access-btn-icon bg-amber-light text-amber"><i class="fa-solid fa-map-location-dot"></i></div>
+                <div class="access-btn-text">
+                  <strong>4. Village Issues Map</strong>
+                  <span>గ్రామ సమస్యల మ్యాప్ (Locality Heatmap)</span>
+                </div>
+              </button>
+
+              <button type="button" class="access-action-btn btn-admin" onclick="switchView('admin');">
+                <div class="access-btn-icon bg-purple-light text-purple"><i class="fa-solid fa-chart-line"></i></div>
+                <div class="access-btn-text">
+                  <strong>5. Admin Dashboard</strong>
+                  <span>పంచాయతీ పాలన (Live Metrics)</span>
+                </div>
+              </button>
             </div>
           </div>
 
@@ -144,7 +187,7 @@
                 <span class="pulse-live"><i class="fa-solid fa-circle"></i> Ready to Listen</span>
               </div>
               <h3 class="hero-voice-headline">మాట్లాడండి - సమస్యను నమోదు చేయండి</h3>
-              <p class="hero-voice-sub">Speak naturally in Telugu or English. No reading or writing required.</p>
+              <p class="hero-voice-sub">Speak naturally in Telugu, Hindi or English. No reading or typing required.</p>
               
               <!-- Very Large Microphone Button on Homepage -->
               <div class="hero-mic-wrapper">
@@ -154,7 +197,7 @@
                 </button>
                 <div class="hero-mic-caption">
                   <strong id="hero-mic-caption-title">నొక్కండి - మాట్లాడండి</strong>
-                  <span>Tap to Speak Your Problem</span>
+                  <span>Tap to Speak Your Grievance</span>
                 </div>
               </div>
 
@@ -163,7 +206,7 @@
                 <button type="button" class="btn btn-sm btn-outline-primary" onclick="speakHomeGuide()">
                   <i class="fa-solid fa-volume-high"></i> 🔊 వినండి / Spoken Instructions
                 </button>
-                <span class="badge badge-neutral"><i class="fa-solid fa-bolt"></i> Auto Category & Priority</span>
+                <span class="badge badge-neutral"><i class="fa-solid fa-bolt"></i> Auto Department & Priority</span>
               </div>
             </div>
           </div>
@@ -174,9 +217,9 @@
       <section class="section features-section">
         <div class="container">
           <div class="section-header text-center">
-            <span class="section-subtitle">Core Community Modules</span>
-            <h2 class="section-title">Everything You Need To Build A Stronger Village</h2>
-            <p class="section-desc">Designed with high-contrast, large touch-friendly buttons, and zero complex jargon for rural citizens.</p>
+            <span class="section-subtitle">Dedicated Grievance Services</span>
+            <h2 class="section-title">Built For Seamless Rural Grievance Redressal</h2>
+            <p class="section-desc">Zero complex paperwork. Speak your mother tongue, attach photo evidence, and track real-time resolution stages.</p>
           </div>
 
           <div class="grid-cards-container">
@@ -185,10 +228,10 @@
               <div class="feature-icon-wrapper bg-green-light">
                 <i class="fa-solid fa-microphone-lines text-green"></i>
               </div>
-              <span class="feature-badge">Module 1</span>
-              <h3 class="feature-title">Voice Grievance Redressal</h3>
+              <span class="feature-badge">Voice-First</span>
+              <h3 class="feature-title">Multilingual Voice Redressal</h3>
               <p class="feature-text">
-                Villagers can speak naturally in Telugu or English using their microphone, or enter text. Smart keyword rules automatically identify categories like Water, Electricity, or Roads.
+                Villagers speak naturally in Telugu, Hindi, or English. Smart keyword heuristics automatically detect civic departments like Water, Roads, Electricity, or Sanitation.
               </p>
               <div class="feature-footer">
                 <span class="feature-link">Report Problem <i class="fa-solid fa-arrow-right"></i></span>
@@ -196,59 +239,59 @@
             </div>
 
             <!-- Feature 2 -->
+            <div class="feature-card" onclick="switchView('volunteer')">
+              <div class="feature-icon-wrapper bg-teal-light">
+                <i class="fa-solid fa-hand-holding-hand text-teal"></i>
+              </div>
+              <span class="feature-badge">Community Help</span>
+              <h3 class="feature-title">Village Volunteer Assistance</h3>
+              <p class="feature-text">
+                Educated youth, panchayat volunteers, and ASHA workers can file complaints on behalf of illiterate elders or neighbors with complete transparency.
+              </p>
+              <div class="feature-footer">
+                <span class="feature-link">Open Volunteer Mode <i class="fa-solid fa-arrow-right"></i></span>
+              </div>
+            </div>
+
+            <!-- Feature 3 -->
             <div class="feature-card" onclick="switchView('track')">
               <div class="feature-icon-wrapper bg-blue-light">
                 <i class="fa-solid fa-magnifying-glass-location text-blue"></i>
               </div>
-              <span class="feature-badge">Module 2</span>
-              <h3 class="feature-title">Live Complaint Tracking</h3>
+              <span class="feature-badge">4-Stage Progress</span>
+              <h3 class="feature-title">Live Tracking & Audio Status</h3>
               <p class="feature-text">
-                Enter your unique Complaint ID (e.g., <code>GV-2026-001</code>) to view the current status, stage progress, and official updates from local administration.
+                Track status across 4 stages (Submitted &rarr; Under Review &rarr; In Progress &rarr; Resolved). Listen to official audio updates and rate resolution satisfaction.
               </p>
               <div class="feature-footer">
                 <span class="feature-link">Track Grievance <i class="fa-solid fa-arrow-right"></i></span>
               </div>
             </div>
 
-            <!-- Feature 3 -->
-            <div class="feature-card" onclick="switchView('education')">
-              <div class="feature-icon-wrapper bg-amber-light">
-                <i class="fa-solid fa-graduation-cap text-amber"></i>
-              </div>
-              <span class="feature-badge">Module 3</span>
-              <h3 class="feature-title">Village Education Directory</h3>
-              <p class="feature-text">
-                Voluntary registry for educated villagers—graduates, engineers, and teachers willing to guide school children, provide career advice, or mentor youth.
-              </p>
-              <div class="feature-footer">
-                <span class="feature-link">Find Mentors <i class="fa-solid fa-arrow-right"></i></span>
-              </div>
-            </div>
-
             <!-- Feature 4 -->
-            <div class="feature-card" onclick="switchView('skills')">
-              <div class="feature-icon-wrapper bg-purple-light">
-                <i class="fa-solid fa-screwdriver-wrench text-purple"></i>
+            <div class="feature-card" onclick="switchView('map')">
+              <div class="feature-icon-wrapper bg-amber-light">
+                <i class="fa-solid fa-map-location-dot text-amber"></i>
               </div>
-              <span class="feature-badge">Module 4</span>
-              <h3 class="feature-title">Village Skills Directory</h3>
+              <span class="feature-badge">Locality Heatmap</span>
+              <h3 class="feature-title">Village Issues Map</h3>
               <p class="feature-text">
-                Discover local electricians, plumbers, carpenters, tailors, and mechanics right inside your village. Keep community livelihoods thriving locally.
+                Interactive map of Rampur's 6 localities showcasing active civic issues, department breakdowns, and click-to-filter locality grievance lists.
               </p>
               <div class="feature-footer">
-                <span class="feature-link">Find Skilled Workers <i class="fa-solid fa-arrow-right"></i></span>
+                <span class="feature-link">Explore Village Map <i class="fa-solid fa-arrow-right"></i></span>
               </div>
             </div>
 
             <!-- Feature 5 -->
             <div class="feature-card" onclick="switchView('admin')">
-              <div class="feature-icon-wrapper bg-teal-light">
-                <i class="fa-solid fa-chart-pie text-teal"></i>
+              <div class="feature-icon-wrapper bg-purple-light">
+                <i class="fa-solid fa-chart-pie text-purple"></i>
               </div>
-              <span class="feature-badge">Module 5</span>
+              <span class="feature-badge">Administration</span>
               <h3 class="feature-title">Panchayat Admin Dashboard</h3>
               <p class="feature-text">
-                Allows community administrators to review complaints, update resolution status notes, inspect directory registrations, and visualize real-time charts.
+                Panchayat officials manage grievances, view photo evidence, inspect duplicate warnings, update official notes, and review citizen satisfaction ratings.
               </p>
               <div class="feature-footer">
                 <span class="feature-link">Open Dashboard <i class="fa-solid fa-arrow-right"></i></span>
@@ -258,15 +301,15 @@
             <!-- Feature 6 -->
             <div class="feature-card" onclick="switchView('about')">
               <div class="feature-icon-wrapper bg-indigo-light">
-                <i class="fa-solid fa-hand-holding-hand text-indigo"></i>
+                <i class="fa-solid fa-circle-info text-indigo"></i>
               </div>
-              <span class="feature-badge">Project Scope</span>
+              <span class="feature-badge">Architecture</span>
               <h3 class="feature-title">Internship Demonstration</h3>
               <p class="feature-text">
-                Review technical boundaries, LocalStorage offline data model, browser speech recognition requirements, and rural digital empowerment goals.
+                Review technical boundaries, LocalStorage offline data model, browser Web Speech recognition, client-side photo compression, and civic impact.
               </p>
               <div class="feature-footer">
-                <span class="feature-link">Read Project Details <i class="fa-solid fa-arrow-right"></i></span>
+                <span class="feature-link">Read Project Scope <i class="fa-solid fa-arrow-right"></i></span>
               </div>
             </div>
           </div>
@@ -278,29 +321,29 @@
         <div class="container">
           <div class="section-header text-center">
             <span class="section-subtitle">Simple 3-Step Process</span>
-            <h2 class="section-title">How GramVani Serves Villagers</h2>
+            <h2 class="section-title">How GramVani Empowers Villagers</h2>
           </div>
 
           <div class="flow-steps-grid">
             <div class="flow-step">
               <div class="step-circle">1</div>
               <div class="step-icon"><i class="fa-solid fa-microphone"></i></div>
-              <h4>Speak or Type</h4>
-              <p>Speak in your mother tongue (Telugu or English). Your words are immediately transcribed and verified on screen.</p>
+              <h4>Speak Your Problem</h4>
+              <p>Speak in Telugu, Hindi or English. Attach photo evidence. Your words are transcribed and spoken back for verification.</p>
             </div>
             <div class="flow-connector"><i class="fa-solid fa-arrow-right"></i></div>
             <div class="flow-step">
               <div class="step-circle">2</div>
               <div class="step-icon"><i class="fa-solid fa-brain"></i></div>
-              <h4>Auto Classify</h4>
-              <p>GramVani instantly detects keywords to tag the department (Water, Roads, Power) and assigns urgency priority.</p>
+              <h4>Auto Classify & Detect</h4>
+              <p>GramVani automatically categorizes civic departments, tags urgency, and checks for potential duplicate complaints.</p>
             </div>
             <div class="flow-connector"><i class="fa-solid fa-arrow-right"></i></div>
             <div class="flow-step">
               <div class="step-circle">3</div>
-              <div class="step-icon"><i class="fa-solid fa-ticket"></i></div>
-              <h4>Track & Resolve</h4>
-              <p>Receive your unique Complaint ID (<code>GV-2026-xxx</code>) and track repair progress till full resolution.</p>
+              <div class="step-icon"><i class="fa-solid fa-square-check"></i></div>
+              <h4>Track, Resolve & Rate</h4>
+              <p>Follow the 4-stage stepper with audio updates. Once resolved, leave a 5-star citizen satisfaction rating.</p>
             </div>
           </div>
         </div>
@@ -308,7 +351,7 @@
     </section>
 
     <!-- ========================================================
-         VIEW 2: SUBMIT A COMPLAINT (VOICE-FIRST & ASSISTED)
+         VIEW 2: SUBMIT A COMPLAINT (VOICE-FIRST & PHOTO EVIDENCE)
          ======================================================== -->
     <section id="view-complaint" class="view-panel">
       <div class="container py-content">
@@ -316,10 +359,10 @@
         <!-- Page Title & Audio Guide Bar -->
         <div class="page-header voice-first-page-header">
           <div class="page-title-group">
-            <span class="badge badge-primary"><i class="fa-solid fa-microphone-lines"></i> Module 1 &bull; Voice-First Grievance Redressal</span>
+            <span class="badge badge-primary"><i class="fa-solid fa-microphone-lines"></i> Voice-First Grievance Redressal</span>
             <h2 class="page-title">గ్రామీణ వాయిస్ ఫిర్యాదు నమోదు</h2>
             <p class="page-desc">
-              <strong>Voice-First Grievance Submission:</strong> చదవడం, రాయడం అవసరం లేకుండా మీ స్వంత గొంతుతో సమస్యను చెప్పండి. Speak naturally in Telugu or English.
+              <strong>Voice-First Grievance Submission:</strong> చదవడం, రాయడం అవసరం లేకుండా మీ స్వంత గొంతుతో సమస్యను చెప్పండి. Speak naturally in Telugu, Hindi or English.
             </p>
           </div>
           <div class="header-action-buttons">
@@ -337,11 +380,11 @@
           <div class="mode-tabs-list" role="tablist">
             <button type="button" class="mode-tab-btn active" id="tab-btn-voice" onclick="switchSubmissionMode('voice')" role="tab" aria-selected="true">
               <i class="fa-solid fa-microphone"></i>
-              <span><strong>1. Villager Voice Mode</strong><small>ఒక్క ట్యాప్‌తో వాయిస్ నమోదు (No Typing)</small></span>
+              <span><strong>1. Villager Voice Mode</strong><small>ఒక్క ట్యాప్‌తో వాయిస్ నమోదు (Zero Typing)</small></span>
             </button>
-            <button type="button" class="mode-tab-btn" id="tab-btn-assisted" onclick="switchSubmissionMode('assisted')" role="tab" aria-selected="false">
+            <button type="button" class="mode-tab-btn" id="tab-btn-assisted" onclick="switchView('volunteer')" role="tab" aria-selected="false">
               <i class="fa-solid fa-hand-holding-hand"></i>
-              <span><strong>2. Assisted / Volunteer Mode</strong><small>కుటుంబ సభ్యులు & వాలంటీర్ల సహాయం</small></span>
+              <span><strong>2. Volunteer Assistance</strong><small>వాలంటీర్ల సహాయం (Help Others)</small></span>
             </button>
             <button type="button" class="mode-tab-btn" id="tab-btn-text" onclick="switchSubmissionMode('text')" role="tab" aria-selected="false">
               <i class="fa-solid fa-keyboard"></i>
@@ -385,15 +428,18 @@
               </div>
             </div>
 
-            <!-- Language Toggle & Mic Status Bar -->
+            <!-- Language Toggle & Mic Status Bar (Telugu, Hindi, English) -->
             <div class="voice-controls-bar">
               <div class="voice-lang-pill-group">
                 <span class="lang-group-label"><i class="fa-solid fa-language"></i> మాట్లాడే భాష / Language:</span>
                 <button type="button" class="lang-pill-btn active" id="btn-lang-te" onclick="setVoiceLanguage('te-IN')">
                   తెలుగు (Telugu)
                 </button>
+                <button type="button" class="lang-pill-btn" id="btn-lang-hi" onclick="setVoiceLanguage('hi-IN')">
+                  हिन्दी (Hindi)
+                </button>
                 <button type="button" class="lang-pill-btn" id="btn-lang-en" onclick="setVoiceLanguage('en-IN')">
-                  English (India)
+                  English
                 </button>
               </div>
 
@@ -412,7 +458,7 @@
 
               <div class="giant-mic-text-feedback">
                 <h3 id="voice-first-action-heading">మాట్లాడటానికి ఇక్కడ నొక్కండి</h3>
-                <p id="voice-first-action-sub">Click once to speak. Speak your problem clearly in Telugu or English.</p>
+                <p id="voice-first-action-sub">Click once to speak. Speak your problem clearly in Telugu, Hindi or English.</p>
               </div>
 
               <!-- Animated Audio Visualizer Bars -->
@@ -464,8 +510,8 @@
                 </div>
                 <div class="auto-detect-tags-row">
                   <div class="detect-tag-item">
-                    <span class="detect-label">శాఖ / Category:</span>
-                    <strong class="detect-val text-green" id="voice-first-category-disp">Water Supply (తాగునీటి సరఫరా)</strong>
+                    <span class="detect-label">శాఖ / Department:</span>
+                    <strong class="detect-val text-green" id="voice-first-category-disp">Water Supply (తాగునీరు)</strong>
                     <input type="hidden" id="voice-first-category" value="Water Supply">
                   </div>
                   <div class="detect-tag-item">
@@ -477,25 +523,23 @@
               </div>
             </div>
 
-            <!-- Zero Friction Village & Identity Section (All Optional / Defaulted) -->
+            <!-- Zero Friction Village, Locality & Identity Section (All Optional / Defaulted) -->
             <div class="voice-first-options-card">
               <div class="voice-options-grid">
                 
-                <!-- Village Selector (Default Rampur with Voice / 1-Tap Chips) -->
+                <!-- Locality in Rampur (Crucial for Village Map) -->
                 <div class="option-column">
-                  <label class="option-title"><i class="fa-solid fa-location-dot text-green"></i> మీ గ్రామం / Village:</label>
-                  <div class="village-chips-row">
-                    <button type="button" class="village-chip active" data-village="Rampur" onclick="selectVillageChip('Rampur')">
-                      <i class="fa-solid fa-check"></i> Rampur (రాంపూర్)
-                    </button>
-                    <button type="button" class="village-chip" data-village="Kalyanpur" onclick="selectVillageChip('Kalyanpur')">
-                      Kalyanpur
-                    </button>
-                    <button type="button" class="village-chip" data-village="Shivpur" onclick="selectVillageChip('Shivpur')">
-                      Shivpur
-                    </button>
-                  </div>
-                  <input type="hidden" id="voice-first-village" value="Rampur">
+                  <label for="voice-first-locality" class="option-title">
+                    <i class="fa-solid fa-map-pin text-green"></i> ప్రాంతం / Locality:
+                  </label>
+                  <select id="voice-first-locality" class="form-select">
+                    <option value="Ram Mandir Street">Ram Mandir Street (రామాలయం వీధి)</option>
+                    <option value="Zilla Parishad School Area">Zilla Parishad School Area (పాఠశాల ప్రాంతం)</option>
+                    <option value="North Colony">North Colony (ఉత్తర కాలనీ)</option>
+                    <option value="Weekly Market / Rythu Bazaar">Weekly Market / Rythu Bazaar (సంత ప్రాంతం)</option>
+                    <option value="South Bypass & Bus Stand">South Bypass & Bus Stand (బస్ స్టాండ్)</option>
+                    <option value="Gram Panchayat & Water Tank Center">Gram Panchayat & Water Tank Center (పంచాయతీ కేంద్రం)</option>
+                  </select>
                 </div>
 
                 <!-- Citizen Name (Optional / Anonymous by default) -->
@@ -503,8 +547,8 @@
                   <label for="voice-first-name" class="option-title">
                     <i class="fa-solid fa-user text-blue"></i> మీ పేరు / Name <span class="badge badge-neutral">ఐచ్ఛికం (Optional)</span>
                   </label>
-                  <input type="text" id="voice-first-name" class="form-input" placeholder="ఖాళీగా ఉంచవచ్చు (Defaults to Anonymous Villager / గ్రామస్థుడు)">
-                  <span class="form-hint">పేరు చెప్పకపోయినా ఫిర్యాదు నమోదవుతుంది (Anonymous complaints allowed).</span>
+                  <input type="text" id="voice-first-name" class="form-input" placeholder="ఖాళీగా ఉంచవచ్చు (Defaults to Anonymous Villager)">
+                  <span class="form-hint">పేరు చెప్పకపోయినా ఫిర్యాదు నమోదవుతుంది (Anonymous allowed).</span>
                 </div>
 
                 <!-- Mobile Number (Optional for callback/SMS) -->
@@ -513,7 +557,24 @@
                     <i class="fa-solid fa-phone text-amber"></i> ఫోన్ నంబర్ / Mobile <span class="badge badge-neutral">ఐచ్ఛికం (Optional)</span>
                   </label>
                   <input type="tel" id="voice-first-mobile" class="form-input" placeholder="e.g. 9876543210 (Only if you want SMS updates)">
-                  <span class="form-hint">SMS లేదా కాల్ ద్వారా తాజా సమాచారం కావాలంటే మాత్రమే ఇవ్వండి.</span>
+                  <span class="form-hint">SMS లేదా కాల్ ద్వారా సమాచారం కావాలంటే మాత్రమే ఇవ్వండి.</span>
+                </div>
+              </div>
+
+              <!-- FEATURE 4: Photo Evidence Upload -->
+              <div class="photo-upload-container mt-3">
+                <label class="option-title"><i class="fa-solid fa-camera text-teal"></i> ఫోటో రుజువు / Photo Evidence <span class="badge badge-neutral">ఐచ్ఛికం (Optional)</span></label>
+                <div class="photo-upload-box" id="voice-photo-dropzone">
+                  <input type="file" id="voice-photo-input" accept="image/png, image/jpeg" style="display: none;">
+                  <button type="button" class="btn btn-outline-secondary btn-sm" onclick="document.getElementById('voice-photo-input').click()">
+                    <i class="fa-solid fa-image"></i> Select / Capture Photo (ఫోటో ఎంచుకోండి)
+                  </button>
+                  <span class="text-muted font-sm ms-2">Supports JPG/PNG. Photos are compressed client-side.</span>
+                </div>
+                <!-- Preview area -->
+                <div id="voice-photo-preview-wrap" class="photo-preview-wrap mt-2" style="display: none;">
+                  <img id="voice-photo-preview" src="" alt="Photo evidence preview" class="photo-thumbnail">
+                  <button type="button" class="btn btn-sm btn-outline-danger ms-2" onclick="removeVoicePhoto()">&times; Remove Photo</button>
                 </div>
               </div>
             </div>
@@ -533,114 +594,6 @@
         </div>
 
         <!-- ========================================================
-             PANEL 2: ASSISTED / VOLUNTEER MODE (FOR HELPING OTHERS)
-             ======================================================== -->
-        <div id="mode-panel-assisted" class="mode-panel">
-          <div class="card assisted-mode-card">
-            <div class="assisted-mode-banner">
-              <div class="banner-icon-circle"><i class="fa-solid fa-hand-holding-hand"></i></div>
-              <div>
-                <h3>Assisted Grievance Registration / సహాయక నమోదు విధానం</h3>
-                <p>This mode is for village volunteers, youth, or family members assisting an illiterate elder or neighbor in registering a grievance.</p>
-              </div>
-            </div>
-
-            <form id="assisted-complaint-form">
-              <!-- Volunteer Details -->
-              <div class="form-section-title">
-                <i class="fa-solid fa-id-badge text-green"></i> 1. Volunteer / Assisting Person Information
-              </div>
-
-              <div class="form-row two-cols">
-                <div class="form-group">
-                  <label for="assisted-volunteer-name" class="form-label required">Volunteer / Family Member Name</label>
-                  <input type="text" id="assisted-volunteer-name" class="form-input" placeholder="e.g. Kalyan (Youth Volunteer)" required>
-                </div>
-                <div class="form-group">
-                  <label for="assisted-volunteer-role" class="form-label required">Your Role / Relationship</label>
-                  <select id="assisted-volunteer-role" class="form-select" required>
-                    <option value="Family Member">Family Member (Son, Daughter, Relative)</option>
-                    <option value="Panchayat Volunteer" selected>Panchayat Volunteer / ASHA Worker</option>
-                    <option value="Village Youth / Neighbor">Village Youth / Neighbor</option>
-                    <option value="MeeSeva Operator">MeeSeva / Common Service Operator</option>
-                    <option value="Other">Other Community Helper</option>
-                  </select>
-                </div>
-              </div>
-
-              <!-- Citizen Details -->
-              <div class="form-section-title mt-3">
-                <i class="fa-solid fa-user-tag text-blue"></i> 2. Citizen Details
-              </div>
-
-              <div class="form-row two-cols">
-                <div class="form-group">
-                  <label for="assisted-citizen-name" class="form-label">Citizen Name <span class="text-muted">(Optional - Can be Anonymous)</span></label>
-                  <input type="text" id="assisted-citizen-name" class="form-input" placeholder="e.g. Lachamma G. (Or leave blank for Anonymous)">
-                </div>
-                <div class="form-group">
-                  <label for="assisted-village" class="form-label required">Village</label>
-                  <input type="text" id="assisted-village" class="form-input" value="Rampur" required>
-                </div>
-              </div>
-
-              <div class="form-group">
-                <label for="assisted-mobile" class="form-label">Citizen Mobile Number <span class="text-muted">(Optional for SMS updates)</span></label>
-                <input type="tel" id="assisted-mobile" class="form-input" placeholder="e.g. 9848123456">
-              </div>
-
-              <!-- Problem Description (Voice or Text) -->
-              <div class="form-section-title mt-3">
-                <i class="fa-solid fa-microphone-lines text-amber"></i> 3. Problem Description (Voice or Typing)
-              </div>
-
-              <div class="assisted-voice-recorder-bar">
-                <button type="button" class="btn btn-outline-primary" id="btn-assisted-mic" onclick="toggleAssistedVoiceRecording()">
-                  <i class="fa-solid fa-microphone" id="assisted-mic-icon"></i> <span id="assisted-mic-label">Record Citizen's Voice</span>
-                </button>
-                <span class="text-muted font-sm">Ask the villager to speak, or type their words below.</span>
-              </div>
-
-              <div class="form-group mt-2">
-                <textarea id="assisted-desc" class="form-textarea" rows="4" placeholder="Describe or record the problem (e.g. Drinking water pump near temple has broken motor and water supply halted for 3 days)..." required></textarea>
-              </div>
-
-              <!-- Department & Urgency Confirmations -->
-              <div class="form-row two-cols mt-3">
-                <div class="form-group">
-                  <label for="assisted-category" class="form-label required">Category</label>
-                  <select id="assisted-category" class="form-select" required>
-                    <option value="Water Supply">Water Supply (తాగునీరు)</option>
-                    <option value="Roads">Roads (రహదారులు)</option>
-                    <option value="Electricity">Electricity & Lights (విద్యుత్)</option>
-                    <option value="Sanitation">Sanitation (పారిశుధ్యం)</option>
-                    <option value="Drainage">Drainage (మురుగు కాలువలు)</option>
-                    <option value="Other">Other Village Issue (ఇతర సమస్య)</option>
-                  </select>
-                </div>
-                <div class="form-group">
-                  <label for="assisted-priority" class="form-label required">Priority</label>
-                  <select id="assisted-priority" class="form-select" required>
-                    <option value="High">High (Urgent / Hazard)</option>
-                    <option value="Medium" selected>Medium (Standard Maintenance)</option>
-                    <option value="Low">Low (General Improvement)</option>
-                  </select>
-                </div>
-              </div>
-
-              <div class="form-actions-bar mt-4">
-                <button type="submit" class="btn btn-primary btn-xl">
-                  <i class="fa-solid fa-paper-plane"></i> Submit on Behalf of Citizen
-                </button>
-                <button type="reset" class="btn btn-outline-secondary">
-                  Reset
-                </button>
-              </div>
-            </form>
-          </div>
-        </div>
-
-        <!-- ========================================================
              PANEL 3: TEXT-BASED FALLBACK MODE (STANDARD TYPING)
              ======================================================== -->
         <div id="mode-panel-text" class="mode-panel">
@@ -649,7 +602,7 @@
               <i class="fa-solid fa-keyboard text-green"></i>
               <div>
                 <h4>Text Entry Fallback Mode</h4>
-                <p>Standard keyboard entry form if microphone or speech recognition is unavailable.</p>
+                <p>Standard keyboard entry form if microphone or speech recognition is unavailable on this device.</p>
               </div>
             </div>
 
@@ -660,8 +613,15 @@
                   <input type="text" id="fallback-name" class="form-input" placeholder="Leave blank for Anonymous Villager">
                 </div>
                 <div class="form-group">
-                  <label for="fallback-village" class="form-label required">Village</label>
-                  <input type="text" id="fallback-village" class="form-input" value="Rampur" required>
+                  <label for="fallback-locality" class="form-label required">Locality in Rampur</label>
+                  <select id="fallback-locality" class="form-select" required>
+                    <option value="Ram Mandir Street">Ram Mandir Street</option>
+                    <option value="Zilla Parishad School Area">Zilla Parishad School Area</option>
+                    <option value="North Colony">North Colony</option>
+                    <option value="Weekly Market / Rythu Bazaar">Weekly Market / Rythu Bazaar</option>
+                    <option value="South Bypass & Bus Stand">South Bypass & Bus Stand</option>
+                    <option value="Gram Panchayat & Water Tank Center">Gram Panchayat & Water Tank Center</option>
+                  </select>
                 </div>
               </div>
 
@@ -671,14 +631,14 @@
                   <input type="tel" id="fallback-mobile" class="form-input" placeholder="e.g. 9876543210">
                 </div>
                 <div class="form-group">
-                  <label for="fallback-category" class="form-label required">Category</label>
+                  <label for="fallback-category" class="form-label required">Category / Department</label>
                   <select id="fallback-category" class="form-select" required>
-                    <option value="Water Supply">Water Supply</option>
-                    <option value="Roads">Roads</option>
-                    <option value="Electricity">Electricity</option>
-                    <option value="Sanitation">Sanitation</option>
-                    <option value="Drainage">Drainage</option>
-                    <option value="Other">Other</option>
+                    <option value="Water Supply">Water Supply (తాగునీరు)</option>
+                    <option value="Roads">Roads (రహదారులు)</option>
+                    <option value="Electricity">Electricity & Lights (విద్యుత్)</option>
+                    <option value="Sanitation">Sanitation (పారిశుధ్యం)</option>
+                    <option value="Drainage">Drainage (మురుగు కాలువలు)</option>
+                    <option value="Other">Other Village Issue</option>
                   </select>
                 </div>
               </div>
@@ -691,10 +651,20 @@
               <div class="form-group">
                 <label for="fallback-priority" class="form-label required">Priority Level</label>
                 <select id="fallback-priority" class="form-select" required>
-                  <option value="High">High</option>
-                  <option value="Medium" selected>Medium</option>
-                  <option value="Low">Low</option>
+                  <option value="High">High (Urgent Hazard)</option>
+                  <option value="Medium" selected>Medium (Standard Maintenance)</option>
+                  <option value="Low">Low (General Request)</option>
                 </select>
+              </div>
+
+              <!-- Fallback photo upload -->
+              <div class="form-group">
+                <label class="form-label">Photo Evidence <span class="text-muted">(Optional)</span></label>
+                <input type="file" id="fallback-photo-input" accept="image/png, image/jpeg" class="form-input">
+                <div id="fallback-photo-preview-wrap" class="photo-preview-wrap mt-2" style="display: none;">
+                  <img id="fallback-photo-preview" src="" alt="Preview" class="photo-thumbnail">
+                  <button type="button" class="btn btn-sm btn-outline-danger ms-2" onclick="removeFallbackPhoto()">&times; Remove Photo</button>
+                </div>
               </div>
 
               <div class="form-actions-bar mt-4">
@@ -745,7 +715,10 @@
                 <span>Citizen (గ్రామస్థుడు):</span> <strong id="modal-citizen-name">Anonymous Villager</strong>
               </div>
               <div class="summary-line">
-                <span>Category (శాఖ):</span> <span id="modal-category-badge" class="badge badge-category">Water Supply</span>
+                <span>Locality (ప్రాంతం):</span> <strong id="modal-locality-disp">Ram Mandir Street</strong>
+              </div>
+              <div class="summary-line">
+                <span>Department (శాఖ):</span> <span id="modal-category-badge" class="badge badge-category">Water Supply</span>
               </div>
               <div class="summary-line">
                 <span>Priority (ప్రాధాన్యత):</span> <span id="modal-priority-badge" class="priority-badge priority-high">High</span>
@@ -770,27 +743,170 @@
     </section>
 
     <!-- ========================================================
-         VIEW 3: TRACK COMPLAINT
+         VIEW 3: DEDICATED VILLAGE VOLUNTEER ASSISTANCE MODE
+         ======================================================== -->
+    <section id="view-volunteer" class="view-panel">
+      <div class="container py-content">
+        <div class="page-header">
+          <div class="page-title-group">
+            <span class="badge badge-teal"><i class="fa-solid fa-hand-holding-hand"></i> Community Support</span>
+            <h2 class="page-title">Village Volunteer Assistance / వాలంటీర్ సహాయం</h2>
+            <p class="page-desc">
+              Dedicated portal for educated youth, panchayat volunteers, and ASHA workers to help illiterate or elderly villagers register grievances with photo evidence.
+            </p>
+          </div>
+          <button class="btn btn-outline-secondary" onclick="switchView('track')">
+            <i class="fa-solid fa-magnifying-glass"></i> Track Complaints
+          </button>
+        </div>
+
+        <div class="card assisted-mode-card">
+          <div class="assisted-mode-banner">
+            <div class="banner-icon-circle"><i class="fa-solid fa-hand-holding-hand"></i></div>
+            <div>
+              <h3>Assisted Grievance Registration / సహాయక నమోదు విధానం</h3>
+              <p>As a volunteer, you are helping bridge the digital divide. Enter your volunteer details and capture the villager's problem either by speaking or typing.</p>
+            </div>
+          </div>
+
+          <form id="volunteer-submission-form">
+            <!-- 1. Volunteer Details -->
+            <div class="form-section-title">
+              <i class="fa-solid fa-id-badge text-green"></i> 1. Volunteer / Assisting Person Information
+            </div>
+
+            <div class="form-row two-cols">
+              <div class="form-group">
+                <label for="vol-name" class="form-label required">Volunteer Name</label>
+                <input type="text" id="vol-name" class="form-input" placeholder="e.g. Kalyan Kumar (Youth Volunteer)" required>
+              </div>
+              <div class="form-group">
+                <label for="vol-role" class="form-label required">Volunteer Role / Designation</label>
+                <select id="vol-role" class="form-select" required>
+                  <option value="Panchayat Volunteer" selected>Panchayat Ward Volunteer</option>
+                  <option value="ASHA Worker">ASHA Worker / Health Volunteer</option>
+                  <option value="Village Youth">Educated Village Youth / Student</option>
+                  <option value="Family Member">Family Member / Relative</option>
+                  <option value="MeeSeva Operator">MeeSeva / Common Service Operator</option>
+                </select>
+              </div>
+            </div>
+
+            <!-- 2. Citizen Details -->
+            <div class="form-section-title mt-3">
+              <i class="fa-solid fa-user-tag text-blue"></i> 2. Citizen / Beneficiary Details
+            </div>
+
+            <div class="form-row two-cols">
+              <div class="form-group">
+                <label for="vol-citizen-name" class="form-label">Citizen Name <span class="text-muted">(Optional - Can be Anonymous)</span></label>
+                <input type="text" id="vol-citizen-name" class="form-input" placeholder="e.g. Lachamma G. (Or leave blank for Anonymous)">
+              </div>
+              <div class="form-group">
+                <label for="vol-locality" class="form-label required">Locality in Rampur</label>
+                <select id="vol-locality" class="form-select" required>
+                  <option value="Ram Mandir Street">Ram Mandir Street</option>
+                  <option value="Zilla Parishad School Area">Zilla Parishad School Area</option>
+                  <option value="North Colony">North Colony</option>
+                  <option value="Weekly Market / Rythu Bazaar">Weekly Market / Rythu Bazaar</option>
+                  <option value="South Bypass & Bus Stand" selected>South Bypass & Bus Stand</option>
+                  <option value="Gram Panchayat & Water Tank Center">Gram Panchayat & Water Tank Center</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="vol-mobile" class="form-label">Citizen Mobile Number <span class="text-muted">(Optional for SMS updates)</span></label>
+              <input type="tel" id="vol-mobile" class="form-input" placeholder="e.g. 9848123456">
+            </div>
+
+            <!-- 3. Problem Description (Voice or Text) -->
+            <div class="form-section-title mt-3">
+              <i class="fa-solid fa-microphone-lines text-amber"></i> 3. Problem Description (Voice or Typing)
+            </div>
+
+            <div class="assisted-voice-recorder-bar">
+              <button type="button" class="btn btn-outline-primary" id="btn-vol-mic" onclick="toggleVolunteerVoiceRecording()">
+                <i class="fa-solid fa-microphone" id="vol-mic-icon"></i> <span id="vol-mic-label">Record Citizen's Voice (మాట్లాడించండి)</span>
+              </button>
+              <span class="text-muted font-sm">Tap to let the villager speak naturally into your device.</span>
+            </div>
+
+            <div class="form-group mt-2">
+              <textarea id="vol-desc" class="form-textarea" rows="4" placeholder="Describe or record the problem (e.g. Road potholes near bypass after heavy rain)..." required></textarea>
+            </div>
+
+            <!-- 4. Department & Priority -->
+            <div class="form-row two-cols mt-3">
+              <div class="form-group">
+                <label for="vol-category" class="form-label required">Department / Category</label>
+                <select id="vol-category" class="form-select" required>
+                  <option value="Water Supply">Water Supply (తాగునీరు)</option>
+                  <option value="Roads" selected>Roads (రహదారులు)</option>
+                  <option value="Electricity">Electricity & Lights (విద్యుత్)</option>
+                  <option value="Sanitation">Sanitation (పారిశుధ్యం)</option>
+                  <option value="Drainage">Drainage (మురుగు కాలువలు)</option>
+                  <option value="Other">Other Village Issue</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label for="vol-priority" class="form-label required">Priority Level</label>
+                <select id="vol-priority" class="form-select" required>
+                  <option value="High">High (Urgent / Safety Hazard)</option>
+                  <option value="Medium" selected>Medium (Standard Maintenance)</option>
+                  <option value="Low">Low (General Request)</option>
+                </select>
+              </div>
+            </div>
+
+            <!-- 5. Photo Attachment -->
+            <div class="form-group mt-3">
+              <label class="form-label"><i class="fa-solid fa-camera text-teal"></i> Attach Photo Evidence <span class="text-muted">(Optional)</span></label>
+              <input type="file" id="vol-photo-input" accept="image/png, image/jpeg" class="form-input">
+              <div id="vol-photo-preview-wrap" class="photo-preview-wrap mt-2" style="display: none;">
+                <img id="vol-photo-preview" src="" alt="Preview" class="photo-thumbnail">
+                <button type="button" class="btn btn-sm btn-outline-danger ms-2" onclick="removeVolunteerPhoto()">&times; Remove Photo</button>
+              </div>
+            </div>
+
+            <div class="form-actions-bar mt-4">
+              <button type="submit" class="btn btn-primary btn-xl">
+                <i class="fa-solid fa-paper-plane"></i> Submit on Behalf of Citizen
+              </button>
+              <button type="reset" class="btn btn-outline-secondary">
+                Reset Form
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========================================================
+         VIEW 4: TRACK COMPLAINT (4-STAGE STEPPER & FEEDBACK)
          ======================================================== -->
     <section id="view-track" class="view-panel">
       <div class="container py-content">
         <div class="page-header">
           <div class="page-title-group">
-            <span class="badge badge-primary"><i class="fa-solid fa-magnifying-glass-location"></i> Module 2</span>
-            <h2 class="page-title">Complaint Tracking System</h2>
-            <p class="page-desc">Check the real-time status, timeline, and official panchayat action notes for any submitted village grievance.</p>
+            <span class="badge badge-primary"><i class="fa-solid fa-magnifying-glass-location"></i> Live Tracking</span>
+            <h2 class="page-title">Complaint Tracking & Resolution Status</h2>
+            <p class="page-desc">Check the real-time 4-stage status, listen to spoken updates, inspect photo evidence, and submit citizen satisfaction ratings.</p>
           </div>
           <button class="btn btn-outline-secondary" onclick="switchView('complaint')">
             <i class="fa-solid fa-plus"></i> Submit New Complaint
           </button>
         </div>
 
-        <!-- Search Box Card -->
+        <!-- Search Box Card with Voice Search -->
         <div class="card tracking-search-card">
           <form id="tracking-search-form" class="tracking-search-form">
             <div class="search-input-group">
               <i class="fa-solid fa-ticket search-prefix-icon"></i>
               <input type="text" id="track-id-input" class="search-input" placeholder="Enter Complaint ID (e.g., GV-2026-001)" autocomplete="off" required>
+              <button type="button" class="btn btn-outline-secondary btn-voice-search" id="btn-track-voice-search" onclick="startVoiceSearchTrackId()" title="Speak Complaint ID">
+                <i class="fa-solid fa-microphone"></i> <span>Voice Search</span>
+              </button>
               <button type="submit" class="btn btn-primary btn-search">
                 <i class="fa-solid fa-magnifying-glass"></i> Track Status
               </button>
@@ -801,12 +917,12 @@
           <div class="quick-samples-row">
             <span class="samples-label"><i class="fa-solid fa-hand-pointer"></i> Try Sample Complaints:</span>
             <div class="sample-pills" id="sample-complaint-pills">
-              <!-- Dynamically populated sample buttons -->
-              <button type="button" class="sample-pill-btn" data-id="GV-2026-001">GV-2026-001 (Water)</button>
-              <button type="button" class="sample-pill-btn" data-id="GV-2026-002">GV-2026-002 (Electric)</button>
-              <button type="button" class="sample-pill-btn" data-id="GV-2026-003">GV-2026-003 (Roads)</button>
-              <button type="button" class="sample-pill-btn" data-id="GV-2026-004">GV-2026-004 (Resolved)</button>
+              <button type="button" class="sample-pill-btn" data-id="GV-2026-001">GV-2026-001 (Water Leak)</button>
+              <button type="button" class="sample-pill-btn" data-id="GV-2026-002">GV-2026-002 (Electric Spark)</button>
+              <button type="button" class="sample-pill-btn" data-id="GV-2026-003">GV-2026-003 (Volunteer-Roads)</button>
+              <button type="button" class="sample-pill-btn" data-id="GV-2026-004">GV-2026-004 (Resolved & Rated)</button>
               <button type="button" class="sample-pill-btn" data-id="GV-2026-005">GV-2026-005 (Drainage)</button>
+              <button type="button" class="sample-pill-btn" data-id="GV-2026-006">GV-2026-006 (Duplicate Alert)</button>
             </div>
           </div>
         </div>
@@ -817,7 +933,7 @@
           <div class="empty-state-card" id="tracking-empty-state">
             <div class="empty-icon"><i class="fa-solid fa-file-circle-question"></i></div>
             <h3>No Complaint Selected Yet</h3>
-            <p>Enter your Complaint ID in the search box above or click any sample ID button to view its current timeline, inspection notes, and redressal stage.</p>
+            <p>Enter your Complaint ID above or click any sample ID button to view its current 4-stage timeline, inspection notes, and redressal progress.</p>
           </div>
 
           <!-- Error Alert (Complaint Not Found) -->
@@ -836,10 +952,11 @@
                 <span class="track-id-text" id="track-disp-id">GV-2026-001</span>
                 <span class="badge badge-category" id="track-disp-category">Water Supply</span>
                 <span class="priority-badge" id="track-disp-priority">High Priority</span>
+                <span class="badge badge-neutral" id="track-disp-submission-type">Direct Citizen</span>
               </div>
               <div class="track-status-pill-wrap">
                 <span class="status-indicator-badge status-in-progress" id="track-disp-status">
-                  <i class="fa-solid fa-spinner fa-spin" id="track-status-icon"></i>
+                  <i class="fa-solid fa-person-digging" id="track-status-icon"></i>
                   <span id="track-status-text">In Progress</span>
                 </span>
                 <button type="button" class="btn btn-sm btn-speak-status" id="btn-read-track-status" onclick="speakCurrentTrackingStatus()" title="Listen to status aloud">
@@ -848,38 +965,38 @@
               </div>
             </div>
 
-            <!-- Stepper Progress Bar -->
+            <!-- Stepper Progress Bar (4 Stages: Submitted -> Under Review -> In Progress -> Resolved) -->
             <div class="stepper-container">
-              <div class="stepper-progress-bar" id="stepper-progress-bar" style="width: 50%;"></div>
+              <div class="stepper-progress-bar" id="stepper-progress-bar" style="width: 75%;"></div>
               
               <div class="step-point" id="step-point-1">
                 <div class="step-point-dot"><i class="fa-solid fa-check"></i></div>
                 <div class="step-point-label">
-                  <strong>Registered</strong>
-                  <span id="step-date-registered">2026-11-06</span>
+                  <strong>1. Submitted</strong>
+                  <span id="step-date-registered">06 Nov 2026</span>
                 </div>
               </div>
 
               <div class="step-point" id="step-point-2">
                 <div class="step-point-dot"><i class="fa-solid fa-check"></i></div>
                 <div class="step-point-label">
-                  <strong>Reviewed</strong>
-                  <span>By Local Panchayat</span>
+                  <strong>2. Under Review</strong>
+                  <span>Panchayat Verified</span>
                 </div>
               </div>
 
               <div class="step-point" id="step-point-3">
                 <div class="step-point-dot"><i class="fa-solid fa-spinner"></i></div>
                 <div class="step-point-label">
-                  <strong>In Progress</strong>
-                  <span>Field Team Assigned</span>
+                  <strong>3. In Progress</strong>
+                  <span>Work Underway</span>
                 </div>
               </div>
 
               <div class="step-point" id="step-point-4">
                 <div class="step-point-dot"><i class="fa-solid fa-circle"></i></div>
                 <div class="step-point-label">
-                  <strong>Resolved</strong>
+                  <strong>4. Resolved</strong>
                   <span id="step-resolved-note">Pending Work</span>
                 </div>
               </div>
@@ -888,12 +1005,12 @@
             <!-- Detailed Grid Information -->
             <div class="track-details-grid">
               <div class="track-meta-item">
-                <span class="meta-label"><i class="fa-solid fa-user"></i> Citizen Name</span>
+                <span class="meta-label"><i class="fa-solid fa-user"></i> Citizen / Reporter</span>
                 <span class="meta-value" id="track-disp-citizen">Ramu Yadav</span>
               </div>
               <div class="track-meta-item">
-                <span class="meta-label"><i class="fa-solid fa-location-dot"></i> Village</span>
-                <span class="meta-value" id="track-disp-village">Rampur</span>
+                <span class="meta-label"><i class="fa-solid fa-map-pin"></i> Locality</span>
+                <span class="meta-value" id="track-disp-locality">Ram Mandir Street</span>
               </div>
               <div class="track-meta-item">
                 <span class="meta-label"><i class="fa-solid fa-calendar-day"></i> Submission Date</span>
@@ -901,7 +1018,7 @@
               </div>
               <div class="track-meta-item">
                 <span class="meta-label"><i class="fa-solid fa-microphone"></i> Channel</span>
-                <span class="meta-value" id="track-disp-method">Voice Recognition</span>
+                <span class="meta-value" id="track-disp-method">Voice-First Mode</span>
               </div>
             </div>
 
@@ -911,6 +1028,15 @@
               <p id="track-disp-description" class="track-desc-content">
                 Main drinking water pipeline near Ram temple has severe leakage for 3 days. Water is overflowing into the street and houses are receiving low pressure.
               </p>
+            </div>
+
+            <!-- Photo Evidence Preview in Tracking (FEATURE 4) -->
+            <div class="track-photo-box" id="track-photo-box" style="display: none;">
+              <h4><i class="fa-solid fa-camera"></i> Attached Photo Evidence</h4>
+              <div class="track-photo-container">
+                <img id="track-photo-img" src="" alt="Photo Evidence" class="track-evidence-img" onclick="openPhotoViewerModal(this.src)">
+                <span class="font-sm text-muted d-block mt-1">Click photo to view enlarged.</span>
+              </div>
             </div>
 
             <!-- Official Status Update Box -->
@@ -924,14 +1050,55 @@
               </div>
               <div class="official-update-body">
                 <p id="track-disp-status-message">
-                  Panchayat lineman and water board contractor inspected the valve. Replacement pipe segment has been procured; repairs underway.
+                  Panchayat lineman and water board contractor inspected the valve. Replacement pipe segment procured; repairs underway.
                 </p>
+              </div>
+            </div>
+
+            <!-- FEATURE 7: Citizen Resolution Feedback Box (Visible only when Resolved) -->
+            <div id="track-feedback-section" class="track-feedback-box mt-3" style="display: none;">
+              <div class="feedback-header">
+                <i class="fa-solid fa-star text-amber"></i>
+                <div>
+                  <strong>Citizen Resolution Feedback (మీ అభిప్రాయం)</strong>
+                  <p class="font-sm text-muted mb-0">Help us improve village administration. How satisfied are you with this resolution?</p>
+                </div>
+              </div>
+
+              <!-- Unsubmitted Feedback Form -->
+              <div id="feedback-form-container" class="mt-3">
+                <div class="star-rating-widget" id="star-rating-widget">
+                  <span class="star-btn" data-rating="1" onclick="selectFeedbackStar(1)">★</span>
+                  <span class="star-btn" data-rating="2" onclick="selectFeedbackStar(2)">★</span>
+                  <span class="star-btn" data-rating="3" onclick="selectFeedbackStar(3)">★</span>
+                  <span class="star-btn" data-rating="4" onclick="selectFeedbackStar(4)">★</span>
+                  <span class="star-btn" data-rating="5" onclick="selectFeedbackStar(5)">★</span>
+                  <span class="rating-label-disp" id="feedback-rating-label">Tap stars to rate</span>
+                </div>
+                <input type="hidden" id="selected-star-rating" value="5">
+
+                <div class="feedback-comment-row mt-2">
+                  <textarea id="feedback-comment-input" class="form-textarea" rows="2" placeholder="Optional comments (e.g. Work was completed quickly and cleanly)..."></textarea>
+                  <button type="button" class="btn btn-sm btn-outline-primary mt-2" onclick="toggleFeedbackVoice()">
+                    <i class="fa-solid fa-microphone"></i> Speak Feedback
+                  </button>
+                  <button type="button" class="btn btn-primary btn-sm mt-2 ms-2" onclick="submitCitizenFeedback()">
+                    <i class="fa-solid fa-paper-plane"></i> Submit Rating
+                  </button>
+                </div>
+              </div>
+
+              <!-- Submitted Feedback Display -->
+              <div id="feedback-submitted-display" class="feedback-submitted-badge mt-3" style="display: none;">
+                <span class="text-green"><i class="fa-solid fa-circle-check"></i> Thank you! Your feedback has been recorded:</span>
+                <div class="stars-gold-disp mt-1" id="submitted-stars-disp">★★★★★</div>
+                <p class="font-sm text-muted mt-1 mb-0" id="submitted-feedback-text">"Prompt work done by panchayat team."</p>
               </div>
             </div>
 
             <!-- Quick Action: Jump to Admin to test status change -->
             <div class="track-footer-admin-link">
-              <span>Are you testing the prototype as an admin?</span>
+              <span>Are you demonstrating the prototype as an admin?</span>
               <a href="#admin" class="btn btn-sm btn-outline-primary" onclick="switchView('admin'); highlightComplaintInAdmin(document.getElementById('track-disp-id').textContent);">
                 <i class="fa-solid fa-pen-to-square"></i> Update Status in Admin Dashboard
               </a>
@@ -942,395 +1109,72 @@
     </section>
 
     <!-- ========================================================
-         VIEW 4: VILLAGE EDUCATION DIRECTORY
+         VIEW 5: VILLAGE ISSUES MAP (LOCALITY HEATMAP)
          ======================================================== -->
-    <section id="view-education" class="view-panel">
+    <section id="view-map" class="view-panel">
       <div class="container py-content">
         <div class="page-header">
           <div class="page-title-group">
-            <span class="badge badge-primary"><i class="fa-solid fa-graduation-cap"></i> Module 3</span>
-            <h2 class="page-title">Village Education & Mentorship Directory</h2>
-            <p class="page-desc">Discover educated villagers, teachers, engineers, and graduates willing to guide school students, provide career advice, and support community learning.</p>
+            <span class="badge badge-primary"><i class="fa-solid fa-map-location-dot"></i> Village Locality Map</span>
+            <h2 class="page-title">Village Issues Map / గ్రామ సమస్యల మ్యాప్</h2>
+            <p class="page-desc">
+              Visual geographical breakdown of civic issues across the 6 major localities of Village Rampur. Click any locality card to filter and inspect local grievances.
+            </p>
           </div>
-          <button class="btn btn-primary" id="btn-toggle-edu-form">
-            <i class="fa-solid fa-user-plus"></i> Register Your Education Profile
+          <button class="btn btn-primary" onclick="switchView('complaint')">
+            <i class="fa-solid fa-plus"></i> Report Issue in My Locality
           </button>
         </div>
 
-        <!-- Voluntary Registration Form Card (Collapsible) -->
-        <div id="edu-registration-card" class="card form-collapsible-card" style="display: none;">
-          <div class="card-header-with-close">
-            <div class="card-title-sub">
-              <i class="fa-solid fa-user-graduate text-green"></i>
-              <h3>Voluntary Education Profile Registration</h3>
-            </div>
-            <button type="button" class="icon-btn-sm" id="btn-close-edu-form" aria-label="Close form">&times;</button>
-          </div>
-          <p class="card-subtext">Share your knowledge with your village students. Your phone number is kept private by default unless you choose to make it public.</p>
-
-          <form id="edu-register-form">
-            <input type="hidden" id="edu-edit-id" value="">
-            <div class="form-row two-cols">
-              <div class="form-group">
-                <label for="edu-name" class="form-label required">Full Name</label>
-                <input type="text" id="edu-name" class="form-input" placeholder="e.g. Ramesh Kumar Varma" required>
-              </div>
-              <div class="form-group">
-                <label for="edu-village" class="form-label required">Village Name</label>
-                <input type="text" id="edu-village" class="form-input" value="Rampur" required>
-              </div>
-            </div>
-
-            <div class="form-row two-cols">
-              <div class="form-group">
-                <label for="edu-qualification" class="form-label required">Educational Qualification</label>
-                <select id="edu-qualification" class="form-select" required>
-                  <option value="10th">10th Class / SSC</option>
-                  <option value="Intermediate">Intermediate (10+2)</option>
-                  <option value="Diploma">Diploma / Polytechnic</option>
-                  <option value="Degree">Degree (B.Sc, B.A, B.Com)</option>
-                  <option value="B.Tech / Engineering" selected>B.Tech / Engineering</option>
-                  <option value="Postgraduate">Postgraduate (M.Tech, M.Sc, MBA, MBBS)</option>
-                  <option value="Other">Other Qualification</option>
-                </select>
-              </div>
-              <div class="form-group">
-                <label for="edu-field" class="form-label required">Education Field / Specialization</label>
-                <select id="edu-field" class="form-select" required>
-                  <option value="Computer Science" selected>Computer Science & IT</option>
-                  <option value="Engineering">Engineering (Civil/Mech/Elec)</option>
-                  <option value="Agriculture">Agriculture & Farming Science</option>
-                  <option value="Science">Science & Mathematics</option>
-                  <option value="Arts">Arts & Humanities</option>
-                  <option value="Commerce">Commerce & Accounting</option>
-                  <option value="Education">Education & Teaching</option>
-                  <option value="Healthcare">Healthcare & Medicine</option>
-                  <option value="Other">Other Specialization</option>
-                </select>
-              </div>
-            </div>
-
-            <div class="form-row two-cols">
-              <div class="form-group">
-                <label for="edu-occupation" class="form-label required">Current Occupation</label>
-                <input type="text" id="edu-occupation" class="form-input" placeholder="e.g. Software Developer / High School Teacher" required>
-              </div>
-              <div class="form-group">
-                <label for="edu-languages" class="form-label required">Languages Known</label>
-                <input type="text" id="edu-languages" class="form-input" placeholder="e.g. Telugu, English, Hindi" required>
-              </div>
-            </div>
-
-            <div class="form-group">
-              <label for="edu-skills" class="form-label required">Skills & Knowledge Areas (Comma separated)</label>
-              <input type="text" id="edu-skills" class="form-input" placeholder="e.g. Python, School Maths, Career Guidance, Science Projects" required>
-              <span class="form-hint">List subjects or skills you can help village youth or students learn.</span>
-            </div>
-
-            <!-- Mentorship Availability Checkbox -->
-            <div class="form-checkbox-card">
-              <label class="custom-checkbox-label">
-                <input type="checkbox" id="edu-mentor-willing" checked>
-                <span class="checkbox-box"></span>
-                <span class="checkbox-text">
-                  <strong>🌟 Willing to guide students & other villagers</strong>
-                  <span class="text-muted d-block">Check this if village students can approach you for academic questions or career advice.</span>
-                </span>
-              </label>
-            </div>
-
-            <!-- Contact & Privacy Option -->
-            <div class="form-row two-cols mt-3">
-              <div class="form-group">
-                <label for="edu-contact" class="form-label">Contact Details <span class="text-muted">(Phone or Email)</span></label>
-                <input type="text" id="edu-contact" class="form-input" placeholder="e.g. 9848012345 or ramesh@example.com">
-              </div>
-              <div class="form-group">
-                <label class="form-label">Contact Privacy Control</label>
-                <div class="privacy-toggle-box">
-                  <label class="custom-checkbox-label">
-                    <input type="checkbox" id="edu-privacy-public">
-                    <span class="checkbox-box"></span>
-                    <span class="checkbox-text">
-                      <strong>Make contact publicly visible</strong>
-                      <span class="privacy-note">By default, contacts remain private to prevent spam. If unchecked, villagers request guidance through GramVani admin.</span>
-                    </span>
-                  </label>
-                </div>
-              </div>
-            </div>
-
-            <div class="form-actions-bar mt-3">
-              <button type="submit" class="btn btn-primary btn-lg" id="btn-save-edu">
-                <i class="fa-solid fa-floppy-disk"></i> Save Education Profile
-              </button>
-              <button type="button" class="btn btn-outline-secondary" id="btn-cancel-edu">
-                Cancel
-              </button>
-            </div>
-          </form>
-        </div>
-
-        <!-- Filter & Search Toolbar -->
-        <div class="card filter-toolbar-card">
-          <div class="filter-grid">
-            <div class="filter-item search-filter">
-              <label for="edu-search"><i class="fa-solid fa-magnifying-glass"></i> Search Name or Skill</label>
-              <input type="text" id="edu-search" class="form-input-sm" placeholder="Search by name, skill, subject...">
-            </div>
-            <div class="filter-item">
-              <label for="edu-filter-qual"><i class="fa-solid fa-certificate"></i> Qualification</label>
-              <select id="edu-filter-qual" class="form-select-sm">
-                <option value="ALL">All Qualifications</option>
-                <option value="10th">10th Class</option>
-                <option value="Intermediate">Intermediate</option>
-                <option value="Diploma">Diploma</option>
-                <option value="Degree">Degree</option>
-                <option value="B.Tech / Engineering">B.Tech / Engineering</option>
-                <option value="Postgraduate">Postgraduate</option>
-                <option value="Other">Other</option>
-              </select>
-            </div>
-            <div class="filter-item">
-              <label for="edu-filter-field"><i class="fa-solid fa-book-open"></i> Field</label>
-              <select id="edu-filter-field" class="form-select-sm">
-                <option value="ALL">All Fields</option>
-                <option value="Computer Science">Computer Science</option>
-                <option value="Engineering">Engineering</option>
-                <option value="Agriculture">Agriculture</option>
-                <option value="Science">Science & Maths</option>
-                <option value="Arts">Arts</option>
-                <option value="Commerce">Commerce</option>
-                <option value="Education">Education</option>
-                <option value="Healthcare">Healthcare</option>
-                <option value="Other">Other</option>
-              </select>
-            </div>
-            <div class="filter-item">
-              <label for="edu-filter-mentor"><i class="fa-solid fa-hands-holding-child"></i> Mentorship</label>
-              <select id="edu-filter-mentor" class="form-select-sm">
-                <option value="ALL">All Profiles</option>
-                <option value="YES">Willing to Guide Students Only</option>
-              </select>
-            </div>
-          </div>
-          <div class="filter-stats-bar">
-            <span id="edu-results-count">Showing 5 profiles</span>
-            <button type="button" class="btn-text-clear" id="btn-reset-edu-filters">
-              <i class="fa-solid fa-filter-circle-xmark"></i> Reset Filters
-            </button>
-          </div>
-        </div>
-
-        <!-- Directory Profiles Grid -->
-        <div class="profiles-grid mt-4" id="edu-profiles-grid">
-          <!-- Populated dynamically via JS -->
-        </div>
-      </div>
-    </section>
-
-    <!-- ========================================================
-         VIEW 5: VILLAGE SKILLS DIRECTORY
-         ======================================================== -->
-    <section id="view-skills" class="view-panel">
-      <div class="container py-content">
-        <div class="page-header">
-          <div class="page-title-group">
-            <span class="badge badge-primary"><i class="fa-solid fa-screwdriver-wrench"></i> Module 4</span>
-            <h2 class="page-title">Village Skills & Services Directory</h2>
-            <p class="page-desc">Connect with skilled tradesmen and service providers in your village. Hire local electricians, plumbers, tailors, carpenters, and technicians.</p>
-          </div>
-          <button class="btn btn-primary" id="btn-toggle-skill-form">
-            <i class="fa-solid fa-hammer"></i> Register Your Skill
-          </button>
-        </div>
-
-        <!-- Voluntary Registration Form Card (Collapsible) -->
-        <div id="skill-registration-card" class="card form-collapsible-card" style="display: none;">
-          <div class="card-header-with-close">
-            <div class="card-title-sub">
-              <i class="fa-solid fa-tools text-green"></i>
-              <h3>Voluntary Skills Registration</h3>
-            </div>
-            <button type="button" class="icon-btn-sm" id="btn-close-skill-form" aria-label="Close form">&times;</button>
-          </div>
-          <p class="card-subtext">List your technical or practical trade to let neighbors hire your services. Your contact info is private by default unless you choose to display it.</p>
-
-          <form id="skill-register-form">
-            <input type="hidden" id="skill-edit-id" value="">
-            <div class="form-row two-cols">
-              <div class="form-group">
-                <label for="skill-name" class="form-label required">Full Name</label>
-                <input type="text" id="skill-name" class="form-input" placeholder="e.g. M. Satyanarayana" required>
-              </div>
-              <div class="form-group">
-                <label for="skill-village" class="form-label required">Village Name</label>
-                <input type="text" id="skill-village" class="form-input" value="Rampur" required>
-              </div>
-            </div>
-
-            <div class="form-row two-cols">
-              <div class="form-group">
-                <label for="skill-category" class="form-label required">Skill Category</label>
-                <select id="skill-category" class="form-select" required>
-                  <option value="Electrician" selected>Electrician (ఎలక్ట్రీషియన్)</option>
-                  <option value="Plumber">Plumber (ప్లంబర్)</option>
-                  <option value="Carpenter">Carpenter (వడ్రంగి)</option>
-                  <option value="Tailor">Tailor (దర్జీ)</option>
-                  <option value="Mechanic">Mechanic (మెకానిక్)</option>
-                  <option value="Farmer">Farmer / Agri-Specialist (రైతు)</option>
-                  <option value="Computer Operator">Computer Operator / MeeSeva (కంప్యూటర్)</option>
-                  <option value="Teacher / Tutor">Teacher / Tutor (ఉపాధ్యాయుడు)</option>
-                  <option value="Healthcare Worker">Healthcare Worker / ASHA (వైద్య సిబ్బంది)</option>
-                  <option value="Other">Other Skill (ఇతర వృత్తి)</option>
-                </select>
-              </div>
-              <div class="form-group">
-                <label for="skill-experience" class="form-label required">Years of Experience</label>
-                <input type="text" id="skill-experience" class="form-input" placeholder="e.g. 8 years in home wiring" required>
-              </div>
-            </div>
-
-            <div class="form-group">
-              <label for="skill-specific" class="form-label required">Specific Skills & Services Offered</label>
-              <input type="text" id="skill-specific" class="form-input" placeholder="e.g. Submersible pump repair, house wiring, ceiling fan installation" required>
-            </div>
-
-            <div class="form-row two-cols">
-              <div class="form-group">
-                <label for="skill-availability" class="form-label required">Availability</label>
-                <input type="text" id="skill-availability" class="form-input" placeholder="e.g. Daily 8 AM - 7 PM, On-call, Weekends" required>
-              </div>
-              <div class="form-group">
-                <label for="skill-languages" class="form-label required">Languages Known</label>
-                <input type="text" id="skill-languages" class="form-input" placeholder="e.g. Telugu, Hindi" required>
-              </div>
-            </div>
-
-            <!-- Contact & Privacy Option -->
-            <div class="form-row two-cols mt-3">
-              <div class="form-group">
-                <label for="skill-contact" class="form-label">Contact Details <span class="text-muted">(Phone or Address)</span></label>
-                <input type="text" id="skill-contact" class="form-input" placeholder="e.g. 9849123456 or Main Bazaar, Rampur">
-              </div>
-              <div class="form-group">
-                <label class="form-label">Contact Privacy Control</label>
-                <div class="privacy-toggle-box">
-                  <label class="custom-checkbox-label">
-                    <input type="checkbox" id="skill-privacy-public">
-                    <span class="checkbox-box"></span>
-                    <span class="checkbox-text">
-                      <strong>Make contact publicly visible</strong>
-                      <span class="privacy-note">Default is private. If unchecked, neighbors can send an in-app service request.</span>
-                    </span>
-                  </label>
-                </div>
-              </div>
-            </div>
-
-            <div class="form-actions-bar mt-3">
-              <button type="submit" class="btn btn-primary btn-lg" id="btn-save-skill">
-                <i class="fa-solid fa-floppy-disk"></i> Save Skill Profile
-              </button>
-              <button type="button" class="btn btn-outline-secondary" id="btn-cancel-skill">
-                Cancel
-              </button>
-            </div>
-          </form>
-        </div>
-
-        <!-- Filter & Search Toolbar -->
-        <div class="card filter-toolbar-card">
-          <div class="filter-grid">
-            <div class="filter-item search-filter">
-              <label for="skill-search"><i class="fa-solid fa-magnifying-glass"></i> Search Name or Trade</label>
-              <input type="text" id="skill-search" class="form-input-sm" placeholder="Search by name, skill, trade...">
-            </div>
-            <div class="filter-item">
-              <label for="skill-filter-cat"><i class="fa-solid fa-briefcase"></i> Skill Category</label>
-              <select id="skill-filter-cat" class="form-select-sm">
-                <option value="ALL">All Categories</option>
-                <option value="Electrician">Electrician</option>
-                <option value="Plumber">Plumber</option>
-                <option value="Carpenter">Carpenter</option>
-                <option value="Tailor">Tailor</option>
-                <option value="Mechanic">Mechanic</option>
-                <option value="Farmer">Farmer</option>
-                <option value="Computer Operator">Computer Operator</option>
-                <option value="Teacher / Tutor">Teacher / Tutor</option>
-                <option value="Healthcare Worker">Healthcare Worker</option>
-                <option value="Other">Other</option>
-              </select>
-            </div>
-            <div class="filter-item">
-              <label for="skill-filter-village"><i class="fa-solid fa-location-dot"></i> Village</label>
-              <select id="skill-filter-village" class="form-select-sm">
-                <option value="ALL">All Villages</option>
-                <option value="Rampur" selected>Rampur</option>
-              </select>
-            </div>
-          </div>
-          <div class="filter-stats-bar">
-            <span id="skill-results-count">Showing 5 skilled workers</span>
-            <button type="button" class="btn-text-clear" id="btn-reset-skill-filters">
-              <i class="fa-solid fa-filter-circle-xmark"></i> Reset Filters
-            </button>
-          </div>
-        </div>
-
-        <!-- Skills Cards Grid -->
-        <div class="profiles-grid mt-4" id="skill-profiles-grid">
+        <!-- Locality Map Grid -->
+        <div class="village-map-grid" id="village-map-grid">
           <!-- Populated dynamically via JS -->
         </div>
 
-        <!-- Send Service Request Modal -->
-        <div id="service-request-modal" class="modal-overlay" style="display: none;" role="dialog" aria-modal="true" aria-labelledby="modal-request-title">
-          <div class="modal-card">
-            <div class="modal-icon-header text-green">
-              <i class="fa-solid fa-paper-plane"></i>
+        <!-- Locality Filtered Complaints Container -->
+        <div class="card locality-drilldown-card mt-4" id="locality-drilldown-container">
+          <div class="drilldown-header">
+            <div>
+              <h3 id="drilldown-locality-title"><i class="fa-solid fa-location-crosshairs text-green"></i> All Rampur Localities</h3>
+              <p class="font-sm text-muted mb-0" id="drilldown-locality-subtitle">Showing all active and resolved complaints across Rampur.</p>
             </div>
-            <h3 id="modal-request-title">Request Service from <span id="request-target-name">Worker</span></h3>
-            <p class="modal-lead">Send a service inquiry. The worker or community coordinator will be notified.</p>
+            <button type="button" class="btn btn-sm btn-outline-secondary" onclick="resetLocalityMapFilter()">
+              <i class="fa-solid fa-rotate-left"></i> View All Localities
+            </button>
+          </div>
 
-            <form id="service-request-form">
-              <input type="hidden" id="request-worker-id">
-              <div class="form-group text-start">
-                <label for="request-citizen-name" class="form-label required">Your Name</label>
-                <input type="text" id="request-citizen-name" class="form-input" placeholder="e.g. Venkata Rao" required>
-              </div>
-              <div class="form-group text-start">
-                <label for="request-citizen-phone" class="form-label required">Your Contact Number</label>
-                <input type="tel" id="request-citizen-phone" class="form-input" placeholder="e.g. 9876543210" required>
-              </div>
-              <div class="form-group text-start">
-                <label for="request-work-desc" class="form-label required">Work Needed</label>
-                <textarea id="request-work-desc" class="form-textarea" rows="3" placeholder="Describe the repair or service needed (e.g., Submersible pump is not turning on)..." required></textarea>
-              </div>
-
-              <div class="modal-actions">
-                <button type="submit" class="btn btn-primary">
-                  <i class="fa-solid fa-paper-plane"></i> Send Inquiry
-                </button>
-                <button type="button" class="btn btn-outline-secondary" id="btn-close-request-modal">
-                  Cancel
-                </button>
-              </div>
-            </form>
+          <div class="table-responsive mt-3">
+            <table class="data-table" id="locality-complaints-table">
+              <thead>
+                <tr>
+                  <th>ID</th>
+                  <th>Locality</th>
+                  <th>Category</th>
+                  <th>Description</th>
+                  <th>Priority</th>
+                  <th>Status</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody id="locality-complaints-tbody">
+                <!-- Injected via JS -->
+              </tbody>
+            </table>
           </div>
         </div>
       </div>
     </section>
 
     <!-- ========================================================
-         VIEW 6: ADMIN DASHBOARD
+         VIEW 6: ADMIN DASHBOARD (ANALYTICS, DUPLICATE DETECTION)
          ======================================================== -->
     <section id="view-admin" class="view-panel">
       <div class="container py-content">
         <div class="page-header">
           <div class="page-title-group">
-            <span class="badge badge-primary"><i class="fa-solid fa-chart-line"></i> Module 5</span>
+            <span class="badge badge-primary"><i class="fa-solid fa-chart-line"></i> Panchayat Administration</span>
             <h2 class="page-title">Panchayat Administration Dashboard</h2>
-            <p class="page-desc">Real-time monitoring of community complaints, directory registrations, resolution progress, and analytical breakdown.</p>
+            <p class="page-desc">Real-time monitoring of civic grievances, volunteer assistance, duplicate alerts, photo evidence, and citizen satisfaction ratings.</p>
           </div>
           <div class="admin-quick-actions">
             <button class="btn btn-outline-danger btn-sm" id="btn-admin-reset-sample">
@@ -1339,13 +1183,13 @@
           </div>
         </div>
 
-        <!-- Dashboard Stat Cards Grid -->
+        <!-- Dashboard Stat Cards Grid (7 Key Metrics) -->
         <div class="stats-grid">
           <div class="stat-card">
             <div class="stat-icon-wrap bg-blue-light"><i class="fa-solid fa-ticket text-blue"></i></div>
             <div class="stat-content">
               <span class="stat-label">Total Complaints</span>
-              <h3 class="stat-number" id="dash-total-complaints">5</h3>
+              <h3 class="stat-number" id="dash-total-complaints">6</h3>
               <span class="stat-subtext">All grievances logged</span>
             </div>
           </div>
@@ -1353,9 +1197,9 @@
           <div class="stat-card">
             <div class="stat-icon-wrap bg-amber-light"><i class="fa-solid fa-clock text-amber"></i></div>
             <div class="stat-content">
-              <span class="stat-label">Pending Review</span>
-              <h3 class="stat-number text-amber" id="dash-pending-complaints">2</h3>
-              <span class="stat-subtext">Awaiting field action</span>
+              <span class="stat-label">Pending / Review</span>
+              <h3 class="stat-number text-amber" id="dash-pending-complaints">3</h3>
+              <span class="stat-subtext">Awaiting inspection</span>
             </div>
           </div>
 
@@ -1364,7 +1208,7 @@
             <div class="stat-content">
               <span class="stat-label">In Progress</span>
               <h3 class="stat-number text-indigo" id="dash-inprogress-complaints">2</h3>
-              <span class="stat-subtext">Work currently underway</span>
+              <span class="stat-subtext">Repairs underway</span>
             </div>
           </div>
 
@@ -1378,20 +1222,29 @@
           </div>
 
           <div class="stat-card">
-            <div class="stat-icon-wrap bg-teal-light"><i class="fa-solid fa-user-graduate text-teal"></i></div>
+            <div class="stat-icon-wrap bg-teal-light"><i class="fa-solid fa-hand-holding-hand text-teal"></i></div>
             <div class="stat-content">
-              <span class="stat-label">Education Mentors</span>
-              <h3 class="stat-number text-teal" id="dash-total-edu">5</h3>
-              <span class="stat-subtext">Registered village scholars</span>
+              <span class="stat-label">Volunteer-Assisted</span>
+              <h3 class="stat-number text-teal" id="dash-volunteer-complaints">2</h3>
+              <span class="stat-subtext">Assisted for elders</span>
             </div>
           </div>
 
           <div class="stat-card">
-            <div class="stat-icon-wrap bg-purple-light"><i class="fa-solid fa-wrench text-purple"></i></div>
+            <div class="stat-icon-wrap bg-red-light"><i class="fa-solid fa-clone text-danger"></i></div>
             <div class="stat-content">
-              <span class="stat-label">Skilled Workers</span>
-              <h3 class="stat-number text-purple" id="dash-total-skills">5</h3>
-              <span class="stat-subtext">Local craftspeople & trades</span>
+              <span class="stat-label">Duplicate Alerts</span>
+              <h3 class="stat-number text-danger" id="dash-duplicate-complaints">1</h3>
+              <span class="stat-subtext">Potential matches</span>
+            </div>
+          </div>
+
+          <div class="stat-card">
+            <div class="stat-icon-wrap bg-gold-light"><i class="fa-solid fa-star text-gold"></i></div>
+            <div class="stat-content">
+              <span class="stat-label">Citizen Satisfaction</span>
+              <h3 class="stat-number text-gold" id="dash-satisfaction-rating">★ 5.0</h3>
+              <span class="stat-subtext">Average citizen rating</span>
             </div>
           </div>
         </div>
@@ -1410,7 +1263,7 @@
 
           <div class="card chart-card">
             <div class="chart-header">
-              <div class="chart-title"><i class="fa-solid fa-chart-simple text-blue"></i> Complaints by Status</div>
+              <div class="chart-title"><i class="fa-solid fa-chart-simple text-blue"></i> Complaints by 4-Stage Status</div>
               <span class="badge badge-neutral">Live Data</span>
             </div>
             <div class="chart-canvas-wrap">
@@ -1418,49 +1271,32 @@
             </div>
           </div>
 
-          <div class="card chart-card">
+          <div class="card chart-card" style="grid-column: span 2;">
             <div class="chart-header">
-              <div class="chart-title"><i class="fa-solid fa-chart-bar text-amber"></i> Education by Qualification</div>
-              <span class="badge badge-neutral">Live Data</span>
+              <div class="chart-title"><i class="fa-solid fa-map-location-dot text-amber"></i> Complaints by Locality (Rampur)</div>
+              <span class="badge badge-neutral">Geographic Heatmap</span>
             </div>
             <div class="chart-canvas-wrap">
-              <canvas id="chartEducationQual"></canvas>
-            </div>
-          </div>
-
-          <div class="card chart-card">
-            <div class="chart-header">
-              <div class="chart-title"><i class="fa-solid fa-toolbox text-purple"></i> Skilled Workers by Trade</div>
-              <span class="badge badge-neutral">Live Data</span>
-            </div>
-            <div class="chart-canvas-wrap">
-              <canvas id="chartSkillsCategory"></canvas>
+              <canvas id="chartComplaintsLocality"></canvas>
             </div>
           </div>
         </div>
 
-        <!-- Admin Tabs for Data Management -->
+        <!-- Admin Table Card -->
         <div class="card admin-table-card mt-4">
           <div class="admin-tab-header">
             <div class="admin-tabs">
-              <button class="admin-tab-btn active" data-tab="tab-complaints">
-                <i class="fa-solid fa-bullhorn"></i> Complaints Management (<span id="admin-badge-complaints-count">5</span>)
-              </button>
-              <button class="admin-tab-btn" data-tab="tab-education">
-                <i class="fa-solid fa-graduation-cap"></i> Education Profiles (<span id="admin-badge-edu-count">5</span>)
-              </button>
-              <button class="admin-tab-btn" data-tab="tab-skills">
-                <i class="fa-solid fa-screwdriver-wrench"></i> Skills Directory (<span id="admin-badge-skills-count">5</span>)
+              <button class="admin-tab-btn active">
+                <i class="fa-solid fa-list-check"></i> Grievances Registry (<span id="admin-badge-complaints-count">6</span>)
               </button>
             </div>
           </div>
 
-          <!-- Tab 1: Complaints Management -->
-          <div id="tab-complaints" class="admin-tab-content active">
+          <div class="admin-tab-content active">
             <div class="admin-filters-bar">
               <div class="filter-search-box">
                 <i class="fa-solid fa-magnifying-glass"></i>
-                <input type="text" id="admin-complaint-search" placeholder="Search by ID, Citizen, Description...">
+                <input type="text" id="admin-complaint-search" placeholder="Search by ID, Citizen, Description, Locality...">
               </div>
               <div class="filter-select-group">
                 <select id="admin-complaint-filter-cat">
@@ -1474,9 +1310,25 @@
                 </select>
                 <select id="admin-complaint-filter-status">
                   <option value="ALL">All Statuses</option>
-                  <option value="Pending">Pending</option>
+                  <option value="Submitted">Submitted</option>
+                  <option value="Under Review">Under Review</option>
                   <option value="In Progress">In Progress</option>
                   <option value="Resolved">Resolved</option>
+                </select>
+                <select id="admin-complaint-filter-locality">
+                  <option value="ALL">All Localities</option>
+                  <option value="Ram Mandir Street">Ram Mandir Street</option>
+                  <option value="Zilla Parishad School Area">Zilla Parishad School Area</option>
+                  <option value="North Colony">North Colony</option>
+                  <option value="Weekly Market / Rythu Bazaar">Weekly Market / Rythu Bazaar</option>
+                  <option value="South Bypass & Bus Stand">South Bypass & Bus Stand</option>
+                  <option value="Gram Panchayat & Water Tank Center">Gram Panchayat & Water Tank Center</option>
+                </select>
+                <select id="admin-complaint-filter-type">
+                  <option value="ALL">All Types</option>
+                  <option value="Direct">Direct Citizen</option>
+                  <option value="Volunteer">Volunteer-Assisted</option>
+                  <option value="Duplicate">Potential Duplicates Only</option>
                 </select>
               </div>
             </div>
@@ -1486,12 +1338,13 @@
                 <thead>
                   <tr>
                     <th>ID</th>
-                    <th>Citizen / Village</th>
+                    <th>Citizen / Locality</th>
                     <th>Category</th>
                     <th>Priority</th>
-                    <th>Method</th>
+                    <th>Photo</th>
                     <th>Status</th>
-                    <th>Latest Update Note</th>
+                    <th>Duplicate Alert</th>
+                    <th>Rating</th>
                     <th>Actions</th>
                   </tr>
                 </thead>
@@ -1501,60 +1354,16 @@
               </table>
             </div>
           </div>
-
-          <!-- Tab 2: Education Management -->
-          <div id="tab-education" class="admin-tab-content">
-            <div class="table-responsive">
-              <table class="data-table" id="admin-edu-table">
-                <thead>
-                  <tr>
-                    <th>Name / Village</th>
-                    <th>Qualification</th>
-                    <th>Field</th>
-                    <th>Occupation</th>
-                    <th>Mentor Status</th>
-                    <th>Contact Privacy</th>
-                    <th>Actions</th>
-                  </tr>
-                </thead>
-                <tbody id="admin-edu-tbody">
-                  <!-- Injected via JS -->
-                </tbody>
-              </table>
-            </div>
-          </div>
-
-          <!-- Tab 3: Skills Management -->
-          <div id="tab-skills" class="admin-tab-content">
-            <div class="table-responsive">
-              <table class="data-table" id="admin-skills-table">
-                <thead>
-                  <tr>
-                    <th>Name / Village</th>
-                    <th>Category</th>
-                    <th>Specific Skills</th>
-                    <th>Experience</th>
-                    <th>Availability</th>
-                    <th>Contact Privacy</th>
-                    <th>Actions</th>
-                  </tr>
-                </thead>
-                <tbody id="admin-skills-tbody">
-                  <!-- Injected via JS -->
-                </tbody>
-              </table>
-            </div>
-          </div>
         </div>
 
-        <!-- Admin Edit Status Modal -->
+        <!-- Admin Edit Status Modal (4 Stages & Notes) -->
         <div id="admin-status-modal" class="modal-overlay" style="display: none;" role="dialog" aria-modal="true" aria-labelledby="modal-status-title">
           <div class="modal-card">
             <div class="modal-icon-header text-blue">
               <i class="fa-solid fa-pen-to-square"></i>
             </div>
-            <h3 id="modal-status-title">Update Complaint Status</h3>
-            <p class="modal-lead">Update grievance <strong id="modal-edit-id">GV-2026-001</strong>. This immediately updates the public tracking page!</p>
+            <h3 id="modal-status-title">Update Grievance Status</h3>
+            <p class="modal-lead">Update grievance <strong id="modal-edit-id">GV-2026-001</strong>. This immediately updates the public tracking page & audio status!</p>
 
             <form id="admin-update-form">
               <input type="hidden" id="admin-edit-complaint-id">
@@ -1562,16 +1371,17 @@
               <div class="form-group text-start">
                 <label for="admin-select-status" class="form-label required">Select New Status</label>
                 <select id="admin-select-status" class="form-select" required>
-                  <option value="Pending">Pending (Awaiting Inspection)</option>
-                  <option value="In Progress">In Progress (Field Team Dispatched)</option>
-                  <option value="Resolved">Resolved (Work Completed)</option>
+                  <option value="Submitted">1. Submitted (Newly Logged)</option>
+                  <option value="Under Review">2. Under Review (Panchayat Verification)</option>
+                  <option value="In Progress">3. In Progress (Field Team Dispatched)</option>
+                  <option value="Resolved">4. Resolved (Work Completed)</option>
                 </select>
               </div>
 
               <div class="form-group text-start">
                 <label for="admin-input-status-note" class="form-label required">Official Status Update Note</label>
                 <textarea id="admin-input-status-note" class="form-textarea" rows="3" placeholder="Enter specific field updates (e.g. Lineman deployed, replacement valve installed, repair complete)..." required></textarea>
-                <span class="form-hint">Villagers will see this update note directly on their tracking page.</span>
+                <span class="form-hint">Villagers will see and hear this note directly on their tracking page.</span>
               </div>
 
               <div class="modal-actions">
@@ -1585,11 +1395,64 @@
             </form>
           </div>
         </div>
+
+        <!-- FEATURE 4: Photo Viewer Modal -->
+        <div id="photo-viewer-modal" class="modal-overlay" style="display: none;" role="dialog" aria-modal="true">
+          <div class="modal-card photo-viewer-card">
+            <div class="card-header-with-close">
+              <h4><i class="fa-solid fa-camera text-teal"></i> Grievance Photo Evidence</h4>
+              <button type="button" class="icon-btn-sm" onclick="closePhotoViewerModal()">&times;</button>
+            </div>
+            <div class="modal-photo-body mt-2">
+              <img id="modal-enlarged-photo" src="" alt="Enlarged photo evidence" class="enlarged-photo-view">
+            </div>
+          </div>
+        </div>
+
+        <!-- FEATURE 5: Duplicate Complaint Comparison Modal -->
+        <div id="duplicate-compare-modal" class="modal-overlay" style="display: none;" role="dialog" aria-modal="true">
+          <div class="modal-card duplicate-compare-card">
+            <div class="card-header-with-close">
+              <h4><i class="fa-solid fa-clone text-danger"></i> Duplicate Grievance Comparison</h4>
+              <button type="button" class="icon-btn-sm" onclick="closeDuplicateModal()">&times;</button>
+            </div>
+            <p class="font-sm text-muted">A potential duplicate was detected based on matching category, locality, and description keywords. Review both complaints below:</p>
+
+            <div class="duplicate-compare-grid mt-3">
+              <div class="duplicate-box current-box">
+                <span class="badge badge-primary">Current Complaint</span>
+                <h4 id="dup-curr-id">GV-2026-006</h4>
+                <div class="meta-line"><strong>Locality:</strong> <span id="dup-curr-loc">Ram Mandir Street</span></div>
+                <div class="meta-line"><strong>Citizen:</strong> <span id="dup-curr-citizen">Suresh Kumar</span></div>
+                <div class="meta-line"><strong>Date:</strong> <span id="dup-curr-date">07 Nov 2026</span></div>
+                <div class="meta-line"><strong>Description:</strong></div>
+                <p id="dup-curr-desc" class="dup-desc-text">Drinking water pipeline broken near Ram temple...</p>
+              </div>
+
+              <div class="duplicate-box original-box">
+                <span class="badge badge-teal">Existing / Primary Complaint</span>
+                <h4 id="dup-orig-id">GV-2026-001</h4>
+                <div class="meta-line"><strong>Locality:</strong> <span id="dup-orig-loc">Ram Mandir Street</span></div>
+                <div class="meta-line"><strong>Citizen:</strong> <span id="dup-orig-citizen">Ramu Yadav</span></div>
+                <div class="meta-line"><strong>Status:</strong> <span id="dup-orig-status" class="badge badge-category">In Progress</span></div>
+                <div class="meta-line"><strong>Description:</strong></div>
+                <p id="dup-orig-desc" class="dup-desc-text">Main drinking water pipeline near Ram temple has severe leakage...</p>
+              </div>
+            </div>
+
+            <div class="modal-actions mt-4">
+              <button type="button" class="btn btn-outline-secondary" onclick="closeDuplicateModal()">
+                Close Comparison
+              </button>
+            </div>
+          </div>
+        </div>
+
       </div>
     </section>
 
     <!-- ========================================================
-         VIEW 7: ABOUT & PROJECT INFORMATION
+         VIEW 7: ABOUT & PROJECT MISSION
          ======================================================== -->
     <section id="view-about" class="view-panel">
       <div class="container py-content">
@@ -1597,7 +1460,7 @@
           <div class="page-title-group">
             <span class="badge badge-primary"><i class="fa-solid fa-circle-question"></i> About GramVani</span>
             <h2 class="page-title">Project Mission & Architecture</h2>
-            <p class="page-desc">Empowering rural citizens through speech-driven grievance redressal and community skill discovery.</p>
+            <p class="page-desc">Empowering rural citizens through voice-driven grievance redressal, volunteer advocacy, and transparent administration.</p>
           </div>
         </div>
 
@@ -1605,29 +1468,38 @@
           <div class="card about-main-card">
             <h3><i class="fa-solid fa-bullseye text-green"></i> Project Objective</h3>
             <p>
-              Rural citizens often face friction when reporting civic infrastructure issues (drinking water leakage, road potholes, transformer failure, drainage overflow) due to literacy barriers or inaccessible administrative portals. Furthermore, rural communities possess rich talent—educated youth and skilled tradesmen—yet lack a unified local directory to connect them.
+              Rural citizens often face severe friction when reporting civic infrastructure issues (drinking water leakage, road potholes, transformer sparking, drainage overflow) due to literacy barriers, complicated administrative forms, or lack of direct access to panchayat officials.
             </p>
             <p>
-              <strong>GramVani</strong> unites these two essential pillars into a single responsive, mobile-first platform:
+              <strong>GramVani</strong> transforms this experience into a <em>voice-first, frictionless civic redressal platform</em> combining:
             </p>
             <div class="pillar-comparison-grid">
               <div class="pillar-box">
-                <h4><i class="fa-solid fa-microphone-lines text-green"></i> 1. Voice Grievance Redressal</h4>
-                <p>Enables villagers to speak in Telugu or English. Keyword-based heuristics automatically classify the civic department and determine urgency priority without needing confusing dropdowns.</p>
+                <h4><i class="fa-solid fa-microphone-lines text-green"></i> 1. Voice-First Redressal</h4>
+                <p>Enables villagers to speak naturally in Telugu, Hindi, or English. Smart heuristics automatically identify civic departments and urgency without requiring any typing.</p>
               </div>
               <div class="pillar-box">
-                <h4><i class="fa-solid fa-people-arrows text-blue"></i> 2. Village Education & Skills</h4>
-                <p>Enables educated youth to mentor village students and helps villagers hire local electricians, plumbers, carpenters, tailors, and mechanics while respecting user privacy.</p>
+                <h4><i class="fa-solid fa-hand-holding-hand text-teal"></i> 2. Village Volunteer Mode</h4>
+                <p>Equips educated youth and ASHA workers to advocate for elderly neighbors, attaching photo evidence and logging complaints on their behalf.</p>
+              </div>
+              <div class="pillar-box">
+                <h4><i class="fa-solid fa-map-location-dot text-amber"></i> 3. Village Issues Map</h4>
+                <p>Visualizes civic issues across Rampur's 6 localities, enabling community transparency and targeted administrative action.</p>
+              </div>
+              <div class="pillar-box">
+                <h4><i class="fa-solid fa-star text-gold"></i> 4. 4-Stage Tracking & Ratings</h4>
+                <p>Features a 4-stage tracking stepper with spoken audio updates, photo evidence display, and citizen satisfaction ratings.</p>
               </div>
             </div>
 
             <h3 class="mt-4"><i class="fa-solid fa-code text-indigo"></i> Technology Stack</h3>
             <div class="tech-tags-list">
               <span class="tech-pill"><i class="fa-brands fa-html5"></i> Semantic HTML5</span>
-              <span class="tech-pill"><i class="fa-brands fa-css3-alt"></i> Modern CSS3 (CSS Variables & Flex/Grid)</span>
-              <span class="tech-pill"><i class="fa-brands fa-js"></i> Vanilla JavaScript (ES6 Modules)</span>
-              <span class="tech-pill"><i class="fa-solid fa-microphone"></i> Browser Web Speech API</span>
-              <span class="tech-pill"><i class="fa-solid fa-database"></i> Browser LocalStorage</span>
+              <span class="tech-pill"><i class="fa-brands fa-css3-alt"></i> Modern CSS3 (CSS Variables & Responsive Flex/Grid)</span>
+              <span class="tech-pill"><i class="fa-brands fa-js"></i> Vanilla JavaScript (Zero External Paid API Dependencies)</span>
+              <span class="tech-pill"><i class="fa-solid fa-microphone"></i> Browser Web Speech API (Recognition & Synthesis)</span>
+              <span class="tech-pill"><i class="fa-solid fa-camera"></i> HTML5 Canvas Client-Side Image Compression</span>
+              <span class="tech-pill"><i class="fa-solid fa-database"></i> Browser LocalStorage Persistence</span>
               <span class="tech-pill"><i class="fa-solid fa-chart-simple"></i> Chart.js Data Visualizations</span>
             </div>
 
@@ -1636,9 +1508,9 @@
               <ul>
                 <li><strong>LocalStorage Prototype:</strong> Data is saved within your current web browser and does not synchronize across separate physical devices.</li>
                 <li><strong>Demonstration Scope:</strong> This application is an internship demonstration prototype for rural community empowerment. It is not connected to a live government portal.</li>
-                <li><strong>Speech Recognition Constraints:</strong> Voice recognition depends on the browser's implementation of <code>SpeechRecognition</code> (best supported on Google Chrome, Edge, and Android web browsers). Telugu speech recognition relies on available device language packs. A complete manual text fallback is provided.</li>
-                <li><strong>Heuristic Keyword Classification:</strong> Department categorization and priority assessment are implemented using transparent, rule-based keyword mapping rather than unverified AI claims.</li>
-                <li><strong>Privacy by Default:</strong> Contact information in both directories is hidden by default to safeguard citizen privacy.</li>
+                <li><strong>Speech Recognition Constraints:</strong> Voice recognition depends on the browser's implementation of <code>SpeechRecognition</code> (best supported on Google Chrome, Edge, and Android web browsers). Telugu and Hindi speech recognition rely on available device language packs. A complete manual text fallback is provided.</li>
+                <li><strong>Heuristic Keyword Classification & Duplicate Detection:</strong> Department categorization and duplicate detection are implemented using transparent, rule-based keyword mapping rather than unverified AI claims.</li>
+                <li><strong>Client-Side Photo Compression:</strong> Photos are downscaled using an in-memory HTML5 Canvas to 500px JPEG quality 0.7 to avoid LocalStorage quota overflow.</li>
               </ul>
             </div>
           </div>
@@ -1660,7 +1532,7 @@
               </div>
               <div class="spec-item">
                 <span class="spec-label">Supported Languages</span>
-                <span class="spec-val">Telugu (తెలుగు) & English</span>
+                <span class="spec-val">Telugu (తెలుగు), Hindi (हिन्दी) & English</span>
               </div>
               <div class="spec-item">
                 <span class="spec-label">Tracking ID Format</span>
@@ -1674,7 +1546,7 @@
 
             <div class="sample-actions-box mt-4">
               <h4>Demo Controls</h4>
-              <p>You can reset all complaints, education profiles, and skilled worker records back to the default Rampur sample data anytime.</p>
+              <p>You can reset all grievances back to the default Rampur sample dataset anytime.</p>
               <button type="button" class="btn btn-outline-danger w-100" id="btn-about-reset-data">
                 <i class="fa-solid fa-rotate-left"></i> Restore Rampur Sample Records
               </button>
@@ -1694,22 +1566,22 @@
           <i class="fa-solid fa-seedling"></i>
         </div>
         <div>
-          <h4>GramVani – Smart Rural Community Platform</h4>
+          <h4>GramVani – Voice-First Rural Community Platform</h4>
           <p class="footer-tagline">"Your Village, Your Voice, Your Community."</p>
         </div>
       </div>
       <div class="footer-links">
         <a href="#home" onclick="switchView('home')">Home</a>
         <a href="#complaint" onclick="switchView('complaint')">Submit Complaint</a>
+        <a href="#volunteer" onclick="switchView('volunteer')">Volunteer Help</a>
         <a href="#track" onclick="switchView('track')">Track Complaint</a>
-        <a href="#education" onclick="switchView('education')">Education Directory</a>
-        <a href="#skills" onclick="switchView('skills')">Skills Directory</a>
+        <a href="#map" onclick="switchView('map')">Village Issues Map</a>
         <a href="#admin" onclick="switchView('admin')">Admin</a>
         <a href="#about" onclick="switchView('about')">About</a>
       </div>
       <div class="footer-bottom">
         <p>&copy; 2026 GramVani Prototype. Built for Rural Community Internship Demonstration.</p>
-        <p class="privacy-note">Privacy First &bull; LocalStorage Prototype &bull; Telugu & English Voice Support</p>
+        <p class="privacy-note">Privacy First &bull; LocalStorage Prototype &bull; Telugu, Hindi & English Voice Support</p>
       </div>
     </div>
   </footer>
@@ -1718,4 +1590,3 @@
   <script src="script.js"></script>
 </body>
 </html>
-

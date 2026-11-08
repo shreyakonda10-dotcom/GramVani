@@ -3121,3 +3121,420 @@ img, svg {
 }
 
 
+
+/* ==========================================================================
+   FEATURE ENHANCEMENTS: VOICE-FIRST GRIEVANCE & COMMUNITY PLATFORM
+   ========================================================================== */
+
+/* 1. Citizen Accessibility 5-Action Grid on Homepage */
+.citizen-accessibility-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 14px;
+  margin-top: 24px;
+}
+.access-action-btn {
+  background-color: var(--bg-card);
+  border: 1.5px solid var(--border-color);
+  border-radius: var(--radius-md);
+  padding: 14px 16px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  cursor: pointer;
+  text-align: left;
+  transition: all var(--transition-fast);
+  box-shadow: var(--shadow-sm);
+  outline: none;
+}
+.access-action-btn:hover {
+  transform: translateY(-3px);
+  border-color: var(--primary);
+  box-shadow: var(--shadow-md);
+}
+.access-btn-icon {
+  width: 44px;
+  height: 44px;
+  border-radius: var(--radius-sm);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.35rem;
+  flex-shrink: 0;
+}
+.access-btn-text strong {
+  display: block;
+  font-size: 0.96rem;
+  color: var(--text-main);
+  line-height: 1.25;
+}
+.access-btn-text span {
+  display: block;
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  margin-top: 2px;
+}
+
+/* Colors for Accessibility Grid */
+.bg-green-light { background-color: #e8f5e9; }
+.text-green { color: #2e7d32; }
+.bg-teal-light { background-color: #e0f2fe; }
+.text-teal { color: #0284c7; }
+.bg-blue-light { background-color: #e3f2fd; }
+.text-blue { color: #1976d2; }
+.bg-amber-light { background-color: #fef3c7; }
+.text-amber { color: #d97706; }
+.bg-purple-light { background-color: #f3e8ff; }
+.text-purple { color: #7e22ce; }
+.bg-red-light { background-color: #fee2e2; }
+.text-danger { color: #dc2626; }
+.bg-gold-light { background-color: #fef9c3; }
+.text-gold { color: #ca8a04; }
+
+.badge-teal {
+  background-color: #e0f2fe;
+  color: #0369a1;
+  font-weight: 600;
+  font-size: 0.78rem;
+  padding: 3px 8px;
+  border-radius: var(--radius-pill);
+}
+
+/* 2. Photo Evidence & Upload */
+.photo-upload-container {
+  background-color: var(--bg-surface);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  padding: 14px 18px;
+}
+.photo-upload-box {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 6px;
+}
+.photo-preview-wrap {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background-color: #ffffff;
+  padding: 8px 12px;
+  border-radius: var(--radius-sm);
+  border: 1px dashed var(--primary);
+  width: fit-content;
+}
+.photo-thumbnail {
+  width: 70px;
+  height: 52px;
+  object-fit: cover;
+  border-radius: 4px;
+  border: 1px solid var(--border-color);
+}
+.track-photo-box {
+  background-color: var(--bg-surface);
+  border-radius: var(--radius-md);
+  padding: 16px 20px;
+  margin-top: 20px;
+  border: 1px solid var(--border-color);
+}
+.track-photo-box h4 {
+  font-size: 0.98rem;
+  color: var(--text-main);
+  margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.track-evidence-img {
+  max-width: 260px;
+  max-height: 180px;
+  object-fit: cover;
+  border-radius: var(--radius-md);
+  border: 2px solid var(--border-color);
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+.track-evidence-img:hover {
+  transform: scale(1.02);
+  box-shadow: var(--shadow-md);
+}
+.btn-icon-photo {
+  background: none;
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-sm);
+  padding: 3px 8px;
+  font-size: 0.76rem;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  background-color: #f0fdf4;
+}
+.btn-icon-photo:hover {
+  background-color: #dcfce7;
+  border-color: var(--primary);
+}
+.photo-viewer-card {
+  max-width: 600px;
+  width: 90%;
+  padding: 20px;
+}
+.enlarged-photo-view {
+  width: 100%;
+  max-height: 70vh;
+  object-fit: contain;
+  border-radius: var(--radius-sm);
+}
+
+/* 3. Duplicate Complaint Detection */
+.btn-duplicate-warning {
+  background-color: #fee2e2;
+  color: #dc2626;
+  border: 1px solid #fca5a5;
+  border-radius: var(--radius-pill);
+  padding: 3px 8px;
+  font-size: 0.74rem;
+  font-weight: 600;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  transition: all 0.2s ease;
+}
+.btn-duplicate-warning:hover {
+  background-color: #fecaca;
+  transform: translateY(-1px);
+}
+.duplicate-compare-card {
+  max-width: 760px;
+  width: 92%;
+  padding: 24px;
+}
+.duplicate-compare-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+.duplicate-box {
+  background-color: var(--bg-surface);
+  border-radius: var(--radius-md);
+  padding: 16px;
+  border: 1px solid var(--border-color);
+}
+.duplicate-box.current-box {
+  border-left: 4px solid var(--primary);
+}
+.duplicate-box.original-box {
+  border-left: 4px solid var(--teal);
+}
+.duplicate-box h4 {
+  margin-top: 10px;
+  margin-bottom: 8px;
+  font-size: 1.15rem;
+}
+.duplicate-box .meta-line {
+  font-size: 0.85rem;
+  margin-bottom: 4px;
+}
+.dup-desc-text {
+  font-size: 0.85rem;
+  background-color: #ffffff;
+  padding: 8px 10px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border-color);
+  margin-top: 4px;
+  max-height: 120px;
+  overflow-y: auto;
+}
+
+/* 4. Tracking 4-Stage Stepper & Status Badges */
+.status-indicator-badge.status-review {
+  background-color: #f3e8ff;
+  color: #7e22ce;
+  border: 1px solid #d8b4fe;
+}
+.btn-voice-search {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-weight: 500;
+  padding: 10px 14px;
+  border-color: var(--primary);
+  color: var(--primary);
+}
+.btn-voice-search:hover {
+  background-color: #e8f5e9;
+}
+
+/* 5. Citizen Resolution Feedback */
+.track-feedback-box {
+  background: linear-gradient(135deg, #fefce8 0%, #fef9c3 100%);
+  border: 1.5px solid #fde047;
+  border-radius: var(--radius-md);
+  padding: 18px 22px;
+}
+.feedback-header {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+}
+.feedback-header i {
+  font-size: 1.5rem;
+  color: #eab308;
+  margin-top: 2px;
+}
+.star-rating-widget {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 10px;
+}
+.star-btn {
+  font-size: 2.2rem;
+  color: #d1d5db;
+  cursor: pointer;
+  transition: transform 0.15s ease, color 0.15s ease;
+  user-select: none;
+}
+.star-btn:hover,
+.star-btn.active {
+  color: #eab308;
+  transform: scale(1.15);
+}
+.rating-label-disp {
+  font-size: 0.92rem;
+  font-weight: 600;
+  color: #854d0e;
+  margin-left: 10px;
+}
+.stars-gold-disp {
+  font-size: 1.4rem;
+  color: #eab308;
+  letter-spacing: 2px;
+}
+.rating-stars-sm {
+  font-size: 0.95rem;
+  letter-spacing: 1px;
+}
+
+/* 6. Village Issues Map (Interactive Rampur Localities) */
+.village-map-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(310px, 1fr));
+  gap: 18px;
+  margin-top: 20px;
+}
+.village-locality-card {
+  background-color: var(--bg-card);
+  border: 2px solid var(--border-color);
+  border-radius: var(--radius-lg);
+  padding: 20px;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  box-shadow: var(--shadow-sm);
+  display: flex;
+  flex-direction: column;
+}
+.village-locality-card:hover {
+  transform: translateY(-4px);
+  border-color: var(--primary);
+  box-shadow: var(--shadow-md);
+}
+.village-locality-card.selected {
+  border-color: var(--primary);
+  background-color: #f0fdf4;
+  box-shadow: 0 0 0 3px rgba(46, 125, 50, 0.15);
+}
+.locality-card-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 10px;
+}
+.locality-name-wrap {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.locality-name-wrap h4 {
+  font-size: 1.05rem;
+  margin-bottom: 0;
+  color: var(--text-main);
+}
+.locality-stat-row {
+  display: flex;
+  justify-content: space-around;
+  background-color: var(--bg-surface);
+  border-radius: var(--radius-sm);
+  padding: 10px 8px;
+  margin-top: 12px;
+}
+.locality-mini-stat {
+  text-align: center;
+}
+.locality-mini-stat strong {
+  display: block;
+  font-size: 1.15rem;
+  line-height: 1.2;
+}
+.locality-mini-stat small {
+  font-size: 0.72rem;
+  color: var(--text-muted);
+}
+.locality-cat-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  min-height: 28px;
+}
+.locality-cat-pill {
+  background-color: #f3f4f6;
+  color: #374151;
+  border-radius: var(--radius-pill);
+  font-size: 0.74rem;
+  padding: 2px 8px;
+  font-weight: 500;
+  border: 1px solid #e5e7eb;
+}
+.locality-card-footer {
+  margin-top: auto;
+  padding-top: 12px;
+  border-top: 1px dashed var(--border-color);
+}
+.view-issues-link {
+  font-size: 0.84rem;
+  font-weight: 600;
+  color: var(--primary);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.locality-drilldown-card {
+  padding: 24px;
+}
+.drilldown-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+  padding-bottom: 14px;
+  border-bottom: 1.5px solid var(--border-color);
+}
+.drilldown-header h3 {
+  font-size: 1.25rem;
+  margin-bottom: 2px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+@media (max-width: 600px) {
+  .duplicate-compare-grid {
+    grid-template-columns: 1fr;
+  }
+  .citizen-accessibility-grid {
+    grid-template-columns: 1fr;
+  }
+}

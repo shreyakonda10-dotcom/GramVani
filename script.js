@@ -1,248 +1,188 @@
 /**
- * GramVani – Smart Rural Community Platform
+ * GramVani – Voice-First Rural Grievance Redressal Platform
  * Main Application Logic
  * 
  * Modules:
- * 1. Navigation & State Management (Single Page App)
- * 2. Voice & Text Grievance Redressal (Web Speech API + Keyword Heuristics)
- * 3. Complaint Tracking System (LocalStorage lookup + Visual Stepper)
- * 4. Village Education Directory (Mentorship + Privacy Controls)
- * 5. Village Skills Directory (Trade Services + Service Requests)
- * 6. Admin Dashboard (Live Metrics, Status Updates & Chart.js Visualizations)
- * 7. Sample Data Manager (Village Rampur Default Dataset)
+ * 1. Single Page Application (SPA) Controller & Routing
+ * 2. Multilingual Voice Assistant (Telugu, Hindi, English - Web Speech API)
+ * 3. Voice-First Grievance Redressal & Auto Department/Urgency Classification
+ * 4. Village Volunteer Assistance Mode (Assisted Submission for Illiterate Elders)
+ * 5. Photo Evidence Handling (Client-Side HTML5 Canvas Compression)
+ * 6. Duplicate Complaint Detection (Heuristic Locality & Keyword Matching)
+ * 7. 4-Stage Complaint Tracking System with Voice Search & Audio Status
+ * 8. Citizen Resolution Feedback (1-5 Star Ratings & Feedback Voice Input)
+ * 9. Village Issues Map (Interactive Rampur Locality Breakdown & Heatmap)
+ * 10. Panchayat Admin Dashboard (Live Metrics, 3 Chart.js Visualizations & Filters)
  */
 
 // ==========================================================================
-// 1. Initial Sample Data for Village Rampur
+// 1. Rampur Village Dataset & LocalStorage Configuration
 // ==========================================================================
+
+// Sample lightweight SVG photo data URIs to demonstrate photo evidence out-of-the-box
+const SAMPLE_PHOTO_WATER = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='300' height='200' viewBox='0 0 300 200'><rect width='300' height='200' fill='%23e0f2fe'/><path d='M20 160 Q70 120 120 160 T220 160 T300 160 L300 200 L0 200 Z' fill='%230284c7'/><circle cx='150' cy='90' r='35' fill='%230369a1'/><text x='150' y='95' font-family='Arial' font-size='12' fill='white' text-anchor='middle'>Water Pipeline Leak</text><text x='150' y='180' font-family='Arial' font-size='11' fill='white' text-anchor='middle'>Photo Evidence: Ram Mandir St.</text></svg>";
+const SAMPLE_PHOTO_ELECTRIC = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='300' height='200' viewBox='0 0 300 200'><rect width='300' height='200' fill='%23fef3c7'/><line x1='150' y1='20' x2='150' y2='180' stroke='%2378350f' stroke-width='10'/><polygon points='140,50 160,30 150,70 170,50 145,100' fill='%23d97706'/><text x='150' y='140' font-family='Arial' font-size='12' fill='%2392400e' text-anchor='middle'>Sparking Streetlight Pole #14</text><text x='150' y='160' font-family='Arial' font-size='10' fill='%23b45309' text-anchor='middle'>School Area Rampur</text></svg>";
+const SAMPLE_PHOTO_ROADS = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='300' height='200' viewBox='0 0 300 200'><rect width='300' height='200' fill='%23f3f4f6'/><path d='M0 130 Q150 110 300 130 L300 200 L0 200 Z' fill='%234b5563'/><ellipse cx='140' cy='150' rx='45' ry='20' fill='%231f2937'/><text x='150' y='80' font-family='Arial' font-size='12' fill='%23374151' text-anchor='middle'>Deep Road Potholes</text><text x='150' y='185' font-family='Arial' font-size='10' fill='%239ca3af' text-anchor='middle'>South Bypass Road</text></svg>";
+const SAMPLE_PHOTO_SANITATION = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='300' height='200' viewBox='0 0 300 200'><rect width='300' height='200' fill='%23f0fdf4'/><rect x='100' y='80' width='100' height='90' rx='10' fill='%2315803d'/><circle cx='150' cy='50' r='20' fill='%2316a34a'/><text x='150' y='130' font-family='Arial' font-size='12' fill='white' text-anchor='middle'>Clean Waste Bin</text><text x='150' y='150' font-family='Arial' font-size='10' fill='white' text-anchor='middle'>Rythu Bazaar</text></svg>";
 
 const DEFAULT_COMPLAINTS = [
   {
     id: "GV-2026-001",
     citizen: "Ramu Yadav",
     village: "Rampur",
+    locality: "Ram Mandir Street",
     mobile: "9876543210",
     category: "Water Supply",
     priority: "High",
-    method: "Voice (Telugu)",
+    method: "Voice-First Mode (Telugu)",
+    submissionType: "Direct Citizen",
+    volunteerName: "",
+    volunteerRole: "",
     description: "Main drinking water pipeline near Ram temple has severe leakage for 3 days. Water is overflowing into the street and houses are receiving low pressure.",
-    status: "In Progress",
+    status: "In Progress", // 4-stages: Submitted, Under Review, In Progress, Resolved
     statusMessage: "Panchayat lineman and water board contractor inspected the valve. Replacement pipe segment procured; repairs underway.",
     date: "06 Nov 2026",
     timestamp: Date.now() - 172800000,
-    lastUpdated: "07 Nov 2026, 04:30 PM"
+    lastUpdated: "07 Nov 2026, 04:30 PM",
+    photo: SAMPLE_PHOTO_WATER,
+    potentialDuplicateOf: null,
+    rating: null,
+    feedbackText: null,
+    feedbackDate: null
   },
   {
     id: "GV-2026-002",
     citizen: "Venkatamma G.",
     village: "Rampur",
+    locality: "Zilla Parishad School Area",
     mobile: "9848123456",
     category: "Electricity",
     priority: "High",
-    method: "Text Entry",
+    method: "Voice-First Mode (Telugu)",
+    submissionType: "Direct Citizen",
+    volunteerName: "",
+    volunteerRole: "",
     description: "Street light pole #14 near Zilla Parishad school is flickering and sparking in evening rain. Poses safety hazard for school children.",
-    status: "Pending",
-    statusMessage: "Complaint logged into electricity sub-station register. Field inspection scheduled for tomorrow morning.",
+    status: "Under Review",
+    statusMessage: "Complaint logged into electricity sub-station register. Field inspection squad scheduled for verification tomorrow morning.",
     date: "07 Nov 2026",
     timestamp: Date.now() - 86400000,
-    lastUpdated: "07 Nov 2026, 06:15 PM"
+    lastUpdated: "07 Nov 2026, 06:15 PM",
+    photo: SAMPLE_PHOTO_ELECTRIC,
+    potentialDuplicateOf: null,
+    rating: null,
+    feedbackText: null,
+    feedbackDate: null
   },
   {
     id: "GV-2026-003",
-    citizen: "K. Nageswara Rao",
+    citizen: "Lachamma G. (Elderly Resident)",
     village: "Rampur",
+    locality: "South Bypass & Bus Stand",
     mobile: "9988776655",
     category: "Roads",
     priority: "Medium",
-    method: "Voice (English)",
-    description: "Large potholes on Rampur-Kalyanpur connecting road after heavy rains. Two tractor carts almost overturned.",
+    method: "Volunteer-Assisted",
+    submissionType: "Volunteer-Assisted",
+    volunteerName: "Kalyan Kumar",
+    volunteerRole: "Panchayat Volunteer",
+    description: "Large potholes on Rampur-Kalyanpur connecting road near bus stand after heavy rains. Two tractor carts almost overturned.",
     status: "In Progress",
     statusMessage: "Gravel and road repair truck dispatched by panchayat engineering wing. Patchwork is in progress.",
     date: "05 Nov 2026",
     timestamp: Date.now() - 259200000,
-    lastUpdated: "07 Nov 2026, 11:00 AM"
+    lastUpdated: "07 Nov 2026, 11:00 AM",
+    photo: SAMPLE_PHOTO_ROADS,
+    potentialDuplicateOf: null,
+    rating: null,
+    feedbackText: null,
+    feedbackDate: null
   },
   {
     id: "GV-2026-004",
     citizen: "Babu Lal Patel",
     village: "Rampur",
+    locality: "Weekly Market / Rythu Bazaar",
     mobile: "9440112233",
     category: "Sanitation",
     priority: "Medium",
-    method: "Text Entry",
+    method: "Text Entry Fallback",
+    submissionType: "Direct Citizen",
+    volunteerName: "",
+    volunteerRole: "",
     description: "Garbage collection bin near weekly market has been overflowing for past week, creating foul smell and stray animal menace.",
     status: "Resolved",
     statusMessage: "Sanitation squad cleared the market bin and established daily waste pickup schedule. Disinfectant powder sprayed.",
     date: "02 Nov 2026",
     timestamp: Date.now() - 518400000,
-    lastUpdated: "04 Nov 2026, 02:00 PM"
+    lastUpdated: "04 Nov 2026, 02:00 PM",
+    photo: SAMPLE_PHOTO_SANITATION,
+    potentialDuplicateOf: null,
+    rating: 5,
+    feedbackText: "Thank you to the panchayat sanitation squad for clearing the bin quickly within 2 days! Much cleaner now.",
+    feedbackDate: "05 Nov 2026"
   },
   {
     id: "GV-2026-005",
-    citizen: "Sarada Devi",
+    citizen: "Mallamma (Senior Citizen)",
     village: "Rampur",
+    locality: "North Colony",
     mobile: "9700123987",
     category: "Drainage",
     priority: "Medium",
-    method: "Voice (Telugu)",
+    method: "Volunteer-Assisted",
+    submissionType: "Volunteer-Assisted",
+    volunteerName: "Ananya Reddy",
+    volunteerRole: "ASHA Worker",
     description: "Clogged open drainage canal near North colony causing wastewater stagnation and mosquito breeding.",
-    status: "Pending",
-    statusMessage: "Awaiting sanitation supervisor inspection on Monday.",
+    status: "Submitted",
+    statusMessage: "Complaint registered by ASHA worker Ananya on behalf of citizen. Awaiting initial panchayat review.",
     date: "07 Nov 2026",
     timestamp: Date.now() - 43200000,
-    lastUpdated: "07 Nov 2026, 08:30 PM"
+    lastUpdated: "07 Nov 2026, 08:30 PM",
+    photo: null,
+    potentialDuplicateOf: null,
+    rating: null,
+    feedbackText: null,
+    feedbackDate: null
+  },
+  {
+    id: "GV-2026-006",
+    citizen: "Suresh Kumar (Resident)",
+    village: "Rampur",
+    locality: "Ram Mandir Street",
+    mobile: "9849900112",
+    category: "Water Supply",
+    priority: "High",
+    method: "Voice-First Mode (Telugu)",
+    submissionType: "Direct Citizen",
+    volunteerName: "",
+    volunteerRole: "",
+    description: "Drinking water pipeline broken near Ram temple. Water flooding onto road and no water in taps.",
+    status: "Under Review",
+    statusMessage: "Identified as related to existing pipeline leak GV-2026-001. Bundled with current repair work order.",
+    date: "07 Nov 2026",
+    timestamp: Date.now() - 20000000,
+    lastUpdated: "07 Nov 2026, 09:15 PM",
+    photo: null,
+    potentialDuplicateOf: "GV-2026-001",
+    rating: null,
+    feedbackText: null,
+    feedbackDate: null
   }
 ];
 
-const DEFAULT_EDUCATION = [
-  {
-    id: "EDU-001",
-    name: "Ramesh Kumar Varma",
-    village: "Rampur",
-    qualification: "B.Tech / Engineering",
-    field: "Computer Science",
-    occupation: "Software Engineer (Remote)",
-    languages: "Telugu, English, Hindi",
-    skills: "Python, Basic Web Development, School Maths, Career Guidance in IT",
-    willingToGuide: true,
-    contact: "9848011223",
-    privacyPublic: false,
-    registeredDate: "10 Oct 2026"
-  },
-  {
-    id: "EDU-002",
-    name: "Ananya Reddy",
-    village: "Rampur",
-    qualification: "Postgraduate",
-    field: "Agriculture",
-    occupation: "Agriculture Extension Officer",
-    languages: "Telugu, English",
-    skills: "Soil Health, Crop Disease Identification, Organic Fertilizers, Agri-Business",
-    willingToGuide: true,
-    contact: "9440223344",
-    privacyPublic: true,
-    registeredDate: "15 Oct 2026"
-  },
-  {
-    id: "EDU-003",
-    name: "Suresh Babu",
-    village: "Rampur",
-    qualification: "Degree",
-    field: "Science",
-    occupation: "High School Maths & Science Teacher",
-    languages: "Telugu, English",
-    skills: "10th Class Board Maths, Physics experiments, Competitive Exam Coaching",
-    willingToGuide: true,
-    contact: "9876500112",
-    privacyPublic: false,
-    registeredDate: "20 Oct 2026"
-  },
-  {
-    id: "EDU-004",
-    name: "Priya Devi",
-    village: "Rampur",
-    qualification: "Intermediate",
-    field: "Arts",
-    occupation: "College Student / Women Self-Help Member",
-    languages: "Telugu, English",
-    skills: "Spoken English Basics, Government Welfare Scheme Guidance, Digital Literacy",
-    willingToGuide: true,
-    contact: "9123456789",
-    privacyPublic: true,
-    registeredDate: "25 Oct 2026"
-  },
-  {
-    id: "EDU-005",
-    name: "Dr. K. Venkat",
-    village: "Rampur",
-    qualification: "Postgraduate",
-    field: "Healthcare",
-    occupation: "Primary Health Center Doctor",
-    languages: "Telugu, English, Hindi",
-    skills: "Health Hygiene, First Aid Training, Preventive Medicine, Child Nutrition",
-    willingToGuide: true,
-    contact: "9849009988",
-    privacyPublic: false,
-    registeredDate: "01 Nov 2026"
-  }
-];
-
-const DEFAULT_SKILLS = [
-  {
-    id: "SKILL-001",
-    name: "M. Satyanarayana",
-    village: "Rampur",
-    category: "Electrician",
-    specificSkills: "Submersible pump motor repair, house wiring, solar inverter installation, starter box fixing",
-    experience: "12 years in agricultural & domestic electrical work",
-    availability: "Daily 7:00 AM – 7:00 PM (Emergency calls accepted)",
-    languages: "Telugu",
-    contact: "9848556677",
-    privacyPublic: true,
-    registeredDate: "05 Oct 2026"
-  },
-  {
-    id: "SKILL-002",
-    name: "G. Krishna Murthy",
-    village: "Rampur",
-    category: "Plumber",
-    specificSkills: "PVC pipeline fittings, overhead tank connection, borewell pipes, drip irrigation maintenance",
-    experience: "8 years in rural and town plumbing",
-    availability: "Mornings 8:00 AM – 1:00 PM & On-Call",
-    languages: "Telugu, Hindi",
-    contact: "9441887766",
-    privacyPublic: false,
-    registeredDate: "12 Oct 2026"
-  },
-  {
-    id: "SKILL-003",
-    name: "Lakshmi Bai",
-    village: "Rampur",
-    category: "Tailor",
-    specificSkills: "Blouse stitching, school uniforms, saree falls, dress alterations, embroidery work",
-    experience: "10 years running home tailoring unit",
-    availability: "Monday to Saturday 9:00 AM – 6:00 PM",
-    languages: "Telugu",
-    contact: "9876123450",
-    privacyPublic: true,
-    registeredDate: "18 Oct 2026"
-  },
-  {
-    id: "SKILL-004",
-    name: "Ravi Teja",
-    village: "Rampur",
-    category: "Mechanic",
-    specificSkills: "Two-wheeler motorcycle servicing, tractor basic maintenance, tire puncture, brake repairs",
-    experience: "6 years at Main Bazaar Workshop",
-    availability: "Daily 8:30 AM – 8:00 PM",
-    languages: "Telugu",
-    contact: "9988112233",
-    privacyPublic: false,
-    registeredDate: "22 Oct 2026"
-  },
-  {
-    id: "SKILL-005",
-    name: "B. Venkatesh",
-    village: "Rampur",
-    category: "Computer Operator",
-    specificSkills: "MeeSeva online forms, Aadhaar corrections, bus/train ticket booking, photocopy, resume printing",
-    experience: "4 years operating Gram Center kiosk",
-    availability: "9:00 AM – 6:00 PM at Rampur Gram Center",
-    languages: "Telugu, English",
-    contact: "9123887711",
-    privacyPublic: true,
-    registeredDate: "28 Oct 2026"
-  }
-];
-
-// LocalStorage Keys
 const STORAGE_COMPLAINTS_KEY = "gramvani_complaints";
-const STORAGE_EDUCATION_KEY = "gramvani_education";
-const STORAGE_SKILLS_KEY = "gramvani_skills";
 
-// ==========================================================================
-// 2. Storage Helper Functions
-// ==========================================================================
+// Localities of Village Rampur
+const RAMPUR_LOCALITIES = [
+  "Ram Mandir Street",
+  "Zilla Parishad School Area",
+  "North Colony",
+  "Weekly Market / Rythu Bazaar",
+  "South Bypass & Bus Stand",
+  "Gram Panchayat & Water Tank Center"
+];
 
 function getStoredComplaints() {
   const data = localStorage.getItem(STORAGE_COMPLAINTS_KEY);
@@ -251,7 +191,9 @@ function getStoredComplaints() {
     return DEFAULT_COMPLAINTS;
   }
   try {
-    return JSON.parse(data);
+    const parsed = JSON.parse(data);
+    // Ensure array format
+    return Array.isArray(parsed) && parsed.length > 0 ? parsed : DEFAULT_COMPLAINTS;
   } catch (e) {
     return DEFAULT_COMPLAINTS;
   }
@@ -261,65 +203,30 @@ function saveComplaints(complaints) {
   localStorage.setItem(STORAGE_COMPLAINTS_KEY, JSON.stringify(complaints));
 }
 
-function getStoredEducation() {
-  const data = localStorage.getItem(STORAGE_EDUCATION_KEY);
-  if (!data) {
-    localStorage.setItem(STORAGE_EDUCATION_KEY, JSON.stringify(DEFAULT_EDUCATION));
-    return DEFAULT_EDUCATION;
-  }
-  try {
-    return JSON.parse(data);
-  } catch (e) {
-    return DEFAULT_EDUCATION;
-  }
-}
-
-function saveEducation(eduList) {
-  localStorage.setItem(STORAGE_EDUCATION_KEY, JSON.stringify(eduList));
-}
-
-function getStoredSkills() {
-  const data = localStorage.getItem(STORAGE_SKILLS_KEY);
-  if (!data) {
-    localStorage.setItem(STORAGE_SKILLS_KEY, JSON.stringify(DEFAULT_SKILLS));
-    return DEFAULT_SKILLS;
-  }
-  try {
-    return JSON.parse(data);
-  } catch (e) {
-    return DEFAULT_SKILLS;
-  }
-}
-
-function saveSkills(skillsList) {
-  localStorage.setItem(STORAGE_SKILLS_KEY, JSON.stringify(skillsList));
-}
-
 function resetAllDataToDefault() {
   localStorage.setItem(STORAGE_COMPLAINTS_KEY, JSON.stringify(DEFAULT_COMPLAINTS));
-  localStorage.setItem(STORAGE_EDUCATION_KEY, JSON.stringify(DEFAULT_EDUCATION));
-  localStorage.setItem(STORAGE_SKILLS_KEY, JSON.stringify(DEFAULT_SKILLS));
-  showToast("Sample Data Restored", "Rampur default complaints, education and skills profiles restored.", "info");
+  showToast("Sample Data Restored", "Rampur default grievance records, photo evidence, and volunteer logs restored.", "info");
   refreshAllViews();
 }
 
 // ==========================================================================
-// 3. Navigation & Single Page App Controller
+// 2. Navigation & Single Page Application Controller
 // ==========================================================================
 
-const VIEW_IDS = ["home", "complaint", "track", "education", "skills", "admin", "about"];
+const VIEW_IDS = ["home", "complaint", "volunteer", "track", "map", "admin", "about"];
+let currentSelectedMapLocality = null;
 
 function switchView(viewName) {
   if (!VIEW_IDS.includes(viewName)) {
     viewName = "home";
   }
 
-  // Update hash
+  // Update URL hash
   if (window.location.hash !== `#${viewName}`) {
     window.location.hash = viewName;
   }
 
-  // Hide all view panels and show target
+  // Toggle view panels
   VIEW_IDS.forEach(v => {
     const el = document.getElementById(`view-${v}`);
     if (el) {
@@ -331,7 +238,7 @@ function switchView(viewName) {
     }
   });
 
-  // Update header nav link active classes
+  // Update navbar links
   document.querySelectorAll(".nav-link").forEach(link => {
     if (link.getAttribute("data-view") === viewName) {
       link.classList.add("active");
@@ -340,7 +247,7 @@ function switchView(viewName) {
     }
   });
 
-  // Close mobile navigation drawer if open
+  // Close mobile nav drawer if open
   const nav = document.getElementById("primary-nav");
   const navToggle = document.getElementById("nav-toggle");
   if (nav && nav.classList.contains("open")) {
@@ -356,14 +263,14 @@ function switchView(viewName) {
     renderAdminDashboard();
   } else if (viewName === "home") {
     updateHeroStats();
-  } else if (viewName === "education") {
-    renderEducationProfiles();
-  } else if (viewName === "skills") {
-    renderSkillsProfiles();
+  } else if (viewName === "map") {
+    renderVillageIssuesMap();
+  } else if (viewName === "complaint") {
+    // Speak brief welcome guide on opening complaint page
+    speakComplaintGuide();
   }
 }
 
-// Listen to browser back/forward buttons
 window.addEventListener("hashchange", () => {
   const hash = window.location.hash.replace("#", "");
   if (hash && VIEW_IDS.includes(hash)) {
@@ -372,7 +279,7 @@ window.addEventListener("hashchange", () => {
 });
 
 // ==========================================================================
-// 4. Toast Notification System
+// 3. Toast Notification System
 // ==========================================================================
 
 function showToast(title, message, type = "success") {
@@ -396,7 +303,6 @@ function showToast(title, message, type = "success") {
 
   container.appendChild(toast);
 
-  // Auto remove after 4.2 seconds
   setTimeout(() => {
     toast.style.opacity = "0";
     toast.style.transform = "translateY(10px)";
@@ -410,82 +316,39 @@ function showToast(title, message, type = "success") {
 }
 
 // ==========================================================================
-// 5. Module 1: Voice Recognition & Grievance Redressal
-// ==========================================================================
-
-// Keyword dictionaries for Category & Urgency detection with weighted scoring
-const CATEGORY_KEYWORDS = {
-  "Electricity": [
-    "street light", "streetlight", "transformer", "electricity", "power", "current",
-    "wire", "pole", "voltage", "blackout", "spark", "sparking", "shock", "bulb", "vidyut",
-    "విద్యుత్", "దీపం", "కరెంట్", "ట్రాన్స్ఫార్మర్", "స్తంభం"
-  ],
-  "Water Supply": [
-    "drinking water", "water supply", "pipeline", "borewell", "water", "bore", "tap",
-    "pump", "submersible", "leak", "leakage", "neellu", "neeru", "jal", "tank", "valve",
-    "తాగునీరు", "నీరు", "పైపు", "నీటి", "బోరు", "నల్లా"
-  ],
-  "Drainage": [
-    "waste water", "open drainage", "drainage", "drain", "gutter", "sewage", "clog",
-    "clogged", "overflow", "overflowing", "kaaluva", "stagnant water", "mosquito",
-    "మురుగు", "కాలువ", "మురుగునీరు"
-  ],
-  "Sanitation": [
-    "garbage bin", "garbage", "waste", "cleaning", "dustbin", "trash", "smell",
-    "sweeping", "chetha", "stench", "rot", "plastic", "cleanliness",
-    "చెత్త", "పరిశుభ్రత", "దుర్వాసన"
-  ],
-  "Roads": [
-    "pothole", "potholes", "tar road", "gravel", "highway", "broken road",
-    "mud road", "bridge", "road", "street", "dhaari",
-    "రహదారి", "గుంత", "రోడ్డు", "దారి"
-  ]
-};
-
-const HIGH_PRIORITY_KEYWORDS = [
-  "urgent", "danger", "dangerous", "hazard", "spark", "sparking", "shock", 
-  "overflowing", "disease", "accident", "broken pole", "flooding", "emergency", 
-  "critical", "no drinking water", "immediate", "life", "children", 
-  "ఆపద", "ప్రమాదం", "అత్యవసరం", "షాక్"
-];
-
-const MEDIUM_PRIORITY_KEYWORDS = [
-  "leakage", "pothole", "repair", "broken", "garbage", "street light", 
-  "flickering", "waste", "smell", "stench", "damage", "need fix", 
-  "సమస్య", "బాగుచేయండి"
-];
-
-// ==========================================================================
-// 5. Module 1: Voice-First Grievance Redressal & Speech Synthesis
+// 4. Multilingual Voice Assistant & Text-to-Speech (TTS)
 // ==========================================================================
 
 let speechRecognition = null;
 let isRecordingVoiceFirst = false;
-let isRecordingAssisted = false;
-let selectedVoiceLang = "te-IN"; // Default to Telugu (తెలుగు)
+let isRecordingVolunteer = false;
+let isRecordingTrackingSearch = false;
+let isRecordingFeedback = false;
+let selectedVoiceLang = "te-IN"; // "te-IN" (Telugu), "hi-IN" (Hindi), "en-IN" (English)
 let lastRegisteredComplaintId = "GV-2026-001";
 
-// 5.1 Speech Synthesis (Text-to-Speech) Audio Guide
+// Client-side Photo Temporary State
+let currentVoicePhotoData = null;
+let currentVolunteerPhotoData = null;
+let currentFallbackPhotoData = null;
+
 function speakAloud(text, lang = selectedVoiceLang) {
   if (!window.speechSynthesis) return;
   try {
-    window.speechSynthesis.cancel(); // Stop any previous speech
+    window.speechSynthesis.cancel();
     const utterance = new SpeechSynthesisUtterance(text);
     utterance.lang = lang;
-    utterance.rate = 0.92; // Slightly measured pace for rural comprehension
+    utterance.rate = 0.92;
     utterance.pitch = 1.0;
 
     const voices = window.speechSynthesis.getVoices();
     if (voices && voices.length > 0) {
       if (lang.startsWith("te")) {
         const teVoice = voices.find(v => v.lang.startsWith("te") || v.name.toLowerCase().includes("telugu"));
-        if (teVoice) {
-          utterance.voice = teVoice;
-        } else {
-          // Graceful fallback to Indian English/Hindi voice if Telugu engine not installed on device
-          const inVoice = voices.find(v => v.lang.includes("en-IN") || v.lang.includes("hi-IN"));
-          if (inVoice) utterance.voice = inVoice;
-        }
+        if (teVoice) utterance.voice = teVoice;
+      } else if (lang.startsWith("hi")) {
+        const hiVoice = voices.find(v => v.lang.startsWith("hi") || v.name.toLowerCase().includes("hindi"));
+        if (hiVoice) utterance.voice = hiVoice;
       } else {
         const enVoice = voices.find(v => v.lang.includes("en-IN") || v.lang.startsWith("en"));
         if (enVoice) utterance.voice = enVoice;
@@ -499,23 +362,29 @@ function speakAloud(text, lang = selectedVoiceLang) {
 
 function speakHomeGuide() {
   if (selectedVoiceLang.startsWith("te")) {
-    speakAloud("నమస్కారం! గ్రామవాణి వేదికకు స్వాగతం. మీ గ్రామంలో సమస్యలను సులభంగా తెలియజేయవచ్చు. పెద్ద మైక్రోఫోన్ బటన్ నొక్కి మీ సమస్యను చెప్పండి. ఎలాంటి చదవడం లేదా రాయడం అవసరం లేదు.", "te-IN");
+    speakAloud("నమస్కారం! గ్రామవాణి వేదికకు స్వాగతం. మీ గ్రామంలో నీరు, రహదారులు, విద్యుత్ వంటి సమస్యలను పెద్ద మైక్రోఫోన్ బటన్ నొక్కి మీ గొంతుతో చెప్పండి. రాయడం అవసరం లేదు.", "te-IN");
+  } else if (selectedVoiceLang.startsWith("hi")) {
+    speakAloud("नमस्ते! ग्रामवाणी मंच पर आपका स्वागत है। गांव की समस्याओं को बताने के लिए बड़े माइक बटन पर टैप करें और बोलें। लिखने की आवश्यकता नहीं है।", "hi-IN");
   } else {
-    speakAloud("Welcome to GramVani. You can report village problems using your voice. Tap the large microphone button and speak naturally in Telugu or English. No reading or writing is required.", "en-IN");
+    speakAloud("Welcome to GramVani. Tap the large microphone button and speak your village problems naturally in Telugu, Hindi, or English. No reading or typing is required.", "en-IN");
   }
 }
 
 function speakComplaintGuide() {
   if (selectedVoiceLang.startsWith("te")) {
-    speakAloud("వాయిస్ ఫిర్యాదు సూచనలు: ఒకటి - పెద్ద మైక్రోఫోన్ బటన్ నొక్కండి. రెండు - మీ సమస్యను తెలుగులో లేదా ఇంగ్లీషులో సహజంగా మాట్లాడండి. మూడు - ఆకుపచ్చ నమోదు బటన్ నొక్కండి. మీ పేరు మరియు ఫోన్ నంబర్ ఇవ్వడం ఐచ్ఛికం.", "te-IN");
+    speakAloud("వాయిస్ ఫిర్యాదు సూచనలు: ఒకటి - పెద్ద మైక్రోఫోన్ బటన్ నొక్కండి. రెండు - మీ సమస్యను సహజంగా మాట్లాడండి. మూడు - ఆకుపచ్చ నమోదు బటన్ నొక్కండి.", "te-IN");
+  } else if (selectedVoiceLang.startsWith("hi")) {
+    speakAloud("शिकायत दर्ज करने के निर्देश: पहला - बड़े माइक बटन को दबाएं। दूसरा - अपनी समस्या बोलें। तीसरा - हरे बटन पर टैप करें।", "hi-IN");
   } else {
-    speakAloud("Voice instructions: Step one - Tap the big microphone button. Step two - Speak your problem naturally in Telugu or English. Step three - Tap the green Register button. Name and phone number are optional.", "en-IN");
+    speakAloud("Voice instructions: Step 1 - Tap the big mic button. Step 2 - Speak your problem naturally. Step 3 - Tap the green confirm button. Photo and name are optional.", "en-IN");
   }
 }
 
 function replayConfirmationAudio() {
   if (selectedVoiceLang.startsWith("te")) {
     speakAloud(`మీ ఫిర్యాదు విజయవంతంగా నమోదైంది. మీ ఫిర్యాదు సంఖ్య: ${lastRegisteredComplaintId}. పంచాయతీ సిబ్బంది దీనిని త్వరలోనే పరిశీలిస్తారు. ధన్యవాదాలు.`, "te-IN");
+  } else if (selectedVoiceLang.startsWith("hi")) {
+    speakAloud(`आपकी शिकायत सफलतापूर्वक दर्ज कर ली गई है। आपकी शिकायत संख्या है: ${lastRegisteredComplaintId}। पंचायत टीम जल्द ही इस पर कार्रवाई करेगी। धन्यवाद।`, "hi-IN");
   } else {
     speakAloud(`Your grievance has been submitted successfully. Your complaint ID is: ${lastRegisteredComplaintId}. Our local panchayat team will inspect this shortly. Thank you.`, "en-IN");
   }
@@ -528,6 +397,8 @@ function speakRecognizedText() {
   } else {
     if (selectedVoiceLang.startsWith("te")) {
       speakAloud("ఇంకా ఎలాంటి సమస్య రికార్డ్ కాలేదు. దయచేసి మైక్రోఫోన్ నొక్కి మాట్లాడండి.", "te-IN");
+    } else if (selectedVoiceLang.startsWith("hi")) {
+      speakAloud("अभी तक कोई आवाज रिकॉर्ड नहीं हुई है। कृपया माइक दबाकर बोलें।", "hi-IN");
     } else {
       speakAloud("No speech captured yet. Please tap the microphone button and speak your problem.", "en-IN");
     }
@@ -536,19 +407,20 @@ function speakRecognizedText() {
 
 function speakCurrentTrackingStatus() {
   const compId = document.getElementById("track-disp-id")?.textContent || "";
-  const status = document.getElementById("track-disp-status")?.textContent?.trim() || "";
+  const status = document.getElementById("track-status-text")?.textContent?.trim() || "";
   const updateMsg = document.getElementById("track-disp-status-message")?.textContent?.trim() || "";
   
   if (!compId) return;
 
   if (selectedVoiceLang.startsWith("te")) {
     speakAloud(`ఫిర్యాదు సంఖ్య: ${compId}. ప్రస్తుత స్థితి: ${status}. తాజా పంచాయతీ సమాచారం: ${updateMsg}`, "te-IN");
+  } else if (selectedVoiceLang.startsWith("hi")) {
+    speakAloud(`शिकायत संख्या: ${compId}। वर्तमान स्थिति: ${status}। पंचायत का आधिकारिक संदेश: ${updateMsg}`, "hi-IN");
   } else {
-    speakAloud(`Complaint ID: ${compId}. Current status is: ${status}. Official panchayat update: ${updateMsg}`, "en-IN");
+    speakAloud(`Complaint ID: ${compId}. Current stage is: ${status}. Official update: ${updateMsg}`, "en-IN");
   }
 }
 
-// 5.2 Gentle Audio Tone (Web Audio API)
 function playChime(type = "start") {
   try {
     const AudioContext = window.AudioContext || window.webkitAudioContext;
@@ -573,44 +445,19 @@ function playChime(type = "start") {
     osc.start();
     osc.stop(ctx.currentTime + 0.22);
   } catch (e) {
-    // Audio context may be restricted before user gesture
+    // Audio Context restricted before user gesture
   }
 }
 
-// 5.3 Mode Switcher (Villager Voice Mode, Assisted Mode, Text Fallback)
-function switchSubmissionMode(mode) {
-  // Modes: 'voice', 'assisted', 'text'
-  ['voice', 'assisted', 'text'].forEach(m => {
-    const tabBtn = document.getElementById(`tab-btn-${m}`);
-    const panel = document.getElementById(`mode-panel-${m}`);
-    if (m === mode) {
-      if (tabBtn) {
-        tabBtn.classList.add('active');
-        tabBtn.setAttribute('aria-selected', 'true');
-      }
-      if (panel) panel.classList.add('active-panel');
-    } else {
-      if (tabBtn) {
-        tabBtn.classList.remove('active');
-        tabBtn.setAttribute('aria-selected', 'false');
-      }
-      if (panel) panel.classList.remove('active-panel');
-    }
-  });
-
-  // If switching away from voice mode, stop mic
-  if (mode !== 'voice' && isRecordingVoiceFirst && speechRecognition) {
-    speechRecognition.stop();
-  }
-}
-
-// 5.4 Language Switching & Village Chips
 function setVoiceLanguage(lang) {
   selectedVoiceLang = lang;
+  
   const btnTe = document.getElementById("btn-lang-te");
+  const btnHi = document.getElementById("btn-lang-hi");
   const btnEn = document.getElementById("btn-lang-en");
   
   if (btnTe) btnTe.classList.toggle("active", lang.startsWith("te"));
+  if (btnHi) btnHi.classList.toggle("active", lang.startsWith("hi"));
   if (btnEn) btnEn.classList.toggle("active", lang.startsWith("en"));
 
   if (speechRecognition) {
@@ -621,31 +468,128 @@ function setVoiceLanguage(lang) {
     }
   }
 
-  // Update status labels
   const statusLabel = document.getElementById("voice-first-status-label");
   if (statusLabel && !isRecordingVoiceFirst) {
-    statusLabel.textContent = lang.startsWith("te") 
-      ? "మైక్రోఫోన్ సిద్ధంగా ఉంది (Microphone Ready)"
-      : "Microphone Ready (Tap to Speak)";
+    if (lang.startsWith("te")) {
+      statusLabel.textContent = "మైక్రోఫోన్ సిద్ధంగా ఉంది (Microphone Ready)";
+    } else if (lang.startsWith("hi")) {
+      statusLabel.textContent = "माइक्रोफ़ोन तैयार है (Microphone Ready)";
+    } else {
+      statusLabel.textContent = "Microphone Ready (Tap to Speak)";
+    }
   }
 }
 
-function selectVillageChip(villageName) {
-  const chips = document.querySelectorAll(".village-chip");
-  chips.forEach(c => {
-    if (c.getAttribute("data-village") === villageName) {
-      c.classList.add("active");
-      c.innerHTML = `<i class="fa-solid fa-check"></i> ${villageName}`;
-    } else {
-      c.classList.remove("active");
-      c.innerHTML = c.getAttribute("data-village");
+// ==========================================================================
+// 5. Keyword Heuristics for Auto Department & Priority Classification
+// ==========================================================================
+
+const CATEGORY_KEYWORDS = {
+  "Electricity": [
+    "street light", "streetlight", "transformer", "electricity", "power", "current",
+    "wire", "pole", "voltage", "blackout", "spark", "sparking", "shock", "bulb", "vidyut",
+    "విద్యుత్", "దీపం", "కరెంట్", "ట్రాన్స్ఫార్మర్", "స్తంభం", "बिजली", "खंभा", "ट्रांसफॉर्मर", "लाइट"
+  ],
+  "Water Supply": [
+    "drinking water", "water supply", "pipeline", "borewell", "water", "bore", "tap",
+    "pump", "submersible", "leak", "leakage", "neellu", "neeru", "jal", "tank", "valve",
+    "తాగునీరు", "నీరు", "పైపు", "నీటి", "బోరు", "నల్లా", "पानी", "पाइपलाइन", "नल", "जल"
+  ],
+  "Drainage": [
+    "waste water", "open drainage", "drainage", "drain", "gutter", "sewage", "clog",
+    "clogged", "overflow", "overflowing", "kaaluva", "stagnant water", "mosquito",
+    "మురుగు", "కాలువ", "మురుగునీరు", "नाली", "गटर", "सीवर", "कीचड़"
+  ],
+  "Sanitation": [
+    "garbage bin", "garbage", "waste", "cleaning", "dustbin", "trash", "smell",
+    "sweeping", "chetha", "stench", "rot", "plastic", "cleanliness",
+    "చెత్త", "పరిశుభ్రత", "దుర్వాసన", "कचरा", "सफाई", "बदबू", "कूड़ा"
+  ],
+  "Roads": [
+    "pothole", "potholes", "tar road", "gravel", "highway", "broken road",
+    "mud road", "bridge", "road", "street", "dhaari",
+    "రహదారి", "గుంత", "రోడ్డు", "దారి", "सड़क", "गड्ढा", "मार्ग", "रास्ता"
+  ]
+};
+
+const HIGH_PRIORITY_KEYWORDS = [
+    "urgent", "danger", "dangerous", "hazard", "spark", "sparking", "shock", 
+    "overflowing", "disease", "accident", "broken pole", "flooding", "emergency", 
+    "critical", "no drinking water", "immediate", "children", 
+    "ఆపద", "ప్రమాదం", "అత్యవసరం", "షాక్", "ఖత్రా", "तुरंत", "आपातकालीन", "खतरा"
+];
+
+const MEDIUM_PRIORITY_KEYWORDS = [
+    "leakage", "pothole", "repair", "broken", "garbage", "street light", 
+    "flickering", "waste", "smell", "stench", "damage", "need fix", 
+    "సమస్య", "బాగుచేయండి", "मरम्मत", "समस्या", "लीक"
+];
+
+function classifyText(rawText) {
+  if (!rawText || rawText.trim() === "") {
+    return { category: "Water Supply", priority: "Medium", matchedKeywords: [] };
+  }
+
+  const text = rawText.toLowerCase();
+  const scores = {};
+  const matchedKeywords = [];
+
+  for (const [category, keywords] of Object.entries(CATEGORY_KEYWORDS)) {
+    scores[category] = 0;
+    for (const kw of keywords) {
+      if (text.includes(kw.toLowerCase())) {
+        const weight = kw.includes(" ") ? 3 : 1;
+        scores[category] += weight;
+        if (!matchedKeywords.includes(kw)) matchedKeywords.push(kw);
+      }
     }
-  });
-  const input = document.getElementById("voice-first-village");
-  if (input) input.value = villageName;
+  }
+
+  let bestCategory = "Other";
+  let maxScore = 0;
+  for (const [cat, score] of Object.entries(scores)) {
+    if (score > maxScore) {
+      maxScore = score;
+      bestCategory = cat;
+    }
+  }
+
+  let detectedPriority = "Medium";
+  for (const kw of HIGH_PRIORITY_KEYWORDS) {
+    if (text.includes(kw.toLowerCase())) {
+      detectedPriority = "High";
+      if (!matchedKeywords.includes(kw)) matchedKeywords.push(kw);
+      break;
+    }
+  }
+
+  if (detectedPriority !== "High") {
+    for (const kw of MEDIUM_PRIORITY_KEYWORDS) {
+      if (text.includes(kw.toLowerCase())) {
+        detectedPriority = "Medium";
+        break;
+      }
+    }
+  }
+
+  return { category: bestCategory, priority: detectedPriority, matchedKeywords };
 }
 
-// 5.5 Speech Recognition Engine Initialization
+function getBilingualCategoryName(cat) {
+  switch (cat) {
+    case "Water Supply": return "Water Supply (తాగునీరు / जल आपूर्ति)";
+    case "Roads": return "Roads (రహదారులు / सड़क)";
+    case "Electricity": return "Electricity (విద్యుత్ & లైట్లు / बिजली)";
+    case "Sanitation": return "Sanitation (పారిశుధ్యం & చెత్త / स्वच्छता)";
+    case "Drainage": return "Drainage (మురుగు కాలువలు / नाली)";
+    default: return "Other Village Issue (ఇతర సమస్య)";
+  }
+}
+
+// ==========================================================================
+// 6. Speech Recognition Engine
+// ==========================================================================
+
 function initializeSpeechRecognition() {
   const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
   const alertEl = document.getElementById("voice-first-mic-alert");
@@ -654,7 +598,7 @@ function initializeSpeechRecognition() {
     if (alertEl) {
       alertEl.style.display = "flex";
       document.getElementById("voice-first-mic-alert-msg").textContent = 
-        "Note: Browser Web Speech API is not supported in this browser. Please use the Text Entry mode.";
+        "Note: Web Speech API is not supported in this browser. Please use the Text Entry fallback.";
     }
     return null;
   }
@@ -666,11 +610,8 @@ function initializeSpeechRecognition() {
 
   speechRecognition.onstart = () => {
     playChime("start");
-    if (isRecordingVoiceFirst) {
-      updateVoiceFirstUI(true);
-    } else if (isRecordingAssisted) {
-      updateAssistedMicUI(true);
-    }
+    if (isRecordingVoiceFirst) updateVoiceFirstUI(true);
+    if (isRecordingVolunteer) updateVolunteerMicUI(true);
   };
 
   speechRecognition.onresult = (event) => {
@@ -689,24 +630,42 @@ function initializeSpeechRecognition() {
       const descEl = document.getElementById("voice-first-desc");
       if (descEl) {
         if (finalTranscript) {
-          if (!descEl.value.endsWith(" ") && descEl.value.length > 0) {
-            descEl.value += " ";
-          }
+          if (!descEl.value.endsWith(" ") && descEl.value.length > 0) descEl.value += " ";
           descEl.value += finalTranscript;
         }
-        classifyVoiceFirstText(descEl.value + interimTranscript);
+        updateVoiceFirstClassification(descEl.value + interimTranscript);
       }
-    } else if (isRecordingAssisted) {
-      const assistedDesc = document.getElementById("assisted-desc");
-      if (assistedDesc) {
+    } else if (isRecordingVolunteer) {
+      const volDesc = document.getElementById("vol-desc");
+      if (volDesc) {
         if (finalTranscript) {
-          if (!assistedDesc.value.endsWith(" ") && assistedDesc.value.length > 0) {
-            assistedDesc.value += " ";
-          }
-          assistedDesc.value += finalTranscript;
+          if (!volDesc.value.endsWith(" ") && volDesc.value.length > 0) volDesc.value += " ";
+          volDesc.value += finalTranscript;
         }
-        // Auto classify for assisted form as well
-        classifyAssistedText(assistedDesc.value + interimTranscript);
+        const detected = classifyText(volDesc.value + interimTranscript);
+        const catSelect = document.getElementById("vol-category");
+        const prioSelect = document.getElementById("vol-priority");
+        if (catSelect && detected.category !== "Other") catSelect.value = detected.category;
+        if (prioSelect) prioSelect.value = detected.priority;
+      }
+    } else if (isRecordingTrackingSearch) {
+      const cleanId = (finalTranscript + interimTranscript).trim().replace(/\s+/g, "-").toUpperCase();
+      const input = document.getElementById("track-id-input");
+      if (input && cleanId) {
+        // Look for GV or number pattern
+        let formattedId = cleanId;
+        const match = cleanId.match(/(\d+)/);
+        if (match) {
+          const num = match[1].padStart(3, "0");
+          formattedId = `GV-2026-${num}`;
+        }
+        input.value = formattedId;
+        trackComplaintById(formattedId);
+      }
+    } else if (isRecordingFeedback) {
+      const feedbackInput = document.getElementById("feedback-comment-input");
+      if (feedbackInput) {
+        if (finalTranscript) feedbackInput.value += finalTranscript;
       }
     }
   };
@@ -714,9 +673,11 @@ function initializeSpeechRecognition() {
   speechRecognition.onerror = (event) => {
     console.warn("Speech recognition error:", event.error);
     isRecordingVoiceFirst = false;
-    isRecordingAssisted = false;
+    isRecordingVolunteer = false;
+    isRecordingTrackingSearch = false;
+    isRecordingFeedback = false;
     updateVoiceFirstUI(false);
-    updateAssistedMicUI(false);
+    updateVolunteerMicUI(false);
 
     let errorMsg = "Microphone error: " + event.error;
     if (event.error === "not-allowed") {
@@ -734,15 +695,43 @@ function initializeSpeechRecognition() {
   speechRecognition.onend = () => {
     playChime("stop");
     isRecordingVoiceFirst = false;
-    isRecordingAssisted = false;
+    isRecordingVolunteer = false;
+    isRecordingTrackingSearch = false;
+    isRecordingFeedback = false;
     updateVoiceFirstUI(false);
-    updateAssistedMicUI(false);
+    updateVolunteerMicUI(false);
   };
 
   return speechRecognition;
 }
 
-// 5.6 Voice-First Recording Controls
+function updateVoiceFirstClassification(text) {
+  const { category, priority, matchedKeywords } = classifyText(text);
+
+  const categoryDisp = document.getElementById("voice-first-category-disp");
+  const categoryInput = document.getElementById("voice-first-category");
+  const priorityDisp = document.getElementById("voice-first-priority-disp");
+  const priorityInput = document.getElementById("voice-first-priority");
+  const kwPill = document.getElementById("voice-first-kw-pill");
+
+  if (categoryDisp) categoryDisp.textContent = getBilingualCategoryName(category);
+  if (categoryInput) categoryInput.value = category;
+
+  if (priorityDisp) {
+    priorityDisp.textContent = `${priority} Priority (${priority === 'High' ? 'అత్యవసరం' : 'సాధారణం'})`;
+    priorityDisp.className = `priority-badge priority-${priority.toLowerCase()}`;
+  }
+  if (priorityInput) priorityInput.value = priority;
+
+  if (kwPill) {
+    if (matchedKeywords.length > 0) {
+      kwPill.textContent = `Keywords: ${matchedKeywords.slice(0, 3).join(", ")}`;
+    } else {
+      kwPill.textContent = text ? "Analyzing speech..." : "Awaiting voice input...";
+    }
+  }
+}
+
 function toggleVoiceFirstRecording() {
   if (!speechRecognition) {
     initializeSpeechRecognition();
@@ -758,7 +747,9 @@ function toggleVoiceFirstRecording() {
     const alertEl = document.getElementById("voice-first-mic-alert");
     if (alertEl) alertEl.style.display = "none";
     isRecordingVoiceFirst = true;
-    isRecordingAssisted = false;
+    isRecordingVolunteer = false;
+    isRecordingTrackingSearch = false;
+    isRecordingFeedback = false;
     speechRecognition.lang = selectedVoiceLang;
     try {
       speechRecognition.start();
@@ -779,7 +770,7 @@ function startVoiceFromHome() {
 function clearVoiceFirstTranscript() {
   const descEl = document.getElementById("voice-first-desc");
   if (descEl) descEl.value = "";
-  classifyVoiceFirstText("");
+  updateVoiceFirstClassification("");
 }
 
 function updateVoiceFirstUI(listening) {
@@ -791,7 +782,6 @@ function updateVoiceFirstUI(listening) {
   const sub = document.getElementById("voice-first-action-sub");
   const visualizer = document.getElementById("voice-first-visualizer");
 
-  // Also update home mic if present
   const heroMicBtn = document.getElementById("hero-mic-btn");
   const heroMicTitle = document.getElementById("hero-mic-caption-title");
 
@@ -800,7 +790,7 @@ function updateVoiceFirstUI(listening) {
     if (micIcon) { micIcon.classList.remove("fa-microphone"); micIcon.classList.add("fa-stop"); }
     if (statusDot) statusDot.classList.add("listening");
     if (statusLabel) statusLabel.textContent = selectedVoiceLang.startsWith("te") ? "వినబడుతోంది... మాట్లాడండి" : "Listening... Speak Now";
-    if (heading) heading.textContent = selectedVoiceLang.startsWith("te") ? "మీ సమస్యను చెప్పండి..." : "Listening to your problem...";
+    if (heading) heading.textContent = selectedVoiceLang.startsWith("te") ? "మీ సమస్యను చెప్పండి..." : "Listening to your grievance...";
     if (sub) sub.textContent = selectedVoiceLang.startsWith("te") ? "మీరు మాట్లాడటం పూర్తయిన తర్వాత మళ్లీ నొక్కండి." : "Click again when done speaking.";
     if (visualizer) visualizer.style.display = "flex";
 
@@ -820,156 +810,170 @@ function updateVoiceFirstUI(listening) {
   }
 }
 
-// 5.7 Assisted Mode Voice Controls
-function toggleAssistedVoiceRecording() {
-  if (!speechRecognition) {
-    initializeSpeechRecognition();
-    if (!speechRecognition) return;
-  }
-
-  if (isRecordingAssisted) {
-    speechRecognition.stop();
-  } else {
-    isRecordingAssisted = true;
-    isRecordingVoiceFirst = false;
-    speechRecognition.lang = selectedVoiceLang;
-    try {
-      speechRecognition.start();
-    } catch (e) {
-      console.warn("Failed to start assisted speech:", e);
+function switchSubmissionMode(mode) {
+  ['voice', 'text'].forEach(m => {
+    const tabBtn = document.getElementById(`tab-btn-${m}`);
+    const panel = document.getElementById(`mode-panel-${m}`);
+    if (m === mode) {
+      if (tabBtn) {
+        tabBtn.classList.add('active');
+        tabBtn.setAttribute('aria-selected', 'true');
+      }
+      if (panel) panel.classList.add('active-panel');
+    } else {
+      if (tabBtn) {
+        tabBtn.classList.remove('active');
+        tabBtn.setAttribute('aria-selected', 'false');
+      }
+      if (panel) panel.classList.remove('active-panel');
     }
+  });
+
+  if (mode !== 'voice' && isRecordingVoiceFirst && speechRecognition) {
+    speechRecognition.stop();
   }
 }
 
-function updateAssistedMicUI(listening) {
-  const micBtn = document.getElementById("btn-assisted-mic");
-  const micIcon = document.getElementById("assisted-mic-icon");
-  const micLabel = document.getElementById("assisted-mic-label");
+// ==========================================================================
+// 7. Client-Side Image Compression (HTML5 Canvas to prevent LocalStorage bloat)
+// ==========================================================================
 
-  if (listening) {
-    if (micBtn) micBtn.classList.add("btn-danger");
-    if (micIcon) micIcon.className = "fa-solid fa-stop";
-    if (micLabel) micLabel.textContent = "Stop Recording Citizen's Voice";
-  } else {
-    if (micBtn) micBtn.classList.remove("btn-danger");
-    if (micIcon) micIcon.className = "fa-solid fa-microphone";
-    if (micLabel) micLabel.textContent = "Record Citizen's Voice";
-  }
-}
-
-// 5.8 Classification & Priority Heuristics
-function classifyVoiceFirstText(rawText) {
-  if (!rawText || rawText.trim() === "") {
-    const kwLabelEl = document.getElementById("voice-first-kw-pill");
-    if (kwLabelEl) kwLabelEl.textContent = "Awaiting voice input...";
+function compressImageFile(file, maxWidth = 500, quality = 0.7, callback) {
+  if (!file || !file.type.startsWith("image/")) {
+    callback(null);
     return;
   }
 
-  const text = rawText.toLowerCase();
-  const scores = {};
-  const matchedKeywords = [];
+  const reader = new FileReader();
+  reader.onload = (readerEvent) => {
+    const img = new Image();
+    img.onload = () => {
+      let width = img.width;
+      let height = img.height;
 
-  for (const [category, keywords] of Object.entries(CATEGORY_KEYWORDS)) {
-    scores[category] = 0;
-    for (const kw of keywords) {
-      if (text.includes(kw)) {
-        const weight = kw.includes(" ") ? 3 : 1;
-        scores[category] += weight;
-        if (!matchedKeywords.includes(kw)) matchedKeywords.push(kw);
+      if (width > maxWidth) {
+        height = Math.round((height * maxWidth) / width);
+        width = maxWidth;
+      }
+
+      const canvas = document.createElement("canvas");
+      canvas.width = width;
+      canvas.height = height;
+
+      const ctx = canvas.getContext("2d");
+      ctx.drawImage(img, 0, 0, width, height);
+
+      // Lightweight compressed JPEG data URI (~25-35KB)
+      const compressedDataUri = canvas.toDataURL("image/jpeg", quality);
+      callback(compressedDataUri);
+    };
+    img.src = readerEvent.target.result;
+  };
+  reader.readAsDataURL(file);
+}
+
+function removeVoicePhoto() {
+  currentVoicePhotoData = null;
+  const previewWrap = document.getElementById("voice-photo-preview-wrap");
+  const fileInput = document.getElementById("voice-photo-input");
+  if (previewWrap) previewWrap.style.display = "none";
+  if (fileInput) fileInput.value = "";
+}
+
+function removeVolunteerPhoto() {
+  currentVolunteerPhotoData = null;
+  const previewWrap = document.getElementById("vol-photo-preview-wrap");
+  const fileInput = document.getElementById("vol-photo-input");
+  if (previewWrap) previewWrap.style.display = "none";
+  if (fileInput) fileInput.value = "";
+}
+
+function removeFallbackPhoto() {
+  currentFallbackPhotoData = null;
+  const previewWrap = document.getElementById("fallback-photo-preview-wrap");
+  const fileInput = document.getElementById("fallback-photo-input");
+  if (previewWrap) previewWrap.style.display = "none";
+  if (fileInput) fileInput.value = "";
+}
+
+function openPhotoViewerModal(imageSrc) {
+  const modal = document.getElementById("photo-viewer-modal");
+  const enlargedImg = document.getElementById("modal-enlarged-photo");
+  if (modal && enlargedImg && imageSrc) {
+    enlargedImg.src = imageSrc;
+    modal.style.display = "flex";
+  }
+}
+
+function closePhotoViewerModal() {
+  const modal = document.getElementById("photo-viewer-modal");
+  if (modal) modal.style.display = "none";
+}
+
+// ==========================================================================
+// 8. Duplicate Complaint Detection
+// ==========================================================================
+
+function detectDuplicates(newComplaint, existingComplaints) {
+  if (!newComplaint || !newComplaint.description) return null;
+
+  const newLocality = (newComplaint.locality || "").toLowerCase();
+  const newCat = (newComplaint.category || "").toLowerCase();
+  const newDesc = newComplaint.description.toLowerCase();
+
+  for (const existing of existingComplaints) {
+    // Don't compare with self
+    if (existing.id === newComplaint.id) continue;
+    // Don't compare with resolved complaints older than a month
+    if (existing.status === "Resolved") continue;
+
+    const exLocality = (existing.locality || "").toLowerCase();
+    const exCat = (existing.category || "").toLowerCase();
+    const exDesc = existing.description.toLowerCase();
+
+    // Check 1: Same locality and same category
+    if (newLocality && exLocality && newLocality === exLocality && newCat === exCat) {
+      // Check for shared significant words
+      const keywords = ["pipeline", "leak", "leakage", "water", "pipe", "street light", "light", "spark", "pole", "drain", "drainage", "pothole", "road", "garbage", "waste"];
+      const sharedWords = keywords.filter(kw => newDesc.includes(kw) && exDesc.includes(kw));
+      if (sharedWords.length >= 1) {
+        return existing.id;
       }
     }
   }
 
-  let bestCategory = null;
-  let maxScore = 0;
-  for (const [cat, score] of Object.entries(scores)) {
-    if (score > maxScore) {
-      maxScore = score;
-      bestCategory = cat;
-    }
-  }
-
-  let detectedPriority = "Medium";
-  for (const kw of HIGH_PRIORITY_KEYWORDS) {
-    if (text.includes(kw)) {
-      detectedPriority = "High";
-      if (!matchedKeywords.includes(kw)) matchedKeywords.push(kw);
-      break;
-    }
-  }
-
-  if (detectedPriority !== "High") {
-    for (const kw of MEDIUM_PRIORITY_KEYWORDS) {
-      if (text.includes(kw)) {
-        detectedPriority = "Medium";
-        break;
-      }
-    }
-  }
-
-  // Update Voice-First UI
-  const categoryDisp = document.getElementById("voice-first-category-disp");
-  const categoryInput = document.getElementById("voice-first-category");
-  const priorityDisp = document.getElementById("voice-first-priority-disp");
-  const priorityInput = document.getElementById("voice-first-priority");
-  const kwPill = document.getElementById("voice-first-kw-pill");
-
-  const chosenCat = bestCategory || "Other";
-  if (categoryDisp) {
-    categoryDisp.textContent = getBilingualCategoryName(chosenCat);
-  }
-  if (categoryInput) categoryInput.value = chosenCat;
-
-  if (priorityDisp) {
-    priorityDisp.textContent = `${detectedPriority} Priority (${detectedPriority === 'High' ? 'అత్యవసరం' : 'సాధారణం'})`;
-    priorityDisp.className = `priority-badge priority-${detectedPriority.toLowerCase()}`;
-  }
-  if (priorityInput) priorityInput.value = detectedPriority;
-
-  if (kwPill) {
-    if (matchedKeywords.length > 0) {
-      kwPill.textContent = `Keywords: ${matchedKeywords.slice(0, 3).join(", ")}`;
-    } else {
-      kwPill.textContent = "Analyzing speech...";
-    }
-  }
+  return null;
 }
 
-function classifyAssistedText(rawText) {
-  if (!rawText || rawText.trim() === "") return;
-  const text = rawText.toLowerCase();
+function openDuplicateModal(currentId, originalId) {
+  const complaints = getStoredComplaints();
+  const current = complaints.find(c => c.id === currentId);
+  const original = complaints.find(c => c.id === originalId);
 
-  for (const [category, keywords] of Object.entries(CATEGORY_KEYWORDS)) {
-    for (const kw of keywords) {
-      if (text.includes(kw)) {
-        const catSelect = document.getElementById("assisted-category");
-        if (catSelect) catSelect.value = category;
-        break;
-      }
-    }
-  }
+  if (!current || !original) return;
 
-  for (const kw of HIGH_PRIORITY_KEYWORDS) {
-    if (text.includes(kw)) {
-      const prioSelect = document.getElementById("assisted-priority");
-      if (prioSelect) prioSelect.value = "High";
-      break;
-    }
-  }
+  document.getElementById("dup-curr-id").textContent = current.id;
+  document.getElementById("dup-curr-loc").textContent = current.locality;
+  document.getElementById("dup-curr-citizen").textContent = current.citizen;
+  document.getElementById("dup-curr-date").textContent = current.date;
+  document.getElementById("dup-curr-desc").textContent = current.description;
+
+  document.getElementById("dup-orig-id").textContent = original.id;
+  document.getElementById("dup-orig-loc").textContent = original.locality;
+  document.getElementById("dup-orig-citizen").textContent = original.citizen;
+  document.getElementById("dup-orig-status").textContent = original.status;
+  document.getElementById("dup-orig-desc").textContent = original.description;
+
+  const modal = document.getElementById("duplicate-compare-modal");
+  if (modal) modal.style.display = "flex";
 }
 
-function getBilingualCategoryName(cat) {
-  switch (cat) {
-    case "Water Supply": return "Water Supply (తాగునీటి సరఫరా)";
-    case "Roads": return "Roads (రహదారులు / గుంతలు)";
-    case "Electricity": return "Electricity (విద్యుత్ & దీపాలు)";
-    case "Sanitation": return "Sanitation (పారిశుధ్యం & చెత్త)";
-    case "Drainage": return "Drainage (మురుగు కాలువలు)";
-    default: return "Other Village Issue (ఇతర సమస్య)";
-  }
+function closeDuplicateModal() {
+  const modal = document.getElementById("duplicate-compare-modal");
+  if (modal) modal.style.display = "none";
 }
 
-// 5.9 Generate Sequential Complaint ID (e.g. GV-2026-006)
+// Sequential ID Generator: GV-2026-007
 function generateNextComplaintId() {
   const currentComplaints = getStoredComplaints();
   const year = new Date().getFullYear();
@@ -989,7 +993,10 @@ function generateNextComplaintId() {
   return `GV-${year}-${nextNum}`;
 }
 
-// 5.10 Submit Complaint (Voice-First One-Tap Workflow)
+// ==========================================================================
+// 9. Complaint Submission Handlers (Voice-First, Volunteer, Fallback)
+// ==========================================================================
+
 function submitVoiceFirstComplaint() {
   const desc = document.getElementById("voice-first-desc")?.value.trim();
 
@@ -997,17 +1004,17 @@ function submitVoiceFirstComplaint() {
     showToast("Voice Input Needed", "Please tap the microphone and speak your problem first.", "error");
     if (selectedVoiceLang.startsWith("te")) {
       speakAloud("దయచేసి పెద్ద మైక్రోఫోన్ బటన్ నొక్కి మీ సమస్యను చెప్పండి.", "te-IN");
+    } else if (selectedVoiceLang.startsWith("hi")) {
+      speakAloud("कृपया माइक बटन दबाएं और अपनी समस्या बताएं।", "hi-IN");
     } else {
       speakAloud("Please tap the microphone button and speak your problem first.", "en-IN");
     }
     return;
   }
 
-  // Name defaults to Anonymous if empty
   const rawName = document.getElementById("voice-first-name")?.value.trim();
   const citizenName = rawName || "Anonymous Villager (గ్రామస్థుడు)";
-  
-  const village = document.getElementById("voice-first-village")?.value || "Rampur";
+  const locality = document.getElementById("voice-first-locality")?.value || "Ram Mandir Street";
   const mobile = document.getElementById("voice-first-mobile")?.value.trim() || "Not provided";
   const category = document.getElementById("voice-first-category")?.value || "Water Supply";
   const priority = document.getElementById("voice-first-priority")?.value || "Medium";
@@ -1019,33 +1026,50 @@ function submitVoiceFirstComplaint() {
   const dateFormatted = now.toLocaleDateString("en-GB", { day: "2-digit", month: "short", year: "numeric" });
   const timeFormatted = now.toLocaleTimeString("en-US", { hour: "2-digit", minute: "2-digit" });
 
+  const complaints = getStoredComplaints();
+
+  const tempComplaint = {
+    id: newId,
+    locality: locality,
+    category: category,
+    description: desc
+  };
+  const potentialDup = detectDuplicates(tempComplaint, complaints);
+
   const newComplaint = {
     id: newId,
     citizen: citizenName,
-    village: village,
+    village: "Rampur",
+    locality: locality,
     mobile: mobile,
     category: category,
     priority: priority,
     method: "Voice-First Mode",
+    submissionType: "Direct Citizen",
+    volunteerName: "",
+    volunteerRole: "",
     description: desc,
-    status: "Pending",
-    statusMessage: "Complaint registered via Voice-First mode. Awaiting initial panchayat review.",
+    status: "Submitted", // 4 stages: Submitted, Under Review, In Progress, Resolved
+    statusMessage: "Complaint registered via Voice-First mode. Scheduled for initial panchayat review.",
     date: dateFormatted,
     timestamp: Date.now(),
-    lastUpdated: `${dateFormatted}, ${timeFormatted}`
+    lastUpdated: `${dateFormatted}, ${timeFormatted}`,
+    photo: currentVoicePhotoData,
+    potentialDuplicateOf: potentialDup,
+    rating: null,
+    feedbackText: null,
+    feedbackDate: null
   };
 
-  const complaints = getStoredComplaints();
   complaints.unshift(newComplaint);
   saveComplaints(complaints);
 
-  if (isRecordingVoiceFirst && speechRecognition) {
-    speechRecognition.stop();
-  }
+  if (isRecordingVoiceFirst && speechRecognition) speechRecognition.stop();
 
-  // Populate Modal
+  // Show Success Modal
   document.getElementById("modal-complaint-id").textContent = newId;
   document.getElementById("modal-citizen-name").textContent = citizenName;
+  document.getElementById("modal-locality-disp").textContent = locality;
   document.getElementById("modal-category-badge").textContent = category;
   
   const modalPrio = document.getElementById("modal-priority-badge");
@@ -1053,36 +1077,35 @@ function submitVoiceFirstComplaint() {
   modalPrio.className = `priority-badge priority-${priority.toLowerCase()}`;
   document.getElementById("modal-method-text").textContent = "Voice-First Mode (Bilingual)";
 
-  // Show Modal
   const modal = document.getElementById("complaint-success-modal");
   if (modal) modal.style.display = "flex";
 
-  // Read confirmation aloud
   replayConfirmationAudio();
 
-  // Reset Voice Form
+  // Reset form
   document.getElementById("voice-first-desc").value = "";
   if (document.getElementById("voice-first-name")) document.getElementById("voice-first-name").value = "";
   if (document.getElementById("voice-first-mobile")) document.getElementById("voice-first-mobile").value = "";
-  classifyVoiceFirstText("");
+  removeVoicePhoto();
+  updateVoiceFirstClassification("");
 
   showToast("Grievance Registered", `Your Complaint ID is ${newId}`, "success");
   updateHeroStats();
 }
 
-// 5.11 Assisted Mode Submission Handler
-function handleAssistedComplaintSubmit(e) {
+// Volunteer Mode Submission
+function handleVolunteerComplaintSubmit(e) {
   e.preventDefault();
 
-  const volunteerName = document.getElementById("assisted-volunteer-name")?.value.trim() || "Panchayat Volunteer";
-  const volunteerRole = document.getElementById("assisted-volunteer-role")?.value || "Volunteer";
-  const rawCitizen = document.getElementById("assisted-citizen-name")?.value.trim();
-  const citizenName = rawCitizen || "Anonymous Villager (గ్రామస్థుడు)";
-  const village = document.getElementById("assisted-village")?.value.trim() || "Rampur";
-  const mobile = document.getElementById("assisted-mobile")?.value.trim() || "Not provided";
-  const desc = document.getElementById("assisted-desc")?.value.trim();
-  const category = document.getElementById("assisted-category")?.value || "Water Supply";
-  const priority = document.getElementById("assisted-priority")?.value || "Medium";
+  const volName = document.getElementById("vol-name")?.value.trim() || "Panchayat Volunteer";
+  const volRole = document.getElementById("vol-role")?.value || "Volunteer";
+  const rawCitizen = document.getElementById("vol-citizen-name")?.value.trim();
+  const citizenName = rawCitizen || "Anonymous Villager";
+  const locality = document.getElementById("vol-locality")?.value || "South Bypass & Bus Stand";
+  const mobile = document.getElementById("vol-mobile")?.value.trim() || "Not provided";
+  const desc = document.getElementById("vol-desc")?.value.trim();
+  const category = document.getElementById("vol-category")?.value || "Roads";
+  const priority = document.getElementById("vol-priority")?.value || "Medium";
 
   if (!desc) {
     showToast("Description Required", "Please record or type the complaint details.", "error");
@@ -1096,56 +1119,105 @@ function handleAssistedComplaintSubmit(e) {
   const dateFormatted = now.toLocaleDateString("en-GB", { day: "2-digit", month: "short", year: "numeric" });
   const timeFormatted = now.toLocaleTimeString("en-US", { hour: "2-digit", minute: "2-digit" });
 
+  const complaints = getStoredComplaints();
+  const potentialDup = detectDuplicates({ id: newId, locality, category, description: desc }, complaints);
+
   const newComplaint = {
     id: newId,
-    citizen: `${citizenName} (Assisted by ${volunteerName} - ${volunteerRole})`,
-    village: village,
+    citizen: `${citizenName} (Assisted by ${volName})`,
+    village: "Rampur",
+    locality: locality,
     mobile: mobile,
     category: category,
     priority: priority,
-    method: `Assisted Mode (${volunteerRole})`,
+    method: "Volunteer-Assisted",
+    submissionType: "Volunteer-Assisted",
+    volunteerName: volName,
+    volunteerRole: volRole,
     description: desc,
-    status: "Pending",
-    statusMessage: `Complaint registered by ${volunteerName} on behalf of citizen. Awaiting panchayat review.`,
+    status: "Submitted",
+    statusMessage: `Registered by volunteer ${volName} (${volRole}). Scheduled for panchayat verification.`,
     date: dateFormatted,
     timestamp: Date.now(),
-    lastUpdated: `${dateFormatted}, ${timeFormatted}`
+    lastUpdated: `${dateFormatted}, ${timeFormatted}`,
+    photo: currentVolunteerPhotoData,
+    potentialDuplicateOf: potentialDup,
+    rating: null,
+    feedbackText: null,
+    feedbackDate: null
   };
 
-  const complaints = getStoredComplaints();
   complaints.unshift(newComplaint);
   saveComplaints(complaints);
 
-  if (isRecordingAssisted && speechRecognition) {
-    speechRecognition.stop();
-  }
+  if (isRecordingVolunteer && speechRecognition) speechRecognition.stop();
 
-  // Populate Modal
+  // Show Success Modal
   document.getElementById("modal-complaint-id").textContent = newId;
   document.getElementById("modal-citizen-name").textContent = newComplaint.citizen;
+  document.getElementById("modal-locality-disp").textContent = locality;
   document.getElementById("modal-category-badge").textContent = category;
   
   const modalPrio = document.getElementById("modal-priority-badge");
   modalPrio.textContent = priority;
   modalPrio.className = `priority-badge priority-${priority.toLowerCase()}`;
-  document.getElementById("modal-method-text").textContent = `Assisted by ${volunteerName}`;
+  document.getElementById("modal-method-text").textContent = `Volunteer Help (${volRole})`;
 
   const modal = document.getElementById("complaint-success-modal");
   if (modal) modal.style.display = "flex";
 
   replayConfirmationAudio();
-  document.getElementById("assisted-complaint-form").reset();
+  document.getElementById("volunteer-submission-form").reset();
+  removeVolunteerPhoto();
   showToast("Assisted Grievance Logged", `Complaint ID: ${newId}`, "success");
   updateHeroStats();
 }
 
-// 5.12 Fallback Mode Submission Handler
+function toggleVolunteerVoiceRecording() {
+  if (!speechRecognition) {
+    initializeSpeechRecognition();
+    if (!speechRecognition) return;
+  }
+
+  if (isRecordingVolunteer) {
+    speechRecognition.stop();
+  } else {
+    isRecordingVolunteer = true;
+    isRecordingVoiceFirst = false;
+    isRecordingTrackingSearch = false;
+    isRecordingFeedback = false;
+    speechRecognition.lang = selectedVoiceLang;
+    try {
+      speechRecognition.start();
+    } catch (e) {
+      console.warn("Failed to start volunteer speech:", e);
+    }
+  }
+}
+
+function updateVolunteerMicUI(listening) {
+  const micBtn = document.getElementById("btn-vol-mic");
+  const micIcon = document.getElementById("vol-mic-icon");
+  const micLabel = document.getElementById("vol-mic-label");
+
+  if (listening) {
+    if (micBtn) micBtn.classList.add("btn-danger");
+    if (micIcon) micIcon.className = "fa-solid fa-stop";
+    if (micLabel) micLabel.textContent = "Stop Recording Citizen's Voice";
+  } else {
+    if (micBtn) micBtn.classList.remove("btn-danger");
+    if (micIcon) micIcon.className = "fa-solid fa-microphone";
+    if (micLabel) micLabel.textContent = "Record Citizen's Voice (మాట్లాడించండి)";
+  }
+}
+
+// Fallback Mode Handler
 function handleFallbackComplaintSubmit(e) {
   e.preventDefault();
 
   const rawName = document.getElementById("fallback-name")?.value.trim();
   const citizenName = rawName || "Anonymous Villager (గ్రామస్థుడు)";
-  const village = document.getElementById("fallback-village")?.value.trim() || "Rampur";
+  const locality = document.getElementById("fallback-locality")?.value || "Ram Mandir Street";
   const mobile = document.getElementById("fallback-mobile")?.value.trim() || "Not provided";
   const category = document.getElementById("fallback-category")?.value || "Water Supply";
   const priority = document.getElementById("fallback-priority")?.value || "Medium";
@@ -1163,28 +1235,40 @@ function handleFallbackComplaintSubmit(e) {
   const dateFormatted = now.toLocaleDateString("en-GB", { day: "2-digit", month: "short", year: "numeric" });
   const timeFormatted = now.toLocaleTimeString("en-US", { hour: "2-digit", minute: "2-digit" });
 
+  const complaints = getStoredComplaints();
+  const potentialDup = detectDuplicates({ id: newId, locality, category, description: desc }, complaints);
+
   const newComplaint = {
     id: newId,
     citizen: citizenName,
-    village: village,
+    village: "Rampur",
+    locality: locality,
     mobile: mobile,
     category: category,
     priority: priority,
     method: "Text Entry Fallback",
+    submissionType: "Direct Citizen",
+    volunteerName: "",
+    volunteerRole: "",
     description: desc,
-    status: "Pending",
-    statusMessage: "Complaint registered via text fallback. Awaiting panchayat review.",
+    status: "Submitted",
+    statusMessage: "Complaint registered via text fallback. Scheduled for review.",
     date: dateFormatted,
     timestamp: Date.now(),
-    lastUpdated: `${dateFormatted}, ${timeFormatted}`
+    lastUpdated: `${dateFormatted}, ${timeFormatted}`,
+    photo: currentFallbackPhotoData,
+    potentialDuplicateOf: potentialDup,
+    rating: null,
+    feedbackText: null,
+    feedbackDate: null
   };
 
-  const complaints = getStoredComplaints();
   complaints.unshift(newComplaint);
   saveComplaints(complaints);
 
   document.getElementById("modal-complaint-id").textContent = newId;
   document.getElementById("modal-citizen-name").textContent = citizenName;
+  document.getElementById("modal-locality-disp").textContent = locality;
   document.getElementById("modal-category-badge").textContent = category;
   
   const modalPrio = document.getElementById("modal-priority-badge");
@@ -1197,12 +1281,13 @@ function handleFallbackComplaintSubmit(e) {
 
   replayConfirmationAudio();
   document.getElementById("text-fallback-form").reset();
+  removeFallbackPhoto();
   showToast("Grievance Submitted", `Complaint ID: ${newId}`, "success");
   updateHeroStats();
 }
 
 // ==========================================================================
-// 6. Module 2: Complaint Tracking System
+// 10. Complaint Tracking (4-Stage Stepper, Audio Status & Resolution Feedback)
 // ==========================================================================
 
 function trackComplaintById(searchId) {
@@ -1225,19 +1310,32 @@ function trackComplaintById(searchId) {
     return;
   }
 
-  // Found complaint -> render details
   if (emptyState) emptyState.style.display = "none";
   if (notFoundAlert) notFoundAlert.style.display = "none";
   if (trackCard) trackCard.style.display = "block";
 
   document.getElementById("track-disp-id").textContent = complaint.id;
   document.getElementById("track-disp-category").textContent = complaint.category;
-  
+  document.getElementById("track-disp-locality").textContent = complaint.locality || "Rampur";
+  document.getElementById("track-disp-citizen").textContent = complaint.citizen;
+  document.getElementById("track-disp-date").textContent = complaint.date;
+  document.getElementById("track-disp-method").textContent = complaint.method;
+  document.getElementById("track-disp-description").textContent = complaint.description;
+  document.getElementById("track-disp-last-update").textContent = `Updated on: ${complaint.lastUpdated || complaint.date}`;
+  document.getElementById("track-disp-status-message").textContent = complaint.statusMessage || "Panchayat administration is currently processing this grievance.";
+
   const prioEl = document.getElementById("track-disp-priority");
   prioEl.textContent = `${complaint.priority} Priority`;
   prioEl.className = `priority-badge priority-${complaint.priority.toLowerCase()}`;
 
-  // Status Badge & Stepper
+  const typeEl = document.getElementById("track-disp-submission-type");
+  if (typeEl) {
+    typeEl.textContent = complaint.submissionType || "Direct Citizen";
+    typeEl.className = complaint.submissionType === "Volunteer-Assisted" ? "badge badge-teal" : "badge badge-neutral";
+  }
+
+  // 4-Stage Stepper Configuration
+  // Stages: Submitted (25%), Under Review (50%), In Progress (75%), Resolved (100%)
   const statusBadge = document.getElementById("track-disp-status");
   const statusText = document.getElementById("track-status-text");
   const statusIcon = document.getElementById("track-status-icon");
@@ -1248,50 +1346,180 @@ function trackComplaintById(searchId) {
   const step3 = document.getElementById("step-point-3");
   const step4 = document.getElementById("step-point-4");
 
-  // Reset steps
   [step1, step2, step3, step4].forEach(s => {
-    if (s) {
-      s.classList.remove("active", "completed");
-    }
+    if (s) s.classList.remove("active", "completed");
   });
 
-  if (complaint.status === "Pending") {
+  const currentStatus = complaint.status || "Submitted";
+
+  if (currentStatus === "Submitted") {
     statusBadge.className = "status-indicator-badge status-pending";
-    statusText.textContent = "Pending Review";
+    statusText.textContent = "1. Submitted";
     statusIcon.className = "fa-solid fa-clock";
     progressBar.style.width = "25%";
     step1.classList.add("completed");
     step2.classList.add("active");
-  } else if (complaint.status === "In Progress") {
-    statusBadge.className = "status-indicator-badge status-in-progress";
-    statusText.textContent = "In Progress";
-    statusIcon.className = "fa-solid fa-person-digging fa-spin";
-    progressBar.style.width = "65%";
+  } else if (currentStatus === "Under Review") {
+    statusBadge.className = "status-indicator-badge status-review";
+    statusText.textContent = "2. Under Review";
+    statusIcon.className = "fa-solid fa-clipboard-check";
+    progressBar.style.width = "50%";
     step1.classList.add("completed");
     step2.classList.add("completed");
     step3.classList.add("active");
-  } else if (complaint.status === "Resolved") {
+  } else if (currentStatus === "In Progress") {
+    statusBadge.className = "status-indicator-badge status-in-progress";
+    statusText.textContent = "3. In Progress";
+    statusIcon.className = "fa-solid fa-person-digging fa-spin";
+    progressBar.style.width = "75%";
+    step1.classList.add("completed");
+    step2.classList.add("completed");
+    step3.classList.add("completed");
+    step4.classList.add("active");
+  } else if (currentStatus === "Resolved") {
     statusBadge.className = "status-indicator-badge status-resolved";
-    statusText.textContent = "Resolved";
+    statusText.textContent = "4. Resolved";
     statusIcon.className = "fa-solid fa-circle-check";
     progressBar.style.width = "100%";
     step1.classList.add("completed");
     step2.classList.add("completed");
     step3.classList.add("completed");
     step4.classList.add("completed");
+    document.getElementById("step-resolved-note").textContent = "Completed & Closed";
   }
 
-  document.getElementById("step-date-registered").textContent = complaint.date;
-  document.getElementById("track-disp-citizen").textContent = complaint.citizen;
-  document.getElementById("track-disp-village").textContent = complaint.village;
-  document.getElementById("track-disp-date").textContent = complaint.date;
-  document.getElementById("track-disp-method").textContent = complaint.method;
-  document.getElementById("track-disp-description").textContent = complaint.description;
-  document.getElementById("track-disp-last-update").textContent = `Updated on: ${complaint.lastUpdated || complaint.date}`;
-  document.getElementById("track-disp-status-message").textContent = complaint.statusMessage || "Official panchayat team is processing this grievance.";
+  // Photo evidence display in tracking
+  const photoBox = document.getElementById("track-photo-box");
+  const photoImg = document.getElementById("track-photo-img");
+  if (photoBox && photoImg) {
+    if (complaint.photo) {
+      photoImg.src = complaint.photo;
+      photoBox.style.display = "block";
+    } else {
+      photoBox.style.display = "none";
+    }
+  }
+
+  // FEATURE 7: Citizen Resolution Feedback Section
+  const feedbackSection = document.getElementById("track-feedback-section");
+  const feedbackFormContainer = document.getElementById("feedback-form-container");
+  const feedbackSubmittedDisplay = document.getElementById("feedback-submitted-display");
+
+  if (feedbackSection) {
+    if (currentStatus === "Resolved") {
+      feedbackSection.style.display = "block";
+
+      if (complaint.rating) {
+        // Feedback already submitted
+        if (feedbackFormContainer) feedbackFormContainer.style.display = "none";
+        if (feedbackSubmittedDisplay) {
+          feedbackSubmittedDisplay.style.display = "block";
+          document.getElementById("submitted-stars-disp").textContent = "★".repeat(complaint.rating) + "☆".repeat(5 - complaint.rating);
+          document.getElementById("submitted-feedback-text").textContent = complaint.feedbackText ? `"${complaint.feedbackText}"` : "Rated without written comment.";
+        }
+      } else {
+        // Allow submitting feedback
+        if (feedbackFormContainer) feedbackFormContainer.style.display = "block";
+        if (feedbackSubmittedDisplay) feedbackSubmittedDisplay.style.display = "none";
+        selectFeedbackStar(5);
+      }
+    } else {
+      feedbackSection.style.display = "none";
+    }
+  }
 }
 
-// Quick Sample Pills in tracking page
+function startVoiceSearchTrackId() {
+  if (!speechRecognition) {
+    initializeSpeechRecognition();
+    if (!speechRecognition) return;
+  }
+
+  isRecordingTrackingSearch = true;
+  isRecordingVoiceFirst = false;
+  isRecordingVolunteer = false;
+  isRecordingFeedback = false;
+  speechRecognition.lang = selectedVoiceLang;
+
+  showToast("Listening for Complaint ID", "Speak your ID (e.g. GV-2026-001 or 001)...", "info");
+  if (selectedVoiceLang.startsWith("te")) {
+    speakAloud("మీ ఫిర్యాదు సంఖ్యను చెప్పండి, ఉదాహరణకు 001", "te-IN");
+  } else if (selectedVoiceLang.startsWith("hi")) {
+    speakAloud("अपनी शिकायत संख्या बोलें, जैसे कि 001", "hi-IN");
+  } else {
+    speakAloud("Speak your complaint ID, for example 001", "en-IN");
+  }
+
+  try {
+    speechRecognition.start();
+  } catch (e) {
+    console.warn("Tracking voice search start error:", e);
+  }
+}
+
+function selectFeedbackStar(rating) {
+  const hiddenInput = document.getElementById("selected-star-rating");
+  if (hiddenInput) hiddenInput.value = rating;
+
+  const stars = document.querySelectorAll("#star-rating-widget .star-btn");
+  stars.forEach((star, index) => {
+    if (index < rating) {
+      star.classList.add("active");
+    } else {
+      star.classList.remove("active");
+    }
+  });
+
+  const label = document.getElementById("feedback-rating-label");
+  const labels = ["1 Star - Poor", "2 Stars - Fair", "3 Stars - Good", "4 Stars - Very Good", "5 Stars - Excellent Resolution!"];
+  if (label) label.textContent = labels[rating - 1] || `${rating} Stars`;
+}
+
+function toggleFeedbackVoice() {
+  if (!speechRecognition) {
+    initializeSpeechRecognition();
+    if (!speechRecognition) return;
+  }
+
+  isRecordingFeedback = true;
+  isRecordingVoiceFirst = false;
+  isRecordingVolunteer = false;
+  isRecordingTrackingSearch = false;
+  speechRecognition.lang = selectedVoiceLang;
+  showToast("Recording Feedback", "Speak your comments aloud...", "info");
+
+  try {
+    speechRecognition.start();
+  } catch (e) {
+    console.warn(e);
+  }
+}
+
+function submitCitizenFeedback() {
+  const compId = document.getElementById("track-disp-id")?.textContent;
+  if (!compId) return;
+
+  const rating = parseInt(document.getElementById("selected-star-rating")?.value || "5", 10);
+  const comment = document.getElementById("feedback-comment-input")?.value.trim() || "";
+
+  const complaints = getStoredComplaints();
+  const idx = complaints.findIndex(c => c.id === compId);
+
+  if (idx !== -1) {
+    const now = new Date();
+    const dateFormatted = now.toLocaleDateString("en-GB", { day: "2-digit", month: "short", year: "numeric" });
+
+    complaints[idx].rating = rating;
+    complaints[idx].feedbackText = comment;
+    complaints[idx].feedbackDate = dateFormatted;
+    saveComplaints(complaints);
+
+    showToast("Feedback Recorded", `Thank you for rating this resolution ${rating} stars!`, "success");
+    trackComplaintById(compId);
+    updateHeroStats();
+  }
+}
+
 function setupTrackingQuickSamples() {
   const container = document.getElementById("sample-complaint-pills");
   if (!container) return;
@@ -1308,502 +1536,214 @@ function setupTrackingQuickSamples() {
 }
 
 // ==========================================================================
-// 7. Module 3: Village Education Directory
+// 11. Village Issues Map (Interactive Rampur Locality Breakdown)
 // ==========================================================================
 
-function renderEducationProfiles() {
-  const grid = document.getElementById("edu-profiles-grid");
+function renderVillageIssuesMap() {
+  const grid = document.getElementById("village-map-grid");
   if (!grid) return;
 
-  const eduList = getStoredEducation();
-  const searchVal = (document.getElementById("edu-search")?.value || "").toLowerCase();
-  const qualFilter = document.getElementById("edu-filter-qual")?.value || "ALL";
-  const fieldFilter = document.getElementById("edu-filter-field")?.value || "ALL";
-  const mentorFilter = document.getElementById("edu-filter-mentor")?.value || "ALL";
+  const complaints = getStoredComplaints();
 
-  const filtered = eduList.filter(item => {
-    // Search
-    const matchSearch = item.name.toLowerCase().includes(searchVal) || 
-                        item.skills.toLowerCase().includes(searchVal) ||
-                        item.occupation.toLowerCase().includes(searchVal);
-    // Filters
-    const matchQual = qualFilter === "ALL" || item.qualification === qualFilter;
-    const matchField = fieldFilter === "ALL" || item.field === fieldFilter;
-    const matchMentor = mentorFilter === "ALL" || (mentorFilter === "YES" && item.willingToGuide);
-
-    return matchSearch && matchQual && matchField && matchMentor;
+  // Aggregate stats per locality
+  const localityData = {};
+  RAMPUR_LOCALITIES.forEach(loc => {
+    localityData[loc] = {
+      total: 0,
+      active: 0,
+      resolved: 0,
+      highPriority: 0,
+      categories: {}
+    };
   });
 
-  const countEl = document.getElementById("edu-results-count");
-  if (countEl) {
-    countEl.textContent = `Showing ${filtered.length} of ${eduList.length} educated mentors`;
-  }
-
-  if (filtered.length === 0) {
-    grid.innerHTML = `
-      <div class="empty-state-card" style="grid-column: 1 / -1;">
-        <div class="empty-icon"><i class="fa-solid fa-graduation-cap"></i></div>
-        <h3>No Matching Profiles Found</h3>
-        <p>Try clearing your search terms or reset the filters to view all village education profiles.</p>
-      </div>
-    `;
-    return;
-  }
-
-  grid.innerHTML = filtered.map(item => {
-    // Avatar initials
-    const initials = item.name.split(" ").map(w => w[0]).join("").slice(0, 2).toUpperCase();
-    
-    // Skills tags
-    const skillTags = item.skills.split(",").map(s => s.trim()).filter(Boolean);
-    const tagsHtml = skillTags.map(tag => `<span class="skill-tag">${tag}</span>`).join("");
-
-    // Contact Privacy Status
-    let contactHtml = "";
-    if (item.privacyPublic && item.contact) {
-      contactHtml = `
-        <span class="privacy-status-note public-contact" title="Contact is public">
-          <i class="fa-solid fa-phone"></i> ${item.contact}
-        </span>
-      `;
-    } else {
-      contactHtml = `
-        <span class="privacy-status-note" title="Contact kept private by default">
-          <i class="fa-solid fa-shield-halved"></i> Contact Private
-        </span>
-      `;
+  complaints.forEach(c => {
+    const loc = c.locality || "Ram Mandir Street";
+    if (!localityData[loc]) {
+      localityData[loc] = { total: 0, active: 0, resolved: 0, highPriority: 0, categories: {} };
     }
+    localityData[loc].total++;
+    if (c.status === "Resolved") {
+      localityData[loc].resolved++;
+    } else {
+      localityData[loc].active++;
+    }
+    if (c.priority === "High") {
+      localityData[loc].highPriority++;
+    }
+    localityData[loc].categories[c.category] = (localityData[loc].categories[c.category] || 0) + 1;
+  });
+
+  grid.innerHTML = RAMPUR_LOCALITIES.map(loc => {
+    const data = localityData[loc];
+    const isSelected = currentSelectedMapLocality === loc;
+
+    const catBadges = Object.entries(data.categories).map(([cat, count]) => {
+      return `<span class="locality-cat-pill">${cat}: ${count}</span>`;
+    }).join("");
 
     return `
-      <div class="profile-card" data-id="${item.id}">
-        <div class="profile-card-header">
-          <div class="profile-avatar bg-teal-light text-teal">
-            ${initials}
+      <div class="village-locality-card ${isSelected ? 'selected' : ''}" onclick="filterLocalityMap('${loc}')">
+        <div class="locality-card-header">
+          <div class="locality-name-wrap">
+            <i class="fa-solid fa-location-dot text-green"></i>
+            <h4>${loc}</h4>
           </div>
-          <div class="profile-title-wrap">
-            <h4 class="profile-name">${item.name}</h4>
-            <div class="profile-location">
-              <i class="fa-solid fa-location-dot"></i> ${item.village} &bull; ${item.occupation}
-            </div>
+          <span class="badge ${data.active > 0 ? 'badge-primary' : 'badge-neutral'}">
+            ${data.active} Active Issue${data.active !== 1 ? 's' : ''}
+          </span>
+        </div>
+
+        <div class="locality-stat-row mt-2">
+          <div class="locality-mini-stat">
+            <strong>${data.total}</strong>
+            <small>Total Logged</small>
+          </div>
+          <div class="locality-mini-stat">
+            <strong class="text-green">${data.resolved}</strong>
+            <small>Resolved</small>
+          </div>
+          <div class="locality-mini-stat">
+            <strong class="${data.highPriority > 0 ? 'text-danger' : 'text-muted'}">${data.highPriority}</strong>
+            <small>Urgent High</small>
           </div>
         </div>
 
-        <div class="profile-badges-row">
-          <span class="badge-pill-edu"><i class="fa-solid fa-certificate"></i> ${item.qualification}</span>
-          <span class="badge badge-neutral">${item.field}</span>
-          ${item.willingToGuide ? `<span class="badge-mentor-tag"><i class="fa-solid fa-star"></i> Student Mentor</span>` : ""}
+        <div class="locality-cat-chips mt-3">
+          ${catBadges || '<span class="font-sm text-muted">No active issues</span>'}
         </div>
 
-        <div class="profile-meta-row">
-          <div class="meta-inline">
-            <strong>Languages:</strong> <span>${item.languages}</span>
-          </div>
-          <div class="meta-inline flex-column align-items-start">
-            <strong>Areas of Knowledge & Skills:</strong>
-            <div class="skills-tags-wrap">${tagsHtml}</div>
-          </div>
-        </div>
-
-        <div class="profile-card-footer">
-          ${contactHtml}
-          <div class="card-btn-group">
-            <button class="btn btn-sm btn-outline-primary" onclick="requestMentorship('${item.name}')">
-              <i class="fa-solid fa-envelope"></i> Request Guidance
-            </button>
-            <button class="btn btn-sm btn-outline-secondary" onclick="editEducationProfile('${item.id}')" title="Edit Profile">
-              <i class="fa-solid fa-pen"></i>
-            </button>
-            <button class="btn btn-sm btn-outline-danger" onclick="deleteEducationProfile('${item.id}')" title="Delete Profile">
-              <i class="fa-solid fa-trash"></i>
-            </button>
-          </div>
+        <div class="locality-card-footer mt-3">
+          <span class="view-issues-link"><i class="fa-solid fa-filter"></i> ${isSelected ? 'Selected Locality' : 'Filter Issues in This Area'}</span>
         </div>
       </div>
     `;
   }).join("");
+
+  renderLocalityDrilldownTable();
 }
 
-function requestMentorship(mentorName) {
-  showToast("Guidance Request Sent", `Your mentorship request to ${mentorName} has been recorded. The village coordinator will connect you!`, "success");
+function filterLocalityMap(locality) {
+  currentSelectedMapLocality = locality;
+  renderVillageIssuesMap();
 }
 
-function handleEducationSubmit(e) {
-  e.preventDefault();
+function resetLocalityMapFilter() {
+  currentSelectedMapLocality = null;
+  renderVillageIssuesMap();
+}
 
-  const editId = document.getElementById("edu-edit-id").value;
-  const name = document.getElementById("edu-name").value.trim();
-  const village = document.getElementById("edu-village").value.trim() || "Rampur";
-  const qualification = document.getElementById("edu-qualification").value;
-  const field = document.getElementById("edu-field").value;
-  const occupation = document.getElementById("edu-occupation").value.trim();
-  const languages = document.getElementById("edu-languages").value.trim();
-  const skills = document.getElementById("edu-skills").value.trim();
-  const willingToGuide = document.getElementById("edu-mentor-willing").checked;
-  const contact = document.getElementById("edu-contact").value.trim();
-  const privacyPublic = document.getElementById("edu-privacy-public").checked;
+function renderLocalityDrilldownTable() {
+  const title = document.getElementById("drilldown-locality-title");
+  const subtitle = document.getElementById("drilldown-locality-subtitle");
+  const tbody = document.getElementById("locality-complaints-tbody");
+  if (!tbody) return;
 
-  if (!name || !occupation || !skills) {
-    showToast("Missing Fields", "Please complete all required fields.", "error");
-    return;
-  }
+  const complaints = getStoredComplaints();
+  let filtered = complaints;
 
-  const eduList = getStoredEducation();
-
-  if (editId) {
-    // Editing existing
-    const idx = eduList.findIndex(item => item.id === editId);
-    if (idx !== -1) {
-      eduList[idx] = {
-        ...eduList[idx],
-        name, village, qualification, field, occupation,
-        languages, skills, willingToGuide, contact, privacyPublic
-      };
-      showToast("Profile Updated", `${name}'s profile was updated successfully.`, "success");
-    }
+  if (currentSelectedMapLocality) {
+    filtered = complaints.filter(c => (c.locality || "Ram Mandir Street") === currentSelectedMapLocality);
+    if (title) title.innerHTML = `<i class="fa-solid fa-location-dot text-green"></i> Locality: ${currentSelectedMapLocality}`;
+    if (subtitle) subtitle.textContent = `Showing ${filtered.length} issues reported in ${currentSelectedMapLocality}.`;
   } else {
-    // New profile
-    const newProfile = {
-      id: `EDU-${Date.now().toString().slice(-4)}`,
-      name, village, qualification, field, occupation,
-      languages, skills, willingToGuide, contact, privacyPublic,
-      registeredDate: new Date().toLocaleDateString("en-GB", { day: "2-digit", month: "short", year: "numeric" })
-    };
-    eduList.unshift(newProfile);
-    showToast("Profile Registered", `${name} added to the Education Directory.`, "success");
-  }
-
-  saveEducation(eduList);
-  document.getElementById("edu-register-form").reset();
-  document.getElementById("edu-edit-id").value = "";
-  document.getElementById("edu-registration-card").style.display = "none";
-  renderEducationProfiles();
-  updateHeroStats();
-}
-
-function editEducationProfile(id) {
-  const eduList = getStoredEducation();
-  const item = eduList.find(i => i.id === id);
-  if (!item) return;
-
-  document.getElementById("edu-edit-id").value = item.id;
-  document.getElementById("edu-name").value = item.name;
-  document.getElementById("edu-village").value = item.village;
-  document.getElementById("edu-qualification").value = item.qualification;
-  document.getElementById("edu-field").value = item.field;
-  document.getElementById("edu-occupation").value = item.occupation;
-  document.getElementById("edu-languages").value = item.languages;
-  document.getElementById("edu-skills").value = item.skills;
-  document.getElementById("edu-mentor-willing").checked = item.willingToGuide;
-  document.getElementById("edu-contact").value = item.contact || "";
-  document.getElementById("edu-privacy-public").checked = !!item.privacyPublic;
-
-  const card = document.getElementById("edu-registration-card");
-  card.style.display = "block";
-  card.scrollIntoView({ behavior: "smooth" });
-}
-
-function deleteEducationProfile(id) {
-  if (!confirm("Are you sure you want to remove this education profile?")) return;
-  let eduList = getStoredEducation();
-  eduList = eduList.filter(i => i.id !== id);
-  saveEducation(eduList);
-  showToast("Profile Removed", "The education profile was removed.", "info");
-  renderEducationProfiles();
-  updateHeroStats();
-}
-
-// ==========================================================================
-// 8. Module 4: Village Skills Directory
-// ==========================================================================
-
-function renderSkillsProfiles() {
-  const grid = document.getElementById("skill-profiles-grid");
-  if (!grid) return;
-
-  const skillsList = getStoredSkills();
-  const searchVal = (document.getElementById("skill-search")?.value || "").toLowerCase();
-  const catFilter = document.getElementById("skill-filter-cat")?.value || "ALL";
-  const villageFilter = document.getElementById("skill-filter-village")?.value || "ALL";
-
-  const filtered = skillsList.filter(item => {
-    const matchSearch = item.name.toLowerCase().includes(searchVal) ||
-                        item.specificSkills.toLowerCase().includes(searchVal) ||
-                        item.category.toLowerCase().includes(searchVal);
-    const matchCat = catFilter === "ALL" || item.category === catFilter;
-    const matchVillage = villageFilter === "ALL" || item.village === villageFilter;
-
-    return matchSearch && matchCat && matchVillage;
-  });
-
-  const countEl = document.getElementById("skill-results-count");
-  if (countEl) {
-    countEl.textContent = `Showing ${filtered.length} of ${skillsList.length} skilled craftsmen`;
+    if (title) title.innerHTML = `<i class="fa-solid fa-location-crosshairs text-green"></i> All Rampur Localities`;
+    if (subtitle) subtitle.textContent = "Showing all active and resolved complaints across Village Rampur.";
   }
 
   if (filtered.length === 0) {
-    grid.innerHTML = `
-      <div class="empty-state-card" style="grid-column: 1 / -1;">
-        <div class="empty-icon"><i class="fa-solid fa-screwdriver-wrench"></i></div>
-        <h3>No Skilled Workers Found</h3>
-        <p>Try adjusting your trade category or search term to discover local craftsmen.</p>
-      </div>
-    `;
+    tbody.innerHTML = `<tr><td colspan="7" class="text-center py-4 text-muted">No complaints recorded for this locality.</td></tr>`;
     return;
   }
 
-  grid.innerHTML = filtered.map(item => {
-    const initials = item.name.split(" ").map(w => w[0]).join("").slice(0, 2).toUpperCase();
-    const tradeIcon = getTradeIcon(item.category);
-
-    // Contact Privacy Status
-    let contactHtml = "";
-    if (item.privacyPublic && item.contact) {
-      contactHtml = `
-        <span class="privacy-status-note public-contact" title="Phone is publicly visible">
-          <i class="fa-solid fa-phone"></i> ${item.contact}
-        </span>
-      `;
-    } else {
-      contactHtml = `
-        <span class="privacy-status-note" title="Contact private - send request through GramVani">
-          <i class="fa-solid fa-shield-halved"></i> Contact Private
-        </span>
-      `;
-    }
+  tbody.innerHTML = filtered.map(c => {
+    let statusClass = "status-pending";
+    if (c.status === "Under Review") statusClass = "status-review";
+    if (c.status === "In Progress") statusClass = "status-in-progress";
+    if (c.status === "Resolved") statusClass = "status-resolved";
 
     return `
-      <div class="profile-card" data-id="${item.id}">
-        <div class="profile-card-header">
-          <div class="profile-avatar bg-purple-light text-purple">
-            <i class="fa-solid ${tradeIcon}"></i>
-          </div>
-          <div class="profile-title-wrap">
-            <h4 class="profile-name">${item.name}</h4>
-            <div class="profile-location">
-              <i class="fa-solid fa-location-dot"></i> ${item.village} &bull; ${item.experience}
-            </div>
-          </div>
-        </div>
-
-        <div class="profile-badges-row">
-          <span class="badge-pill-skill"><i class="fa-solid ${tradeIcon}"></i> ${item.category}</span>
-          <span class="badge badge-neutral"><i class="fa-solid fa-clock"></i> ${item.availability}</span>
-        </div>
-
-        <div class="profile-meta-row">
-          <div class="meta-inline">
-            <strong>Services & Work:</strong> <span>${item.specificSkills}</span>
-          </div>
-          <div class="meta-inline">
-            <strong>Languages:</strong> <span>${item.languages}</span>
-          </div>
-        </div>
-
-        <div class="profile-card-footer">
-          ${contactHtml}
-          <div class="card-btn-group">
-            <button class="btn btn-sm btn-primary" onclick="openServiceRequestModal('${item.id}', '${item.name}')">
-              <i class="fa-solid fa-paper-plane"></i> Request Work
-            </button>
-            <button class="btn btn-sm btn-outline-secondary" onclick="editSkillProfile('${item.id}')" title="Edit Profile">
-              <i class="fa-solid fa-pen"></i>
-            </button>
-            <button class="btn btn-sm btn-outline-danger" onclick="deleteSkillProfile('${item.id}')" title="Delete Profile">
-              <i class="fa-solid fa-trash"></i>
-            </button>
-          </div>
-        </div>
-      </div>
+      <tr>
+        <td><strong>${c.id}</strong></td>
+        <td><small>${c.locality || 'Rampur'}</small></td>
+        <td><span class="badge badge-category">${c.category}</span></td>
+        <td style="max-width: 250px;"><small class="d-block text-truncate" title="${c.description}">${c.description}</small></td>
+        <td><span class="priority-badge priority-${c.priority.toLowerCase()}">${c.priority}</span></td>
+        <td><span class="status-indicator-badge ${statusClass}" style="padding: 2px 8px; font-size: 0.75rem;">${c.status}</span></td>
+        <td>
+          <button class="btn btn-sm btn-outline-primary" onclick="switchView('track'); trackComplaintById('${c.id}');">
+            <i class="fa-solid fa-magnifying-glass"></i> Track
+          </button>
+        </td>
+      </tr>
     `;
   }).join("");
 }
 
-function getTradeIcon(category) {
-  switch (category) {
-    case "Electrician": return "fa-bolt";
-    case "Plumber": return "fa-faucet-drip";
-    case "Carpenter": return "fa-chair";
-    case "Tailor": return "fa-scissors";
-    case "Mechanic": return "fa-wrench";
-    case "Farmer": return "fa-wheat-awn";
-    case "Computer Operator": return "fa-laptop";
-    case "Teacher / Tutor": return "fa-chalkboard-user";
-    case "Healthcare Worker": return "fa-user-nurse";
-    default: return "fa-screwdriver-wrench";
-  }
-}
-
-function openServiceRequestModal(workerId, workerName) {
-  document.getElementById("request-worker-id").value = workerId;
-  document.getElementById("request-target-name").textContent = workerName;
-  const modal = document.getElementById("service-request-modal");
-  if (modal) modal.style.display = "flex";
-}
-
-function handleServiceRequestSubmit(e) {
-  e.preventDefault();
-  const citizenName = document.getElementById("request-citizen-name").value.trim();
-  const phone = document.getElementById("request-citizen-phone").value.trim();
-  const workDesc = document.getElementById("request-work-desc").value.trim();
-  const targetName = document.getElementById("request-target-name").textContent;
-
-  if (!citizenName || !phone || !workDesc) {
-    showToast("Missing Details", "Please fill in all inquiry fields.", "error");
-    return;
-  }
-
-  showToast("Request Broadcasted", `Your service request was dispatched to ${targetName}. They will call you at ${phone}!`, "success");
-  
-  // Close modal & reset
-  document.getElementById("service-request-form").reset();
-  document.getElementById("service-request-modal").style.display = "none";
-}
-
-function handleSkillSubmit(e) {
-  e.preventDefault();
-
-  const editId = document.getElementById("skill-edit-id").value;
-  const name = document.getElementById("skill-name").value.trim();
-  const village = document.getElementById("skill-village").value.trim() || "Rampur";
-  const category = document.getElementById("skill-category").value;
-  const specificSkills = document.getElementById("skill-specific").value.trim();
-  const experience = document.getElementById("skill-experience").value.trim();
-  const availability = document.getElementById("skill-availability").value.trim();
-  const languages = document.getElementById("skill-languages").value.trim();
-  const contact = document.getElementById("skill-contact").value.trim();
-  const privacyPublic = document.getElementById("skill-privacy-public").checked;
-
-  if (!name || !specificSkills || !experience) {
-    showToast("Missing Fields", "Please complete all required fields.", "error");
-    return;
-  }
-
-  const skillsList = getStoredSkills();
-
-  if (editId) {
-    const idx = skillsList.findIndex(item => item.id === editId);
-    if (idx !== -1) {
-      skillsList[idx] = {
-        ...skillsList[idx],
-        name, village, category, specificSkills, experience,
-        availability, languages, contact, privacyPublic
-      };
-      showToast("Profile Updated", `${name}'s skill profile was updated.`, "success");
-    }
-  } else {
-    const newProfile = {
-      id: `SKILL-${Date.now().toString().slice(-4)}`,
-      name, village, category, specificSkills, experience,
-      availability, languages, contact, privacyPublic,
-      registeredDate: new Date().toLocaleDateString("en-GB", { day: "2-digit", month: "short", year: "numeric" })
-    };
-    skillsList.unshift(newProfile);
-    showToast("Skill Registered", `${name} added to the Village Skills Directory.`, "success");
-  }
-
-  saveSkills(skillsList);
-  document.getElementById("skill-register-form").reset();
-  document.getElementById("skill-edit-id").value = "";
-  document.getElementById("skill-registration-card").style.display = "none";
-  renderSkillsProfiles();
-  updateHeroStats();
-}
-
-function editSkillProfile(id) {
-  const skillsList = getStoredSkills();
-  const item = skillsList.find(i => i.id === id);
-  if (!item) return;
-
-  document.getElementById("skill-edit-id").value = item.id;
-  document.getElementById("skill-name").value = item.name;
-  document.getElementById("skill-village").value = item.village;
-  document.getElementById("skill-category").value = item.category;
-  document.getElementById("skill-specific").value = item.specificSkills;
-  document.getElementById("skill-experience").value = item.experience;
-  document.getElementById("skill-availability").value = item.availability;
-  document.getElementById("skill-languages").value = item.languages;
-  document.getElementById("skill-contact").value = item.contact || "";
-  document.getElementById("skill-privacy-public").checked = !!item.privacyPublic;
-
-  const card = document.getElementById("skill-registration-card");
-  card.style.display = "block";
-  card.scrollIntoView({ behavior: "smooth" });
-}
-
-function deleteSkillProfile(id) {
-  if (!confirm("Are you sure you want to remove this skill registration?")) return;
-  let skillsList = getStoredSkills();
-  skillsList = skillsList.filter(i => i.id !== id);
-  saveSkills(skillsList);
-  showToast("Profile Removed", "The skills profile was removed.", "info");
-  renderSkillsProfiles();
-  updateHeroStats();
-}
-
 // ==========================================================================
-// 9. Module 5: Admin Dashboard & Charts
+// 12. Improved Admin Dashboard (Live KPIs, 3 Chart.js Visuals, Duplicates)
 // ==========================================================================
 
 let chartCatInstance = null;
 let chartStatusInstance = null;
-let chartEduInstance = null;
-let chartSkillsInstance = null;
+let chartLocalityInstance = null;
 
 function renderAdminDashboard() {
   const complaints = getStoredComplaints();
-  const eduList = getStoredEducation();
-  const skillsList = getStoredSkills();
 
-  // Metrics
-  const totalComplaints = complaints.length;
-  const pendingCount = complaints.filter(c => c.status === "Pending").length;
-  const inProgressCount = complaints.filter(c => c.status === "In Progress").length;
-  const resolvedCount = complaints.filter(c => c.status === "Resolved").length;
-  const totalEdu = eduList.length;
-  const totalSkills = skillsList.length;
+  // 1. Calculate Metrics
+  const total = complaints.length;
+  const pending = complaints.filter(c => c.status === "Submitted" || c.status === "Under Review").length;
+  const inProgress = complaints.filter(c => c.status === "In Progress").length;
+  const resolved = complaints.filter(c => c.status === "Resolved").length;
+  const volunteerAssisted = complaints.filter(c => c.submissionType === "Volunteer-Assisted").length;
+  const duplicates = complaints.filter(c => !!c.potentialDuplicateOf).length;
+
+  // Average Citizen Satisfaction
+  const rated = complaints.filter(c => typeof c.rating === "number" && c.rating > 0);
+  let avgRatingStr = "★ N/A";
+  if (rated.length > 0) {
+    const avg = (rated.reduce((acc, c) => acc + c.rating, 0) / rated.length).toFixed(1);
+    avgRatingStr = `★ ${avg}`;
+  }
 
   // Update DOM Numbers
-  document.getElementById("dash-total-complaints").textContent = totalComplaints;
-  document.getElementById("dash-pending-complaints").textContent = pendingCount;
-  document.getElementById("dash-inprogress-complaints").textContent = inProgressCount;
-  document.getElementById("dash-resolved-complaints").textContent = resolvedCount;
-  document.getElementById("dash-total-edu").textContent = totalEdu;
-  document.getElementById("dash-total-skills").textContent = totalSkills;
+  const elTotal = document.getElementById("dash-total-complaints");
+  const elPending = document.getElementById("dash-pending-complaints");
+  const elInProgress = document.getElementById("dash-inprogress-complaints");
+  const elResolved = document.getElementById("dash-resolved-complaints");
+  const elVolunteer = document.getElementById("dash-volunteer-complaints");
+  const elDuplicate = document.getElementById("dash-duplicate-complaints");
+  const elSatisfaction = document.getElementById("dash-satisfaction-rating");
+  const elBadgeCount = document.getElementById("admin-badge-complaints-count");
 
-  document.getElementById("admin-badge-complaints-count").textContent = totalComplaints;
-  document.getElementById("admin-badge-edu-count").textContent = totalEdu;
-  document.getElementById("admin-badge-skills-count").textContent = totalSkills;
+  if (elTotal) elTotal.textContent = total;
+  if (elPending) elPending.textContent = pending;
+  if (elInProgress) elInProgress.textContent = inProgress;
+  if (elResolved) elResolved.textContent = resolved;
+  if (elVolunteer) elVolunteer.textContent = volunteerAssisted;
+  if (elDuplicate) elDuplicate.textContent = duplicates;
+  if (elSatisfaction) elSatisfaction.textContent = avgRatingStr;
+  if (elBadgeCount) elBadgeCount.textContent = total;
 
-  // Render Charts
-  renderAdminCharts(complaints, eduList, skillsList);
+  // 2. Render Analytics Charts
+  renderAdminCharts(complaints);
 
-  // Render Tables
+  // 3. Render Complaints Table
   renderAdminComplaintsTable();
-  renderAdminEducationTable();
-  renderAdminSkillsTable();
 }
 
-function renderAdminCharts(complaints, eduList, skillsList) {
+function renderAdminCharts(complaints) {
   if (typeof Chart === "undefined") {
     console.warn("Chart.js not loaded");
     return;
   }
 
-  // 1. Complaints by Category
-  const catCounts = {
-    "Water Supply": 0,
-    "Roads": 0,
-    "Electricity": 0,
-    "Sanitation": 0,
-    "Drainage": 0,
-    "Other": 0
-  };
+  // Chart 1: Categories
+  const catCounts = { "Water Supply": 0, "Roads": 0, "Electricity": 0, "Sanitation": 0, "Drainage": 0, "Other": 0 };
   complaints.forEach(c => {
-    if (catCounts[c.category] !== undefined) {
-      catCounts[c.category]++;
-    } else {
-      catCounts["Other"]++;
-    }
+    if (catCounts[c.category] !== undefined) catCounts[c.category]++;
+    else catCounts["Other"]++;
   });
 
   const catCanvas = document.getElementById("chartComplaintsCategory");
@@ -1821,16 +1761,15 @@ function renderAdminCharts(complaints, eduList, skillsList) {
       options: {
         responsive: true,
         maintainAspectRatio: false,
-        plugins: {
-          legend: { position: "bottom", labels: { boxWidth: 12, font: { size: 11 } } }
-        }
+        plugins: { legend: { position: "bottom", labels: { boxWidth: 12, font: { size: 11 } } } }
       }
     });
   }
 
-  // 2. Complaints by Status
+  // Chart 2: 4-Stage Statuses
   const statusCounts = {
-    "Pending": complaints.filter(c => c.status === "Pending").length,
+    "Submitted": complaints.filter(c => c.status === "Submitted").length,
+    "Under Review": complaints.filter(c => c.status === "Under Review").length,
     "In Progress": complaints.filter(c => c.status === "In Progress").length,
     "Resolved": complaints.filter(c => c.status === "Resolved").length
   };
@@ -1841,38 +1780,38 @@ function renderAdminCharts(complaints, eduList, skillsList) {
     chartStatusInstance = new Chart(statusCanvas, {
       type: "pie",
       data: {
-        labels: ["Pending", "In Progress", "Resolved"],
+        labels: ["Submitted", "Under Review", "In Progress", "Resolved"],
         datasets: [{
           data: Object.values(statusCounts),
-          backgroundColor: ["#f57c00", "#1976d2", "#2e7d32"]
+          backgroundColor: ["#f57c00", "#ab47bc", "#1976d2", "#2e7d32"]
         }]
       },
       options: {
         responsive: true,
         maintainAspectRatio: false,
-        plugins: {
-          legend: { position: "bottom", labels: { boxWidth: 12, font: { size: 11 } } }
-        }
+        plugins: { legend: { position: "bottom", labels: { boxWidth: 12, font: { size: 11 } } } }
       }
     });
   }
 
-  // 3. Education by Qualification
-  const qualCounts = {};
-  eduList.forEach(e => {
-    qualCounts[e.qualification] = (qualCounts[e.qualification] || 0) + 1;
+  // Chart 3: Localities Distribution
+  const locCounts = {};
+  RAMPUR_LOCALITIES.forEach(loc => locCounts[loc] = 0);
+  complaints.forEach(c => {
+    const loc = c.locality || "Ram Mandir Street";
+    locCounts[loc] = (locCounts[loc] || 0) + 1;
   });
 
-  const eduCanvas = document.getElementById("chartEducationQual");
-  if (eduCanvas) {
-    if (chartEduInstance) chartEduInstance.destroy();
-    chartEduInstance = new Chart(eduCanvas, {
+  const locCanvas = document.getElementById("chartComplaintsLocality");
+  if (locCanvas) {
+    if (chartLocalityInstance) chartLocalityInstance.destroy();
+    chartLocalityInstance = new Chart(locCanvas, {
       type: "bar",
       data: {
-        labels: Object.keys(qualCounts),
+        labels: Object.keys(locCounts).map(l => l.replace(" & ", "\n")),
         datasets: [{
-          label: "Graduates",
-          data: Object.values(qualCounts),
+          label: "Complaints per Locality",
+          data: Object.values(locCounts),
           backgroundColor: "#00796b"
         }]
       },
@@ -1884,38 +1823,8 @@ function renderAdminCharts(complaints, eduList, skillsList) {
       }
     });
   }
-
-  // 4. Skills by Category
-  const skillCounts = {};
-  skillsList.forEach(s => {
-    skillCounts[s.category] = (skillCounts[s.category] || 0) + 1;
-  });
-
-  const skillsCanvas = document.getElementById("chartSkillsCategory");
-  if (skillsCanvas) {
-    if (chartSkillsInstance) chartSkillsInstance.destroy();
-    chartSkillsInstance = new Chart(skillsCanvas, {
-      type: "bar",
-      data: {
-        labels: Object.keys(skillCounts),
-        datasets: [{
-          label: "Tradesmen",
-          data: Object.values(skillCounts),
-          backgroundColor: "#7b1fa2"
-        }]
-      },
-      options: {
-        indexAxis: "y",
-        responsive: true,
-        maintainAspectRatio: false,
-        scales: { x: { beginAtZero: true, ticks: { precision: 0 } } },
-        plugins: { legend: { display: false } }
-      }
-    });
-  }
 }
 
-// Render Admin Complaints Table
 function renderAdminComplaintsTable() {
   const tbody = document.getElementById("admin-complaints-tbody");
   if (!tbody) return;
@@ -1924,40 +1833,76 @@ function renderAdminComplaintsTable() {
   const searchVal = (document.getElementById("admin-complaint-search")?.value || "").toLowerCase();
   const catFilter = document.getElementById("admin-complaint-filter-cat")?.value || "ALL";
   const statusFilter = document.getElementById("admin-complaint-filter-status")?.value || "ALL";
+  const locFilter = document.getElementById("admin-complaint-filter-locality")?.value || "ALL";
+  const typeFilter = document.getElementById("admin-complaint-filter-type")?.value || "ALL";
 
   const filtered = complaints.filter(c => {
     const matchSearch = c.id.toLowerCase().includes(searchVal) ||
                         c.citizen.toLowerCase().includes(searchVal) ||
+                        (c.locality && c.locality.toLowerCase().includes(searchVal)) ||
                         c.description.toLowerCase().includes(searchVal);
     const matchCat = catFilter === "ALL" || c.category === catFilter;
     const matchStatus = statusFilter === "ALL" || c.status === statusFilter;
-    return matchSearch && matchCat && matchStatus;
+    const matchLoc = locFilter === "ALL" || (c.locality || "Ram Mandir Street") === locFilter;
+
+    let matchType = true;
+    if (typeFilter === "Direct") matchType = c.submissionType !== "Volunteer-Assisted";
+    else if (typeFilter === "Volunteer") matchType = c.submissionType === "Volunteer-Assisted";
+    else if (typeFilter === "Duplicate") matchType = !!c.potentialDuplicateOf;
+
+    return matchSearch && matchCat && matchStatus && matchLoc && matchType;
   });
 
   if (filtered.length === 0) {
-    tbody.innerHTML = `<tr><td colspan="8" class="text-center py-4 text-muted">No complaints found matching filters.</td></tr>`;
+    tbody.innerHTML = `<tr><td colspan="9" class="text-center py-4 text-muted">No grievances found matching filters.</td></tr>`;
     return;
   }
 
   tbody.innerHTML = filtered.map(c => {
     let statusClass = "status-pending";
+    if (c.status === "Under Review") statusClass = "status-review";
     if (c.status === "In Progress") statusClass = "status-in-progress";
     if (c.status === "Resolved") statusClass = "status-resolved";
+
+    // Photo icon or thumbnail
+    let photoCell = '<span class="text-muted font-sm">None</span>';
+    if (c.photo) {
+      photoCell = `
+        <button type="button" class="btn-icon-photo" onclick="openPhotoViewerModal('${c.photo}')" title="View attached photo">
+          <i class="fa-solid fa-camera text-teal"></i> Photo
+        </button>
+      `;
+    }
+
+    // Duplicate alert
+    let duplicateCell = '<span class="text-muted font-sm">-</span>';
+    if (c.potentialDuplicateOf) {
+      duplicateCell = `
+        <button type="button" class="btn-duplicate-warning" onclick="openDuplicateModal('${c.id}', '${c.potentialDuplicateOf}')" title="Compare with ${c.potentialDuplicateOf}">
+          <i class="fa-solid fa-clone text-danger"></i> Duplicate of ${c.potentialDuplicateOf}
+        </button>
+      `;
+    }
+
+    // Rating stars
+    let ratingCell = '<span class="text-muted font-sm">-</span>';
+    if (c.rating) {
+      ratingCell = `<span class="rating-stars-sm text-gold" title="${c.feedbackText || ''}">${"★".repeat(c.rating)}</span>`;
+    }
 
     return `
       <tr id="admin-row-${c.id}">
         <td><strong>${c.id}</strong></td>
         <td>
           <div><strong>${c.citizen}</strong></div>
-          <small class="text-muted">${c.village} &bull; ${c.date}</small>
+          <small class="text-muted"><i class="fa-solid fa-map-pin"></i> ${c.locality || 'Rampur'} &bull; ${c.date}</small>
         </td>
         <td><span class="badge badge-category">${c.category}</span></td>
         <td><span class="priority-badge priority-${c.priority.toLowerCase()}">${c.priority}</span></td>
-        <td><small>${c.method}</small></td>
-        <td><span class="status-indicator-badge ${statusClass}" style="padding: 3px 10px; font-size: 0.78rem;">${c.status}</span></td>
-        <td style="max-width: 240px;">
-          <small class="d-block text-truncate" title="${c.statusMessage || ''}">${c.statusMessage || 'Pending review'}</small>
-        </td>
+        <td>${photoCell}</td>
+        <td><span class="status-indicator-badge ${statusClass}" style="padding: 2px 8px; font-size: 0.78rem;">${c.status}</span></td>
+        <td>${duplicateCell}</td>
+        <td>${ratingCell}</td>
         <td>
           <div class="card-btn-group">
             <button class="btn btn-sm btn-outline-primary" onclick="openAdminStatusModal('${c.id}')" title="Update Status">
@@ -1980,7 +1925,7 @@ function openAdminStatusModal(complaintId) {
 
   document.getElementById("admin-edit-complaint-id").value = c.id;
   document.getElementById("modal-edit-id").textContent = c.id;
-  document.getElementById("admin-select-status").value = c.status;
+  document.getElementById("admin-select-status").value = c.status || "Submitted";
   document.getElementById("admin-input-status-note").value = c.statusMessage || "";
 
   const modal = document.getElementById("admin-status-modal");
@@ -2011,12 +1956,9 @@ function handleAdminStatusUpdate(e) {
     complaints[idx].lastUpdated = `${dateFormatted}, ${timeFormatted}`;
     saveComplaints(complaints);
 
-    showToast("Grievance Updated", `${id} marked as ${newStatus}. Live tracking updated!`, "success");
+    showToast("Grievance Updated", `${id} marked as "${newStatus}". Live tracking updated!`, "success");
 
-    // Close modal
     document.getElementById("admin-status-modal").style.display = "none";
-
-    // Refresh Admin & Live Track view
     renderAdminDashboard();
     trackComplaintById(id);
     updateHeroStats();
@@ -2047,99 +1989,47 @@ function highlightComplaintInAdmin(complaintId) {
   }, 300);
 }
 
-// Render Admin Education Table
-function renderAdminEducationTable() {
-  const tbody = document.getElementById("admin-edu-tbody");
-  if (!tbody) return;
-
-  const eduList = getStoredEducation();
-  tbody.innerHTML = eduList.map(item => `
-    <tr>
-      <td><strong>${item.name}</strong><br><small class="text-muted">${item.village}</small></td>
-      <td><span class="badge badge-category">${item.qualification}</span></td>
-      <td>${item.field}</td>
-      <td>${item.occupation}</td>
-      <td>${item.willingToGuide ? '<span class="badge-mentor-tag">Active Mentor</span>' : '<span class="text-muted">No</span>'}</td>
-      <td>${item.privacyPublic ? '<span class="text-green"><i class="fa-solid fa-eye"></i> Public</span>' : '<span class="text-muted"><i class="fa-solid fa-lock"></i> Private</span>'}</td>
-      <td>
-        <button class="btn btn-sm btn-outline-danger" onclick="deleteEducationProfile('${item.id}'); renderAdminEducationTable();">
-          <i class="fa-solid fa-trash"></i>
-        </button>
-      </td>
-    </tr>
-  `).join("");
-}
-
-// Render Admin Skills Table
-function renderAdminSkillsTable() {
-  const tbody = document.getElementById("admin-skills-tbody");
-  if (!tbody) return;
-
-  const skillsList = getStoredSkills();
-  tbody.innerHTML = skillsList.map(item => `
-    <tr>
-      <td><strong>${item.name}</strong><br><small class="text-muted">${item.village}</small></td>
-      <td><span class="badge-pill-skill">${item.category}</span></td>
-      <td style="max-width: 220px;"><small class="d-block text-truncate" title="${item.specificSkills}">${item.specificSkills}</small></td>
-      <td>${item.experience}</td>
-      <td><small>${item.availability}</small></td>
-      <td>${item.privacyPublic ? '<span class="text-green"><i class="fa-solid fa-eye"></i> Public</span>' : '<span class="text-muted"><i class="fa-solid fa-lock"></i> Private</span>'}</td>
-      <td>
-        <button class="btn btn-sm btn-outline-danger" onclick="deleteSkillProfile('${item.id}'); renderAdminSkillsTable();">
-          <i class="fa-solid fa-trash"></i>
-        </button>
-      </td>
-    </tr>
-  `).join("");
-}
-
 // ==========================================================================
-// 10. Hero & Global Stats Synchronization
+// 13. Global Stats Synchronization
 // ==========================================================================
 
 function updateHeroStats() {
   const complaints = getStoredComplaints();
-  const eduList = getStoredEducation();
-  const skillsList = getStoredSkills();
 
-  const totalComplaints = complaints.length;
+  const total = complaints.length;
   const resolved = complaints.filter(c => c.status === "Resolved").length;
-  const totalEdu = eduList.length;
-  const totalSkills = skillsList.length;
+  const volunteerCount = complaints.filter(c => c.submissionType === "Volunteer-Assisted").length;
 
   const elComplaints = document.getElementById("hero-stat-complaints");
   const elResolved = document.getElementById("hero-stat-resolved");
-  const elMentors = document.getElementById("hero-stat-mentors");
-  const elSkills = document.getElementById("hero-stat-skills");
+  const elVolunteer = document.getElementById("hero-stat-volunteer");
+  const elLocalities = document.getElementById("hero-stat-localities");
 
-  if (elComplaints) elComplaints.textContent = totalComplaints;
+  if (elComplaints) elComplaints.textContent = total;
   if (elResolved) elResolved.textContent = resolved;
-  if (elMentors) elMentors.textContent = totalEdu;
-  if (elSkills) elSkills.textContent = totalSkills;
+  if (elVolunteer) elVolunteer.textContent = volunteerCount;
+  if (elLocalities) elLocalities.textContent = RAMPUR_LOCALITIES.length;
 }
 
 function refreshAllViews() {
   updateHeroStats();
-  renderEducationProfiles();
-  renderSkillsProfiles();
   renderAdminDashboard();
+  renderVillageIssuesMap();
   trackComplaintById("GV-2026-001");
 }
 
 // ==========================================================================
-// 11. Event Listeners & Application Bootstrapping
+// 14. Event Listeners & Application Bootstrapping
 // ==========================================================================
 
 document.addEventListener("DOMContentLoaded", () => {
-  // 1. Initialize Default Data in Storage if empty
+  // 1. Initialize default dataset
   getStoredComplaints();
-  getStoredEducation();
-  getStoredSkills();
 
-  // 2. Initialize Voice Support
+  // 2. Initialize Speech Recognition
   initializeSpeechRecognition();
 
-  // 3. Navigation Bar Event Listeners
+  // 3. Navigation Bar Listeners
   const navToggle = document.getElementById("nav-toggle");
   const primaryNav = document.getElementById("primary-nav");
   if (navToggle && primaryNav) {
@@ -2149,7 +2039,6 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  // Nav link clicks
   document.querySelectorAll(".nav-link").forEach(link => {
     link.addEventListener("click", (e) => {
       const view = link.getAttribute("data-view");
@@ -2160,7 +2049,6 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   });
 
-  // Top banner close button
   const bannerClose = document.getElementById("banner-close");
   if (bannerClose) {
     bannerClose.addEventListener("click", () => {
@@ -2169,24 +2057,80 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  // 4. Voice-First, Assisted & Fallback Complaint Form Events
+  // 4. Voice-First Photo File Input Listener
+  const voicePhotoInput = document.getElementById("voice-photo-input");
+  if (voicePhotoInput) {
+    voicePhotoInput.addEventListener("change", (e) => {
+      const file = e.target.files[0];
+      if (file) {
+        compressImageFile(file, 500, 0.7, (compressedUri) => {
+          if (compressedUri) {
+            currentVoicePhotoData = compressedUri;
+            const preview = document.getElementById("voice-photo-preview");
+            const previewWrap = document.getElementById("voice-photo-preview-wrap");
+            if (preview && previewWrap) {
+              preview.src = compressedUri;
+              previewWrap.style.display = "flex";
+            }
+          }
+        });
+      }
+    });
+  }
+
+  // 5. Volunteer Mode Photo Input Listener
+  const volPhotoInput = document.getElementById("vol-photo-input");
+  if (volPhotoInput) {
+    volPhotoInput.addEventListener("change", (e) => {
+      const file = e.target.files[0];
+      if (file) {
+        compressImageFile(file, 500, 0.7, (compressedUri) => {
+          if (compressedUri) {
+            currentVolunteerPhotoData = compressedUri;
+            const preview = document.getElementById("vol-photo-preview");
+            const previewWrap = document.getElementById("vol-photo-preview-wrap");
+            if (preview && previewWrap) {
+              preview.src = compressedUri;
+              previewWrap.style.display = "flex";
+            }
+          }
+        });
+      }
+    });
+  }
+
+  // 6. Fallback Mode Photo Input Listener
+  const fallbackPhotoInput = document.getElementById("fallback-photo-input");
+  if (fallbackPhotoInput) {
+    fallbackPhotoInput.addEventListener("change", (e) => {
+      const file = e.target.files[0];
+      if (file) {
+        compressImageFile(file, 500, 0.7, (compressedUri) => {
+          if (compressedUri) {
+            currentFallbackPhotoData = compressedUri;
+            const preview = document.getElementById("fallback-photo-preview");
+            const previewWrap = document.getElementById("fallback-photo-preview-wrap");
+            if (preview && previewWrap) {
+              preview.src = compressedUri;
+              previewWrap.style.display = "flex";
+            }
+          }
+        });
+      }
+    });
+  }
+
+  // 7. Form Submissions
   const voiceFirstDesc = document.getElementById("voice-first-desc");
   if (voiceFirstDesc) {
     voiceFirstDesc.addEventListener("input", () => {
-      classifyVoiceFirstText(voiceFirstDesc.value);
+      updateVoiceFirstClassification(voiceFirstDesc.value);
     });
   }
 
-  const assistedForm = document.getElementById("assisted-complaint-form");
-  if (assistedForm) {
-    assistedForm.addEventListener("submit", handleAssistedComplaintSubmit);
-  }
-
-  const assistedDesc = document.getElementById("assisted-desc");
-  if (assistedDesc) {
-    assistedDesc.addEventListener("input", () => {
-      classifyAssistedText(assistedDesc.value);
-    });
+  const volForm = document.getElementById("volunteer-submission-form");
+  if (volForm) {
+    volForm.addEventListener("submit", handleVolunteerComplaintSubmit);
   }
 
   const textFallbackForm = document.getElementById("text-fallback-form");
@@ -2194,17 +2138,39 @@ document.addEventListener("DOMContentLoaded", () => {
     textFallbackForm.addEventListener("submit", handleFallbackComplaintSubmit);
   }
 
-  // Pre-fetch browser speech synthesis voices
-  if (window.speechSynthesis) {
-    window.speechSynthesis.getVoices();
-    if (window.speechSynthesis.onvoiceschanged !== undefined) {
-      window.speechSynthesis.onvoiceschanged = () => {
-        window.speechSynthesis.getVoices();
-      };
-    }
+  // 8. Tracking Form
+  const trackingForm = document.getElementById("tracking-search-form");
+  if (trackingForm) {
+    trackingForm.addEventListener("submit", (e) => {
+      e.preventDefault();
+      const input = document.getElementById("track-id-input");
+      if (input) trackComplaintById(input.value);
+    });
+  }
+  setupTrackingQuickSamples();
+
+  // 9. Admin Search & Filters
+  const adminSearch = document.getElementById("admin-complaint-search");
+  const adminCatFilter = document.getElementById("admin-complaint-filter-cat");
+  const adminStatusFilter = document.getElementById("admin-complaint-filter-status");
+  const adminLocFilter = document.getElementById("admin-complaint-filter-locality");
+  const adminTypeFilter = document.getElementById("admin-complaint-filter-type");
+
+  [adminSearch, adminCatFilter, adminStatusFilter, adminLocFilter, adminTypeFilter].forEach(el => {
+    if (el) el.addEventListener("input", renderAdminComplaintsTable);
+  });
+
+  const adminUpdateForm = document.getElementById("admin-update-form");
+  if (adminUpdateForm) adminUpdateForm.addEventListener("submit", handleAdminStatusUpdate);
+
+  const btnCloseAdminModal = document.getElementById("btn-close-admin-modal");
+  if (btnCloseAdminModal) {
+    btnCloseAdminModal.addEventListener("click", () => {
+      document.getElementById("admin-status-modal").style.display = "none";
+    });
   }
 
-  // Modal Actions
+  // Success Modal Actions
   const btnCopyId = document.getElementById("btn-copy-id");
   if (btnCopyId) {
     btnCopyId.addEventListener("click", () => {
@@ -2234,140 +2200,11 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  // 5. Tracking Page Events
-  const trackingForm = document.getElementById("tracking-search-form");
-  if (trackingForm) {
-    trackingForm.addEventListener("submit", (e) => {
-      e.preventDefault();
-      const input = document.getElementById("track-id-input");
-      if (input) trackComplaintById(input.value);
-    });
-  }
-  setupTrackingQuickSamples();
-
-  // 6. Education Directory Events
-  const btnToggleEdu = document.getElementById("btn-toggle-edu-form");
-  const btnCloseEdu = document.getElementById("btn-close-edu-form");
-  const btnCancelEdu = document.getElementById("btn-cancel-edu");
-  const eduCard = document.getElementById("edu-registration-card");
-
-  if (btnToggleEdu && eduCard) {
-    btnToggleEdu.addEventListener("click", () => {
-      document.getElementById("edu-register-form").reset();
-      document.getElementById("edu-edit-id").value = "";
-      eduCard.style.display = eduCard.style.display === "none" ? "block" : "none";
-    });
-  }
-  if (btnCloseEdu && eduCard) btnCloseEdu.addEventListener("click", () => eduCard.style.display = "none");
-  if (btnCancelEdu && eduCard) btnCancelEdu.addEventListener("click", () => eduCard.style.display = "none");
-
-  const eduForm = document.getElementById("edu-register-form");
-  if (eduForm) eduForm.addEventListener("submit", handleEducationSubmit);
-
-  // Education Filters
-  const eduSearch = document.getElementById("edu-search");
-  const eduQual = document.getElementById("edu-filter-qual");
-  const eduField = document.getElementById("edu-filter-field");
-  const eduMentor = document.getElementById("edu-filter-mentor");
-  const btnResetEdu = document.getElementById("btn-reset-edu-filters");
-
-  [eduSearch, eduQual, eduField, eduMentor].forEach(el => {
-    if (el) el.addEventListener("input", renderEducationProfiles);
-  });
-  if (btnResetEdu) {
-    btnResetEdu.addEventListener("click", () => {
-      if (eduSearch) eduSearch.value = "";
-      if (eduQual) eduQual.value = "ALL";
-      if (eduField) eduField.value = "ALL";
-      if (eduMentor) eduMentor.value = "ALL";
-      renderEducationProfiles();
-    });
-  }
-
-  // 7. Skills Directory Events
-  const btnToggleSkill = document.getElementById("btn-toggle-skill-form");
-  const btnCloseSkill = document.getElementById("btn-close-skill-form");
-  const btnCancelSkill = document.getElementById("btn-cancel-skill");
-  const skillCard = document.getElementById("skill-registration-card");
-
-  if (btnToggleSkill && skillCard) {
-    btnToggleSkill.addEventListener("click", () => {
-      document.getElementById("skill-register-form").reset();
-      document.getElementById("skill-edit-id").value = "";
-      skillCard.style.display = skillCard.style.display === "none" ? "block" : "none";
-    });
-  }
-  if (btnCloseSkill && skillCard) btnCloseSkill.addEventListener("click", () => skillCard.style.display = "none");
-  if (btnCancelSkill && skillCard) btnCancelSkill.addEventListener("click", () => skillCard.style.display = "none");
-
-  const skillForm = document.getElementById("skill-register-form");
-  if (skillForm) skillForm.addEventListener("submit", handleSkillSubmit);
-
-  // Skills Filters
-  const skillSearch = document.getElementById("skill-search");
-  const skillCat = document.getElementById("skill-filter-cat");
-  const skillVillage = document.getElementById("skill-filter-village");
-  const btnResetSkill = document.getElementById("btn-reset-skill-filters");
-
-  [skillSearch, skillCat, skillVillage].forEach(el => {
-    if (el) el.addEventListener("input", renderSkillsProfiles);
-  });
-  if (btnResetSkill) {
-    btnResetSkill.addEventListener("click", () => {
-      if (skillSearch) skillSearch.value = "";
-      if (skillCat) skillCat.value = "ALL";
-      if (skillVillage) skillVillage.value = "ALL";
-      renderSkillsProfiles();
-    });
-  }
-
-  // Service Request Modal Events
-  const serviceForm = document.getElementById("service-request-form");
-  if (serviceForm) serviceForm.addEventListener("submit", handleServiceRequestSubmit);
-  const btnCloseReq = document.getElementById("btn-close-request-modal");
-  if (btnCloseReq) {
-    btnCloseReq.addEventListener("click", () => {
-      document.getElementById("service-request-modal").style.display = "none";
-    });
-  }
-
-  // 8. Admin Events
-  const adminTabs = document.querySelectorAll(".admin-tab-btn");
-  adminTabs.forEach(tab => {
-    tab.addEventListener("click", () => {
-      adminTabs.forEach(t => t.classList.remove("active"));
-      tab.classList.add("active");
-
-      const targetTab = tab.getAttribute("data-tab");
-      document.querySelectorAll(".admin-tab-content").forEach(tc => tc.classList.remove("active"));
-      const activeContent = document.getElementById(targetTab);
-      if (activeContent) activeContent.classList.add("active");
-    });
-  });
-
-  const adminSearch = document.getElementById("admin-complaint-search");
-  const adminCatFilter = document.getElementById("admin-complaint-filter-cat");
-  const adminStatusFilter = document.getElementById("admin-complaint-filter-status");
-
-  [adminSearch, adminCatFilter, adminStatusFilter].forEach(el => {
-    if (el) el.addEventListener("input", renderAdminComplaintsTable);
-  });
-
-  const adminUpdateForm = document.getElementById("admin-update-form");
-  if (adminUpdateForm) adminUpdateForm.addEventListener("submit", handleAdminStatusUpdate);
-
-  const btnCloseAdminModal = document.getElementById("btn-close-admin-modal");
-  if (btnCloseAdminModal) {
-    btnCloseAdminModal.addEventListener("click", () => {
-      document.getElementById("admin-status-modal").style.display = "none";
-    });
-  }
-
-  // Demo Sample Data Resets
+  // Demo Resets
   const btnAdminReset = document.getElementById("btn-admin-reset-sample");
   if (btnAdminReset) {
     btnAdminReset.addEventListener("click", () => {
-      if (confirm("Reset all complaints, education and skills profiles back to default Rampur sample records?")) {
+      if (confirm("Reset all grievances and volunteer records back to default Rampur sample data?")) {
         resetAllDataToDefault();
       }
     });
@@ -2382,7 +2219,7 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  // 9. Initial Route Resolution
+  // Initial Route Resolution
   const initialHash = window.location.hash.replace("#", "");
   if (initialHash && VIEW_IDS.includes(initialHash)) {
     switchView(initialHash);
@@ -2390,7 +2227,7 @@ document.addEventListener("DOMContentLoaded", () => {
     switchView("home");
   }
 
-  // Pre-load default sample on track page
+  // Load sample on tracking page & update counts
   trackComplaintById("GV-2026-001");
   updateHeroStats();
 });
